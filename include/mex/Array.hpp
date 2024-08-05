@@ -178,10 +178,20 @@ namespace mex
        * @brief Get the number of elements in the array
        * @return Number of elements
        */
-      [[nodiscard]] std::size_t getNumElements() const
+      [[nodiscard]] std::size_t getSize() const
       {
         checkValid();
         return mxGetNumberOfElements(mArray);
+      }
+
+      /**
+       * @brief Gets the size of the element in bytes
+       * @return Size of the element in bytes
+       */
+      [[nodiscard]] std::size_t getSizeOfElement() const
+      {
+        checkValid();
+        return mxGetElementSize(mArray);
       }
 
       /**

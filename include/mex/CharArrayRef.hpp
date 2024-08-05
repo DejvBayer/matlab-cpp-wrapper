@@ -50,7 +50,7 @@ namespace mex
        */
       [[nodiscard]] operator std::u16string_view() const
       {
-        return std::u16string_view{getData(), getNumElements()};
+        return std::u16string_view{getData(), getSize()};
       }
   };
 
@@ -73,7 +73,7 @@ namespace mex
        */
       [[nodiscard]] operator std::u16string_view() const
       {
-        return std::u16string_view{getData(), getNumElements()};
+        return std::u16string_view{getData(), getSize()};
       }
   };
 } // namespace mex

@@ -51,7 +51,7 @@ namespace mex
   [[nodiscard]] NumericArray<T> makeNumericArray(View<std::size_t> dims)
   {
     mxArray* array = mxCreateNumericArray(dims.size(),
-                                          dims.data(),
+                                          const_cast<std::size_t*>(dims.data()),
                                           static_cast<mxClassID>(TypeProperties<T>::classId),
                                           static_cast<mxComplexity>(TypeProperties<T>::complexity));
 
@@ -73,7 +73,7 @@ namespace mex
   [[nodiscard]] NumericArray<T> makeUninitNumericArray(View<std::size_t> dims)
   {
     mxArray* array = mxCreateUninitNumericArray(dims.size(),
-                                                dims.data(),
+                                                const_cast<std::size_t*>(dims.data()),
                                                 static_cast<mxClassID>(TypeProperties<T>::classId),
                                                 static_cast<mxComplexity>(TypeProperties<T>::complexity));
 

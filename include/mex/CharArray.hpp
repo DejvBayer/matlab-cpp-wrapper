@@ -63,7 +63,7 @@ namespace mex
        */
       [[nodiscard]] operator std::u16string_view() const
       {
-        return std::u16string_view{getData(), getNumElements() - 1};
+        return std::u16string_view{getData(), getSize() - 1};
       }
 
       /// @brief Use the TypedArray<char16_t>::operator ArrayRef

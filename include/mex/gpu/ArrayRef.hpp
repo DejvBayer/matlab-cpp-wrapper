@@ -90,7 +90,7 @@ namespace mex::gpu
        * @brief Gets the number of elements in the array.
        * @return The number of elements in the array
        */
-      [[nodiscard]] std::size_t getNumElements() const
+      [[nodiscard]] std::size_t getSize() const
       {
         return mxGPUGetNumberOfElements(mArray);
       }
@@ -125,7 +125,7 @@ namespace mex::gpu
        */
       [[nodiscard]] bool isScalar() const
       {
-        return getNumElements() == 1;
+        return getSize() == 1;
       }
 
       /**
@@ -134,7 +134,7 @@ namespace mex::gpu
        */
       [[nodiscard]] bool isEmpty() const
       {
-        return getNumElements() == 0;
+        return getSize() == 0;
       }
 
       /**
@@ -254,7 +254,7 @@ namespace mex::gpu
        * @brief Gets the number of elements in the array.
        * @return The number of elements in the array
        */
-      [[nodiscard]] std::size_t getNumElements() const
+      [[nodiscard]] std::size_t getSize() const
       {
         return mxGPUGetNumberOfElements(mArray);
       }
@@ -289,7 +289,7 @@ namespace mex::gpu
        */
       [[nodiscard]] bool isScalar() const
       {
-        return getNumElements() == 1;
+        return getSize() == 1;
       }
 
       /**
@@ -298,7 +298,7 @@ namespace mex::gpu
        */
       [[nodiscard]] bool isEmpty() const
       {
-        return getNumElements() == 0;
+        return getSize() == 0;
       }
 
       /**

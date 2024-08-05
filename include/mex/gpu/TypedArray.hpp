@@ -166,7 +166,7 @@ namespace mex::gpu
        */
       [[nodiscard]] reference at(std::size_t i)
       {
-        if (i >= getNumElements())
+        if (i >= getSize())
         {
           throw Exception{"index out of range"};
         }
@@ -181,7 +181,7 @@ namespace mex::gpu
        */
       [[nodiscard]] const_reference at(std::size_t i) const
       {
-        if (i >= getNumElements())
+        if (i >= getSize())
         {
           throw Exception{"index out of range"};
         }
@@ -242,7 +242,7 @@ namespace mex::gpu
        */
       [[nodiscard]] iterator end()
       {
-        return getData() + getNumElements();
+        return getData() + getSize();
       }
 
       /**
@@ -251,7 +251,7 @@ namespace mex::gpu
        */
       [[nodiscard]] const_iterator end() const
       {
-        return getData() + getNumElements();
+        return getData() + getSize();
       }
 
       /**
@@ -260,7 +260,7 @@ namespace mex::gpu
        */
       [[nodiscard]] const_iterator cend() const
       {
-        return getData() + getNumElements();
+        return getData() + getSize();
       }
 
       /**

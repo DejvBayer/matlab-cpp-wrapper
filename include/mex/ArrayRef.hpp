@@ -91,9 +91,18 @@ namespace mex
        * @brief Gets the number of elements in the array.
        * @return The number of elements in the array
        */
-      [[nodiscard]] std::size_t getNumElements() const
+      [[nodiscard]] std::size_t getSize() const
       {
         return mxGetNumberOfElements(mArray);
+      }
+
+      /**
+       * @brief Gets the size of the element in bytes
+       * @return Size of the element in bytes
+       */
+      [[nodiscard]] std::size_t getSizeOfElement() const
+      {
+        return mxGetElementSize(mArray);
       }
 
 #   ifdef MEX_ENABLE_GPU
@@ -251,9 +260,18 @@ namespace mex
        * @brief Gets the number of elements in the array.
        * @return The number of elements in the array
        */
-      [[nodiscard]] std::size_t getNumElements() const
+      [[nodiscard]] std::size_t getSize() const
       {
         return mxGetNumberOfElements(mArray);
+      }
+
+      /**
+       * @brief Gets the size of the element in bytes
+       * @return Size of the element in bytes
+       */
+      [[nodiscard]] std::size_t getSizeOfElement() const
+      {
+        return mxGetElementSize(mArray);
       }
 
 #   ifdef MEX_ENABLE_GPU

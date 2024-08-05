@@ -190,7 +190,7 @@ namespace mex::gpu
        * @brief Get the number of elements in the array
        * @return Number of elements
        */
-      [[nodiscard]] std::size_t getNumElements() const
+      [[nodiscard]] std::size_t getSize() const
       {
         checkValid();
         return mxGPUGetNumberOfElements(mArray);
@@ -238,7 +238,7 @@ namespace mex::gpu
       [[nodiscard]] bool isScalar() const
       {
         checkValid();
-        return getNumElements() == 1;
+        return getSize() == 1;
       }
 
       /**
@@ -248,7 +248,7 @@ namespace mex::gpu
       [[nodiscard]] bool isEmpty() const
       {
         checkValid();
-        return getNumElements() == 0;
+        return getSize() == 0;
       }
 
       /**

@@ -127,7 +127,7 @@ namespace detail
        */
       [[nodiscard]] reference at(std::size_t i) const
       {
-        if (i >= getNumElements())
+        if (i >= getSize())
         {
           throw Exception{"index out of range"};
         }
@@ -169,7 +169,7 @@ namespace detail
        */
       [[nodiscard]] iterator end() const
       {
-        return getData() + getNumElements();
+        return getData() + getSize();
       }
 
       /**
@@ -178,7 +178,7 @@ namespace detail
        */
       [[nodiscard]] const_iterator cend() const
       {
-        return getData() + getNumElements();
+        return getData() + getSize();
       }
 
       /**
@@ -311,7 +311,7 @@ namespace detail
        */
       [[nodiscard]] reference at(std::size_t i) const
       {
-        if (i >= getNumElements())
+        if (i >= getSize())
         {
           throw Exception{"index out of range"};
         }
@@ -353,7 +353,7 @@ namespace detail
        */
       [[nodiscard]] iterator end() const
       {
-        return getData() + getNumElements();
+        return getData() + getSize();
       }
 
       /**
