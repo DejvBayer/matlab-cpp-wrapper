@@ -37,16 +37,8 @@ namespace mex
    * @brief Numeric typed array
    * @tparam T Element type
    */
-  template<typename T, std::enable_if_t<isNumeric<T>, int> = 0>
-  using NumericArray = TypedArray<T>;
-
-  /**
-   * @brief Numeric typed array
-   * @tparam T Element type
-   */
   template<typename T>
-    requires isNumeric<T>
-  class TypedArray<T> : public Array
+  class TypedArray : public Array
   {
     static_assert(!std::is_const_v<T>,     "T must be a non-const type");
     static_assert(!std::is_volatile_v<T>,  "T must be a non-volatile type");
@@ -360,36 +352,6 @@ namespace mex
         return detail::checkArrayClass<classId>(array);
       }
   };
-
-  /**
-   * @brief Creates a numeric array
-   * @tparam T Element type
-   * @param dims Dimensions
-   * @return Numeric array
-   */
-  template<typename T, std::enable_if_t<isNumeric<T>, int> = 0>
-  [[nodiscard]] NumericArray<T> makeNumericArray(View<std::size_t> dims)
-  {
-    return NumericArray<T>{mxCreateNumericArray(dims.size(),
-                                                dims.data(),
-                                                static_cast<mxClassID>(TypeProperties<T>::classId),
-                                                static_cast<mxComplexity>(TypeProperties<T>::complexity))};
-  }
-
-  /**
-   * @brief Creates an uninitialized numeric array
-   * @tparam T Element type
-   * @param dims Dimensions
-   * @return Uninitialized numeric array
-   */
-  template<typename T, std::enable_if_t<isNumeric<T>, int> = 0>
-  [[nodiscard]] NumericArray<T> makeUninitNumericArray(View<std::size_t> dims)
-  {
-    return NumericArray<T>{mxCreateUninitNumericArray(dims.size(),
-                                                      dims.data(),
-                                                      static_cast<mxClassID>(TypeProperties<T>::classId),
-                                                      static_cast<mxComplexity>(TypeProperties<T>::complexity))};
-  }
 } // namespace mex
 
 #endif /* MEX_TYPED_ARRAY_HPP */
