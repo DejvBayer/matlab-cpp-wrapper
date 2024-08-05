@@ -25,10 +25,16 @@
 #ifndef MEX_NUMERIC_MATRIX_HPP
 #define MEX_NUMERIC_MATRIX_HPP
 
-#include <mex.hpp>
+#include <cstddef>
+#include <type_traits>
+#include <utility>
 
+#include <mex.h>
+
+#include "Exception.hpp"
 #include "NumericMatrixRef.hpp"
 #include "TypedArray.hpp"
+#include "typeTraits.hpp"
 
 namespace mex
 {

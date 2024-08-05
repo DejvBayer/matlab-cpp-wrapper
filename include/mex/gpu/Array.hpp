@@ -22,20 +22,15 @@
   SOFTWARE.
 */
 
-#ifndef MEX_ARRAY_HPP
-#define MEX_ARRAY_HPP
+#ifndef MEX_GPU_ARRAY_HPP
+#define MEX_GPU_ARRAY_HPP
 
 #include <mex.h>
-#ifdef MEX_ENABLE_GPU
-# include <gpu/mxGPUArray.h>
-#endif
+#include <gpu/mxGPUArray.h>
 
 #include "ArrayRef.hpp"
-#include "common.hpp"
-#include "Exception.hpp"
-#include "typeTraits.hpp"
 
-namespace mex
+namespace mex::gpu
 {
   /// @brief Array class
   class Array
@@ -49,11 +44,24 @@ namespace mex
 
       /**
        * @brief Constructor
-       * @param array mxArray pointer (rvalue reference)
+       * @param array mxGPUArray pointer (rvalue reference)
        */
-      explicit Array(mxArray*&& array) noexcept
+      explicit Array(mxGPUArray*&& array) noexcept
       : mArray{array}
       {}
+
+      /**
+       * @brief Constructor
+       * @param array mxArray pointer
+       */
+      explicit Array(mxArray* array) noexcept
+      : mArray{mxGPUCopyFromMxArray(array)}
+      {
+        if (mArray == nullptr)
+        {
+          throw Exception{"failed to create array from mxArray"};
+        }
+      }
 
       /**
        * @brief Copy constructor
@@ -153,7 +161,7 @@ namespace mex
       [[nodiscard]] std::size_t getRank() const
       {
         checkValid();
-        return mxGetNumberOfDimensions(mArray);
+        return mxGPUGetNumberOfDimensions(mArray);
       }
 
       /**
@@ -163,7 +171,7 @@ namespace mex
       [[nodiscard]] View<std::size_t> getDims() const
       {
         checkValid();
-        return View<std::size_t>{mxGetDimensions(mArray), getRank()};
+        return View<std::size_t>{mxGPUGetDimensions(mArray), getRank()};
       }
 
       /**
@@ -173,7 +181,7 @@ namespace mex
       [[nodiscard]] std::size_t getNumElements() const
       {
         checkValid();
-        return mxGetNumberOfElements(mArray);
+        return mxGPUGetNumberOfElements(mArray);
       }
 
       /**
@@ -185,18 +193,6 @@ namespace mex
         return mArray != nullptr;
       }
 
-#   ifdef MEX_ENABLE_GPU
-      /**
-       * @brief Is the array a GPU array?
-       * @return True if the array is a GPU array, false otherwise
-       */
-      [[nodiscard]] bool isGpuArray() const
-      {
-        checkValid();
-        return mxIsGPUArray(mArray);
-      }
-#   endif
-
       /**
        * @brief Is the array a numeric array?
        * @return True if the array is a numeric array, false otherwise
@@ -204,7 +200,23 @@ namespace mex
       [[nodiscard]] bool isNumeric() const
       {
         checkValid();
-        return mxIsNumeric(mArray);
+        
+        switch (getClassId())
+        {
+          case ClassId::_double:
+          case ClassId::single:
+          case ClassId::int8:
+          case ClassId::uint8:
+          case ClassId::int16:
+          case ClassId::uint16:
+          case ClassId::int32:
+          case ClassId::uint32:
+          case ClassId::int64:
+          case ClassId::uint64:
+            return true;
+          default:
+            return false;
+        }
       }
 
       /**
@@ -214,7 +226,7 @@ namespace mex
       [[nodiscard]] bool isScalar() const
       {
         checkValid();
-        return mxIsScalar(mArray);
+        return getNumElements() == 1;
       }
 
       /**
@@ -224,7 +236,7 @@ namespace mex
       [[nodiscard]] bool isEmpty() const
       {
         checkValid();
-        return mxIsEmpty(mArray);
+        return getNumElements() == 0;
       }
 
       /**
@@ -234,7 +246,7 @@ namespace mex
       [[nodiscard]] bool isComplex() const
       {
         checkValid();
-        return mxIsComplex(mArray);
+        return mxGPUGetComplexity(mArray) == mxCOMPLEX;
       }
 
       /**
@@ -244,7 +256,7 @@ namespace mex
       [[nodiscard]] ClassId getClassId() const
       {
         checkValid();
-        return static_cast<ClassId>(mxGetClassID(mArray));
+        return static_cast<ClassId>(mxGPUGetClassID(mArray));
       }
 
       /**
@@ -254,7 +266,7 @@ namespace mex
       [[nodiscard]] const void* getData() const
       {
         checkValid();
-        return mxGetData(mArray);
+        return mxGPUGetDataReadOnly(mArray);
       }
 
       /**
@@ -264,25 +276,38 @@ namespace mex
       [[nodiscard]] void* getData()
       {
         checkValid();
-        return mxGetData(mArray);
+        return mxGPUGetData(mArray);
       }
 
       /**
-       * @brief Get the mxArray pointer
-       * @return mxArray pointer
+       * @brief Get the mxGPUArray pointer
+       * @return mxGPUArray pointer
        */
-      [[nodiscard]] mxArray* get() noexcept
+      [[nodiscard]] mxGPUArray* get() noexcept
       {
         return mArray;
       }
 
       /**
-       * @brief Get the mxArray pointer
-       * @return mxArray pointer
+       * @brief Get the mxGPUArray pointer
+       * @return mxGPUArray pointer
        */
-      [[nodiscard]] const mxArray* get() const noexcept
+      [[nodiscard]] const mxGPUArray* get() const noexcept
       {
         return mArray;
+      }
+
+      /**
+       * @brief Release the array
+       * @return mxArray pointer
+       */
+      [[nodiscard]] Array release() noexcept
+      {
+        mxArray* array = mxGPUCreateMxArrayOnGPU(mArray);
+
+        destroy();
+
+        return Array{std::move(array)};
       }
 
       /**
@@ -304,29 +329,20 @@ namespace mex
         checkValid();
         return ArrayCref{mArray};
       }
-    protected:
-      /// @brief Check if the array is valid
-      void checkValid() const
-      {
-        if (!isValid())
-        {
-          throw Exception{"accessing invalid array"};
-        }
-      }
     private:
       /**
        * @brief Duplicate the array
-       * @param array mxArray pointer
-       * @return Duplicated mxArray pointer
+       * @param array mxGPUArray pointer
+       * @return Duplicated mxGPUArray pointer
        */
-      [[nodiscard]] static mxArray* duplicateArray(const mxArray* array)
+      [[nodiscard]] static mxGPUArray* duplicateArray(const mxGPUArray* array)
       {
         if (array == nullptr)
         {
           throw Exception{"invalid array to duplicate"};
         }
         
-        mxArray* arrayDup = mxDuplicateArray(array);
+        mxGPUArray* arrayDup = mxGPUCopyGPUArray(array);
 
         if (arrayDup == nullptr)
         {
@@ -336,14 +352,24 @@ namespace mex
         return arrayDup;
       }
 
+      /// @brief Check if the array is valid
+      void checkValid() const
+      {
+        if (!isValid())
+        {
+          throw Exception{"accessing invalid array"};
+        }
+      }
+
       /// @brief Destroy the array
       void destroy() noexcept
       {
-        mxDestroyArray(std::move(mArray));
+        mxGPUDestroyGPUArray(std::move(mArray));
       }
 
-      mxArray* mArray{}; ///< mxArray pointer
+      mxGPUArray* mArray{}; ///< mxArray pointer
   };
-} // namespace mex
+} // namespace mex::gpu
 
-#endif /* MEX_ARRAY_HPP */
+
+#endif /* MEX_GPU_ARRAY_HPP */
