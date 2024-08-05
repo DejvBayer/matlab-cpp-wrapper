@@ -34,6 +34,7 @@
 
 namespace mex
 {
+  /// @brief Array class
   class Array
   {
     public:
@@ -246,6 +247,15 @@ namespace mex
       {
         checkValid();
         return Ref<Array>{mArray};
+      }
+
+      /**
+       * @brief Get a reference to the array
+       * @return Reference to the array
+       */
+      [[nodiscard]] Cref<Array> ref() const
+      {
+        return cref();
       }
 
       /**
