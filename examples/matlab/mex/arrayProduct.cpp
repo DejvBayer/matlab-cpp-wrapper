@@ -42,7 +42,7 @@ void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
   }
 
   /* make sure the first input argument is scalar */
-  if (rhs[0].getClassId() != mex::ClassId::_double || rhs[0].isComplex() || rhs[0].getNumElements() != 1)
+  if (rhs[0].getClassId() != mex::ClassId::_double || rhs[0].isComplex() || rhs[0].getSize() != 1)
   {
     throw mex::Exception{"MyToolbox:arrayProduct:notScalar", "Input multiplier must be a scalar."};
   }
