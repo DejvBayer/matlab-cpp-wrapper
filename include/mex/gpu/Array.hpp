@@ -54,7 +54,7 @@ namespace mex::gpu
        * @brief Constructor
        * @param array mxArray pointer
        */
-      explicit Array(mxArray* array) noexcept
+      explicit Array(mxArray* array)
       : mArray{mxGPUCopyFromMxArray(array)}
       {
         if (mArray == nullptr)
