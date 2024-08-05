@@ -69,11 +69,6 @@ namespace mex
    */
   inline void putVariable(Workspace workspace, const char* name, ArrayRef value)
   {
-    if (!value.isValid())
-    {
-      throw Exception{"invalid variable value"};
-    }
-
     if (name == nullptr)
     {
       throw Exception{"invalid variable name"};
