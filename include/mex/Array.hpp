@@ -25,6 +25,9 @@
 #ifndef MEX_ARRAY_HPP
 #define MEX_ARRAY_HPP
 
+#include <cstddef>
+#include <utility>
+
 #include <mex.h>
 #ifdef MEX_ENABLE_GPU
 # include <gpu/mxGPUArray.h>
@@ -83,7 +86,9 @@ namespace mex
        * @brief Move constructor
        * @param other Other array
        */
-      Array(Array&& other) noexcept = default;
+      Array(Array&& other) noexcept
+      : mArray{std::exchange(other.mArray, nullptr)}
+      {}
 
       /// @brief Destructor
       ~Array() noexcept
@@ -144,7 +149,16 @@ namespace mex
        * @param other Other array
        * @return Reference to this array
        */
-      Array& operator=(Array&& other) noexcept = default;
+      Array& operator=(Array&& other) noexcept
+      {
+        if (this != &other)
+        {
+          destroy();
+          mArray = std::exchange(other.mArray, nullptr);
+        }
+
+        return *this;
+      }
 
       /**
        * @brief Get the rank of the array
@@ -339,7 +353,7 @@ namespace mex
       /// @brief Destroy the array
       void destroy() noexcept
       {
-        mxDestroyArray(std::move(mArray));
+        mxDestroyArray(std::exchange(mArray, nullptr));
       }
 
       mxArray* mArray{}; ///< mxArray pointer
