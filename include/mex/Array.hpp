@@ -56,7 +56,7 @@ namespace mex
        * @brief Copy constructor
        * @param other Other array
        */
-      Array(const Array& other)
+      explicit Array(const Array& other)
       : Array{duplicateArray(other.get())}
       {}
 
@@ -64,7 +64,7 @@ namespace mex
        * @brief Copy constructor from reference
        * @param other Reference to other array
        */
-      Array(const Ref<Array>& other)
+      explicit Array(const Ref<Array>& other)
       : Array{duplicateArray(other.get())}
       {}
 
@@ -72,7 +72,7 @@ namespace mex
        * @brief Copy constructor from const reference
        * @param other Const reference to other array
        */
-      Array(const Cref<Array>& other)
+      explicit Array(const Cref<Array>& other)
       : Array{duplicateArray(other.get())}
       {}
 

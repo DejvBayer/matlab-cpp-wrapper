@@ -104,6 +104,7 @@ extern "C" void
 mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 try
 {
+  // Initialize the GPU if enabled.
 #ifdef MEX_ENABLE_GPU
   if (mxInitGPU() != MX_GPU_SUCCESS)
   {
