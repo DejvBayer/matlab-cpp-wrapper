@@ -37,6 +37,13 @@ namespace mex
    * @brief Numeric typed array
    * @tparam T Element type
    */
+  template<typename T, std::enable_if_t<isNumeric<T>, int> = 0>
+  using NumericArray = TypedArray<T>;
+
+  /**
+   * @brief Numeric typed array
+   * @tparam T Element type
+   */
   template<typename T>
     requires isNumeric<T>
   class TypedArray<T> : public Array
@@ -57,7 +64,7 @@ namespace mex
       using const_reverse_iterator = std::reverse_iterator<const_iterator>; ///< Const reverse iterator type
 
       /// @brief Type class ID
-      static constexpr ClassId classId = typeClassId<T>;
+      static constexpr ClassId classId = TypeProperties<T>::classId;
 
       /// @brief Default constructor
       TypedArray() noexcept = default;
@@ -77,7 +84,7 @@ namespace mex
        * @brief Copy constructor from reference
        * @param other Reference to other array
        */
-      explicit TypedArray(const Ref<Array>& other)
+      explicit TypedArray(const ArrayRef& other)
       : Array{(checkArrayClass(other.get()), other)}
       {}
 
@@ -85,24 +92,8 @@ namespace mex
        * @brief Copy constructor from const reference
        * @param other Const reference to other array
        */
-      explicit TypedArray(const Cref<Array>& other)
+      explicit TypedArray(const ArrayCref& other)
       : Array{(checkArrayClass(other.get()), other)}
-      {}
-
-      /**
-       * @brief Copy constructor from typed array reference
-       * @param other Reference to other typed array
-       */
-      explicit TypedArray(const Ref<TypedArray>& other)
-      : Array{other}
-      {}
-
-      /**
-       * @brief Copy constructor from typed array const reference
-       * @param other Const reference to other typed array
-       */
-      explicit TypedArray(const Cref<TypedArray>& other)
-      : Array{other}
       {}
 
       /**
@@ -125,7 +116,7 @@ namespace mex
        * @param other Reference to other array
        * @return Reference to this array
        */
-      TypedArray& operator=(const Ref<Array>& other)
+      TypedArray& operator=(const ArrayRef& other)
       {
         checkArrayClass(other.get());
 
@@ -137,30 +128,10 @@ namespace mex
        * @param other Const reference to other array
        * @return Reference to this array
        */
-      TypedArray& operator=(const Cref<Array>& other)
+      TypedArray& operator=(const ArrayCref& other)
       {
         checkArrayClass(other.get());
 
-        return Array::operator=(other);
-      }
-
-      /**
-       * @brief Copy assignment operator from typed array reference
-       * @param other Reference to other typed array
-       * @return Reference to this array
-       */
-      TypedArray& operator=(const Ref<TypedArray>& other)
-      {
-        return Array::operator=(other);
-      }
-
-      /**
-       * @brief Copy assignment operator from typed array const reference
-       * @param other Const reference to other typed array
-       * @return Reference to this array
-       */
-      TypedArray& operator=(const Cref<TypedArray>& other)
-      {
         return Array::operator=(other);
       }
 
@@ -184,7 +155,7 @@ namespace mex
        */
       [[nodiscard]] pointer getData()
       {
-        return static_cast<pointer>(getData());
+        return static_cast<pointer>(Array::getData());
       }
 
       /**
@@ -193,7 +164,7 @@ namespace mex
        */
       [[nodiscard]] const_pointer getData() const
       {
-        return static_cast<const_pointer>(getData());
+        return static_cast<const_pointer>(Array::getData());
       }
 
       /**
@@ -354,24 +325,30 @@ namespace mex
         return const_reverse_iterator{begin()};
       }
 
+      /// @brief Use the Array::operator ArrayRef
+      using Array::operator ArrayRef;
+
+      /// @brief Use the Array::operator ArrayCref
+      using Array::operator ArrayCref;
+
       /**
-       * @brief Get a reference to the array
+       * @brief Conversion operator to TypedArrayRef
        * @return Reference to the array
        */
-      [[nodiscard]] Ref<TypedArray<T>> ref()
+      [[nodiscard]] operator TypedArrayRef<T>()
       {
         checkValid();
-        return Ref<TypedArray<T>>{Array::get()};
+        return TypedArrayRef<T>{get()};
       }
 
       /**
-       * @brief Get a const reference to the array
+       * @brief Conversion operator to TypedArrayCref
        * @return Const reference to the array
        */
-      [[nodiscard]] Cref<TypedArray<T>> cref() const
+      [[nodiscard]] operator TypedArrayCref<T>() const
       {
         checkValid();
-        return Cref<TypedArray<T>>{Array::get()};
+        return TypedArrayCref<T>{get()};
       }
     private:
       /**
@@ -383,6 +360,36 @@ namespace mex
         return detail::checkArrayClass<classId>(array);
       }
   };
+
+  /**
+   * @brief Creates a numeric array
+   * @tparam T Element type
+   * @param dims Dimensions
+   * @return Numeric array
+   */
+  template<typename T, std::enable_if_t<isNumeric<T>, int> = 0>
+  [[nodiscard]] NumericArray<T> makeNumericArray(View<std::size_t> dims)
+  {
+    return NumericArray<T>{mxCreateNumericArray(dims.size(),
+                                                dims.data(),
+                                                static_cast<mxClassID>(TypeProperties<T>::classId),
+                                                static_cast<mxComplexity>(TypeProperties<T>::complexity))};
+  }
+
+  /**
+   * @brief Creates an uninitialized numeric array
+   * @tparam T Element type
+   * @param dims Dimensions
+   * @return Uninitialized numeric array
+   */
+  template<typename T, std::enable_if_t<isNumeric<T>, int> = 0>
+  [[nodiscard]] NumericArray<T> makeUninitNumericArray(View<std::size_t> dims)
+  {
+    return NumericArray<T>{mxCreateUninitNumericArray(dims.size(),
+                                                      dims.data(),
+                                                      static_cast<mxClassID>(TypeProperties<T>::classId),
+                                                      static_cast<mxComplexity>(TypeProperties<T>::complexity))};
+  }
 } // namespace mex
 
 #endif /* MEX_TYPED_ARRAY_HPP */

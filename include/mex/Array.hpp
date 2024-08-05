@@ -243,35 +243,6 @@ namespace mex
       }
 
       /**
-       * @brief Get a reference to the array
-       * @return Reference to the array
-       */
-      [[nodiscard]] ArrayRef ref()
-      {
-        checkValid();
-        return ArrayRef{mArray};
-      }
-
-      /**
-       * @brief Get a reference to the array
-       * @return Reference to the array
-       */
-      [[nodiscard]] ArrayCref ref() const
-      {
-        return cref();
-      }
-
-      /**
-       * @brief Get a const reference to the array
-       * @return Const reference to the array
-       */
-      [[nodiscard]] ArrayCref cref() const
-      {
-        checkValid();
-        return ArrayCref{mArray};
-      }
-
-      /**
        * @brief Get the mxArray pointer
        * @return mxArray pointer
        */
@@ -287,6 +258,26 @@ namespace mex
       [[nodiscard]] const mxArray* get() const noexcept
       {
         return mArray;
+      }
+
+      /**
+       * @brief Convert to ArrayRef
+       * @return ArrayRef
+       */
+      [[nodiscard]] operator ArrayRef()
+      {
+        checkValid();
+        return ArrayRef{mArray};
+      }
+
+      /**
+       * @brief Convert to ArrayCref
+       * @return ArrayCref
+       */
+      [[nodiscard]] operator ArrayCref() const
+      {
+        checkValid();
+        return ArrayCref{mArray};
       }
     private:
       /**
