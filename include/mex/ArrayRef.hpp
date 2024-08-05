@@ -111,6 +111,15 @@ namespace mex
 #   endif
 
       /**
+       * @brief Is the array a numeric array?
+       * @return True if the array is a numeric array, false otherwise
+       */
+      [[nodiscard]] bool isNumeric() const
+      {
+        return mxIsNumeric(mArray);
+      }
+
+      /**
        * @brief Is the array a scalar?
        * @return True if the array is a scalar, false otherwise
        */
@@ -260,6 +269,15 @@ namespace mex
         return mxIsGPUArray(mArray);
       }
 #   endif
+
+      /**
+       * @brief Is the array a numeric array?
+       * @return True if the array is a numeric array, false otherwise
+       */
+      [[nodiscard]] bool isNumeric() const
+      {
+        return mxIsNumeric(mArray);
+      }
 
       /**
        * @brief Is the array a scalar?
