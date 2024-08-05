@@ -39,6 +39,18 @@ namespace mex
       /// @brief Inherit constructors from TypedArray<char16_t>
       using TypedArray<char16_t>::TypedArray;
 
+      /**
+       * @brief Construct from a std::string_view
+       * @param str The string view
+       */
+      explicit CharArray(std::string_view str);
+      
+      /**
+       * @brief Construct from a std::u16string_view
+       * @param str The string view
+       */
+      explicit CharArray(std::u16string_view str);
+
       /// @brief Default destructor
       ~CharArray() = default;
 
@@ -51,7 +63,7 @@ namespace mex
        */
       [[nodiscard]] operator std::u16string_view() const
       {
-        return std::u16string_view{getData(), getNumElements()};
+        return std::u16string_view{getData(), getNumElements() - 1};
       }
 
       /// @brief Use the TypedArray<char16_t>::operator ArrayRef
@@ -86,6 +98,70 @@ namespace mex
         return CharArrayCref{get()};
       }
   };
+
+  /**
+   * @brief Make a CharArray.
+   * @param dims The dimensions of the array.
+   * @return The CharArray.
+   */
+  [[nodiscard]] inline CharArray makeCharArray(View<std::size_t> dims)
+  {
+    mxArray* array = mxCreateCharArray(dims.size(), dims.data());
+
+    if (array == nullptr)
+    {
+      throw Exception{"failed to create char array"};
+    }
+
+    return CharArray{std::move(array)};
+  }
+
+  /**
+   * @brief Make a CharArray from a std::string_view.
+   * @param str The string view.
+   * @return The CharArray.
+   */
+  [[nodiscard]] inline CharArray makeCharArray(std::string_view str)
+  {
+    mxArray* array = mxCreateStringFromNChars(str.data(), str.size());
+
+    if (array == nullptr)
+    {
+      throw Exception{"failed to create char array"};
+    }
+
+    return CharArray{std::move(array)};
+  }
+
+  /**
+   * @brief Make a CharArray from a std::u16string_view.
+   * @param str The string view.
+   * @return The CharArray.
+   */
+  [[nodiscard]] inline CharArray makeCharArray(std::u16string_view str)
+  {
+    CharArray array = makeCharArray({{str.size() + 1}});
+
+    std::copy(str.begin(), str.end(), array.begin());
+
+    return array;
+  }
+
+  /**
+   * @brief Construct from a std::string_view
+   * @param str The string view
+   */
+  inline CharArray::CharArray(std::string_view str)
+  : TypedArray<char16_t>{makeCharArray(str)}
+  {}
+
+  /**
+   * @brief Construct from a std::u16string_view
+   * @param str The string view
+   */
+  inline CharArray::CharArray(std::u16string_view str)
+  : TypedArray<char16_t>{makeCharArray(str)}
+  {}
 } // namespace mex
 
 #endif /* MEX_CHAR_ARRAY_HPP */
