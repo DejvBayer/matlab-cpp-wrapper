@@ -1,0 +1,91 @@
+/*
+  This file is part of mex-cpp-wrapper library.
+
+  Copyright (c) 2024 David Bayer
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
+*/
+
+#ifndef MEX_CHAR_ARRAY_HPP
+#define MEX_CHAR_ARRAY_HPP
+
+#include <string_view>
+
+#include "CharArrayRef.hpp"
+#include "TypedArray.hpp"
+
+namespace mex
+{
+  /// @brief CharArray class
+  class CharArray : public TypedArray<char16_t>
+  {
+    public:
+      /// @brief Inherit constructors from TypedArray<char16_t>
+      using TypedArray<char16_t>::TypedArray;
+
+      /// @brief Default destructor
+      ~CharArray() = default;
+
+      /// @brief Use the TypedArray<char16_t>::operator=
+      using TypedArray<char16_t>::operator=;
+
+      /**
+       * @brief Convert to std::u16string_view
+       * @return std::u16string_view
+       */
+      [[nodiscard]] operator std::u16string_view() const
+      {
+        return std::u16string_view{getData(), getNumElements()};
+      }
+
+      /// @brief Use the TypedArray<char16_t>::operator ArrayRef
+      using TypedArray<char16_t>::operator ArrayRef;
+
+      /// @brief Use the TypedArray<char16_t>::operator ArrayCref
+      using TypedArray<char16_t>::operator ArrayCref;
+
+      /// @brief Use the TypedArray<char16_t>::operator TypedArrayRef
+      using TypedArray<char16_t>::operator TypedArrayRef<char16_t>;
+
+      /// @brief Use the TypedArray<char16_t>::operator TypedArrayCref
+      using TypedArray<char16_t>::operator TypedArrayCref<char16_t>;
+
+      /**
+       * @brief Conversion operator to CharArrayRef
+       * @return Reference to the array
+       */
+      [[nodiscard]] operator CharArrayRef()
+      {
+        checkValid();
+        return CharArrayRef{get()};
+      }
+
+      /**
+       * @brief Conversion operator to CharArrayCref
+       * @return Const reference to the array
+       */
+      [[nodiscard]] operator CharArrayCref() const
+      {
+        checkValid();
+        return CharArrayCref{get()};
+      }
+  };
+} // namespace mex
+
+#endif /* MEX_CHAR_ARRAY_HPP */
