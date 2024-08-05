@@ -50,6 +50,12 @@ namespace mex
       /// @brief The constness of the referenced array.
       static constexpr bool isConst = std::is_const_v<T>;
     public:
+      /// @brief Explicitly deleted default constructor.
+      Ref() = delete;
+
+      /// @brief Explicitly deleted constructor from nullptr.
+      Ref(nullptr_t) = delete;
+
       /**
        * @brief Constructor from a mxArray pointer.
        * @param array mxArray pointer

@@ -41,6 +41,9 @@ namespace mex
       /// @brief Default constructor
       Array() noexcept = default;
 
+      /// @brief Explicitly deleted constructor from nullptr.
+      Array(nullptr_t) = delete;
+
       /**
        * @brief Constructor
        * @param array mxArray pointer (rvalue reference)
