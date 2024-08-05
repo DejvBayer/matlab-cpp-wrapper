@@ -37,44 +37,65 @@
 namespace mex
 {
   /// @brief Function object that wraps the user-defined function.
-  struct Function
+  class Function
   {
-    /**
-     * @brief Gets the name of the function.
-     * @return The name of the function.
-     */
-    [[nodiscard]] const char* getName() const noexcept
-    {
-      return mexFunctionName();
-    }
+    friend void ::mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]);
 
-    /// @brief Locks the function.
-    void lock() noexcept
-    {
-      mexLock();
-    }
+    public:
+      /**
+       * @brief Gets the name of the function.
+       * @return The name of the function.
+       */
+      [[nodiscard]] const char* getName() const noexcept
+      {
+        return mexFunctionName();
+      }
 
-    /// @brief Unlocks the function.
-    void unlock() noexcept
-    {
-      mexUnlock();
-    }
+      /// @brief Locks the function.
+      void lock() noexcept
+      {
+        mexLock();
+      }
 
-    /**
-     * @brief Checks if the function is locked.
-     * @return True if the function is locked, false otherwise.
-     */
-    [[nodiscard]] bool isLocked() const noexcept
-    {
-      return mexIsLocked();
-    }
+      /// @brief Unlocks the function.
+      void unlock() noexcept
+      {
+        mexUnlock();
+      }
 
-    /**
-     * @brief Implementation of the user-defined function.
-     * @param lhs Left-hand side arguments.
-     * @param rhs Right-hand side arguments.
-     */
-    void operator()(Span<Array> lhs, View<ArrayCref> rhs);
+      /**
+       * @brief Checks if the function is locked.
+       * @return True if the function is locked, false otherwise.
+       */
+      [[nodiscard]] bool isLocked() const noexcept
+      {
+        return mexIsLocked();
+      }
+
+      /**
+       * @brief Implementation of the user-defined function.
+       * @param lhs Left-hand side arguments.
+       * @param rhs Right-hand side arguments.
+       */
+      void operator()(Span<Array> lhs, View<ArrayCref> rhs);
+    private:
+      /// @brief Default constructor
+      Function() noexcept = default;
+
+      /// @brief Explicitly deleted copy constructor.
+      Function(const Function&) = delete;
+
+      /// @brief Explicitly deleted move constructor.
+      Function(Function&&) = delete;
+
+      /// @brief Destructor
+      ~Function() noexcept = default;
+
+      /// @brief Explicitly deleted copy assignment operator.
+      Function& operator=(const Function&) = delete;
+
+      /// @brief Explicitly deleted move assignment operator.
+      Function& operator=(Function&&) = delete;
   };
 } // namespace mex
 
