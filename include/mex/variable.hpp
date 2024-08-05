@@ -41,28 +41,25 @@ namespace mex
     caller, ///< The caller workspace.
   };
 
-  namespace detail
+  /**
+   * @brief Get the name of the workspace.
+   * @param workspace The workspace enumeration.
+   * @return The name of the workspace.
+   */
+  [[nodiscard]] inline const char* getWorkspaceName(Workspace workspace)
   {
-    /**
-     * @brief Get the name of the workspace.
-     * @param workspace The workspace enumeration.
-     * @return The name of the workspace.
-     */
-    [[nodiscard]] inline const char* getWorkspaceName(Workspace workspace)
+    switch (workspace)
     {
-      switch (workspace)
-      {
-      case Workspace::base:
-        return "base";
-      case Workspace::global:
-        return "global";
-      case Workspace::caller:
-        return "caller";
-      default:
-        throw Exception{"invalid workspace"};
-      }
+    case Workspace::base:
+      return "base";
+    case Workspace::global:
+      return "global";
+    case Workspace::caller:
+      return "caller";
+    default:
+      throw Exception{"invalid workspace"};
     }
-  } // namespace detail
+  }
 
   /**
    * @brief Put a variable into the specified workspace.
@@ -82,7 +79,7 @@ namespace mex
       throw Exception{"invalid variable name"};
     }
 
-    const char* workspaceName = detail::getWorkspaceName(workspace);
+    const char* workspaceName = getWorkspaceName(workspace);
 
     if (mexPutVariable(workspaceName, name, value.get()) != 0)
     {
@@ -103,7 +100,7 @@ namespace mex
       throw Exception{"invalid variable name"};
     }
 
-    const char* workspaceName = detail::getWorkspaceName(workspace);
+    const char* workspaceName = getWorkspaceName(workspace);
 
     const mxArray* array = mexGetVariablePtr(workspaceName, name);
 
@@ -128,7 +125,7 @@ namespace mex
       throw Exception{"invalid variable name"};
     }
 
-    const char* workspaceName = detail::getWorkspaceName(workspace);
+    const char* workspaceName = getWorkspaceName(workspace);
 
     mxArray* array = mexGetVariable(workspaceName, name);
 
@@ -137,7 +134,7 @@ namespace mex
       throw Exception{"failed to get variable"};
     }
 
-    return Array{array};
+    return Array{std::move(array)};
   }
 } // namespace mex
 
