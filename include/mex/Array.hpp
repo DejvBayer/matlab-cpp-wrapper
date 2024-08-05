@@ -25,13 +25,7 @@
 #ifndef MEX_ARRAY_HPP
 #define MEX_ARRAY_HPP
 
-#include <cstddef>
-#include <utility>
-
-#include <mex.h>
-#ifdef MEX_ENABLE_GPU
-# include <gpu/mxGPUArray.h>
-#endif
+#include "detail/include.hpp"
 
 #include "ArrayRef.hpp"
 #include "common.hpp"

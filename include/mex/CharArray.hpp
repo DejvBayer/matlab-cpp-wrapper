@@ -25,7 +25,7 @@
 #ifndef MEX_CHAR_ARRAY_HPP
 #define MEX_CHAR_ARRAY_HPP
 
-#include <string_view>
+#include "detail/include.hpp"
 
 #include "CharArrayRef.hpp"
 #include "TypedArray.hpp"

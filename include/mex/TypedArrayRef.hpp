@@ -25,7 +25,7 @@
 #ifndef MEX_TYPED_ARRAY_REF_HPP
 #define MEX_TYPED_ARRAY_REF_HPP
 
-#include <mex.h>
+#include "detail/include.hpp"
 
 #include "ArrayRef.hpp"
 #include "common.hpp"

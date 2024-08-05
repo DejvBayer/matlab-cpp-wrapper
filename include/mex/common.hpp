@@ -25,11 +25,7 @@
 #ifndef MEX_COMMON_HPP
 #define MEX_COMMON_HPP
 
-#include <cstddef>
-#include <span>
-#include <type_traits>
-
-#include <mex.h>
+#include "detail/include.hpp"
 
 namespace mex
 {

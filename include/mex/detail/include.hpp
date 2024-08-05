@@ -22,40 +22,26 @@
   SOFTWARE.
 */
 
-#ifndef MEX_EXCEPTION_HPP
-#define MEX_EXCEPTION_HPP
+#ifndef MEX_DETAIL_INCLUDE_HPP
+#define MEX_DETAIL_INCLUDE_HPP
 
-#include "detail/include.hpp"
+#include <array>
+#include <complex>
+#include <cstddef>
+#include <cstdint>
+#include <exception>
+#include <span>
+#include <string_view>
+#include <type_traits>
+#include <utility>
 
-namespace mex
-{
-  /// @brief Exception class
-  class Exception : public std::exception
-  {
-    public:
-      /// @brief Default constructor
-      Exception() = default;
+#include <mex.h>
+#ifdef MEX_ENABLE_GPU
+# include <gpu/mxGPUArray.h>
+#endif
 
-      /**
-       * @brief Constructor
-       * @param message Error message
-       */
-      explicit Exception(const char* message)
-      : mMessage{message}
-      {}
+#ifdef printf
+# undef printf
+#endif
 
-      /**
-       * @brief Get error message
-       * @return Error message
-       */
-      [[nodiscard]] const char* what() const noexcept override
-      {
-        return mMessage;
-      }
-
-    private:
-      const char* mMessage{"unknown error"}; ///< Error message
-  };
-} // namespace mex
-
-#endif /* MEX_EXCEPTION_HPP */
+#endif /* MEX_DETAIL_INCLUDE_HPP */

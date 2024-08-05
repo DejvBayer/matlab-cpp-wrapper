@@ -25,11 +25,7 @@
 #ifndef MEX_NUMERIC_MATRIX_HPP
 #define MEX_NUMERIC_MATRIX_HPP
 
-#include <cstddef>
-#include <type_traits>
-#include <utility>
-
-#include <mex.h>
+#include "detail/include.hpp"
 
 #include "Exception.hpp"
 #include "NumericMatrixRef.hpp"

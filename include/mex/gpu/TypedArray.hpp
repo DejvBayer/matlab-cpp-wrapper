@@ -25,8 +25,7 @@
 #ifndef MEX_GPU_TYPED_ARRAY_HPP
 #define MEX_GPU_TYPED_ARRAY_HPP
 
-#include <mex.h>
-#include <gpu/mxGPUArray.h>
+#include "../detail/include.hpp"
 
 #include "Array.hpp"
 #include "TypedArrayRef.hpp"

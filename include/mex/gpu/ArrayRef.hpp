@@ -25,8 +25,7 @@
 #ifndef MEX_GPU_ARRAY_REF_HPP
 #define MEX_GPU_ARRAY_REF_HPP
 
-#include <mex.h>
-#include <gpu/mxGPUArray.h>
+#include "../detail/include.hpp"
 
 #include "../common.hpp"
 
