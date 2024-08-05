@@ -39,7 +39,7 @@ namespace mex
      * @brief Handles a MATLAB exception.
      * @param e The exception.
      */
-    inline void handleMException(Array e)
+    inline void handleMException([[maybe_unused]] Array e)
     {
       // TODO: Implement exception handling. Throw an exception for now.
       throw Exception{"MException was thrown"};
@@ -118,7 +118,7 @@ namespace mex
 
     if (mxArray* exception = mexCallMATLABWithTrap(nlhs, plhs, nrhs, prhs, functionName); exception != nullptr)
     {
-      detail::handleMException(Array{exception});
+      detail::handleMException(Array{std::move(exception)});
     }
   }
 
@@ -152,7 +152,7 @@ namespace mex
 
     if (mxArray* exception = mexEvalStringWithTrap(expr); exception != nullptr)
     {
-      detail::handleMException(Array{exception});
+      detail::handleMException(Array{std::move(exception)});
     }
   }
 } // namespace mex
