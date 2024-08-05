@@ -92,7 +92,7 @@ try
 
   // Reinterpret trick requires that the array wrappers have the same size as mxArray*.
   static_assert(sizeof(mxArray*) == sizeof(mex::Array));
-  static_assert(sizeof(mxArray const*) == sizeof(mex::ArrayCref));
+  static_assert(sizeof(const mxArray*) == sizeof(mex::ArrayCref));
 
   // Call the user-defined function.
   mex::Function{}(mex::Span<mex::Array>(reinterpret_cast<mex::Array*>(plhs), nlhs),
