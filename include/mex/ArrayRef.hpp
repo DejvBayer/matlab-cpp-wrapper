@@ -26,6 +26,9 @@
 #define MEX_ARRAY_REF_HPP
 
 #include <mex.h>
+#ifdef MEX_ENABLE_GPU
+# include <gpu/mxGPUArray.h>
+#endif
 
 #include "common.hpp"
 #include "typeTraits.hpp"
@@ -95,6 +98,17 @@ namespace mex
       {
         return mxGetNumberOfElements(mArray);
       }
+
+#   ifdef MEX_ENABLE_GPU
+      /**
+       * @brief Is the array a GPU array?
+       * @return True if the array is a GPU array, false otherwise
+       */
+      [[nodiscard]] bool isGpuArray() const
+      {
+        return mxIsGPUArray(mArray);
+      }
+#   endif
 
       /**
        * @brief Is the array a scalar?
@@ -235,6 +249,17 @@ namespace mex
       {
         return mxGetNumberOfElements(mArray);
       }
+
+#   ifdef MEX_ENABLE_GPU
+      /**
+       * @brief Is the array a GPU array?
+       * @return True if the array is a GPU array, false otherwise
+       */
+      [[nodiscard]] bool isGpuArray() const
+      {
+        return mxIsGPUArray(mArray);
+      }
+#   endif
 
       /**
        * @brief Is the array a scalar?

@@ -26,6 +26,9 @@
 #define MEX_ARRAY_HPP
 
 #include <mex.h>
+#ifdef MEX_ENABLE_GPU
+# include <gpu/mxGPUArray.h>
+#endif
 
 #include "ArrayRef.hpp"
 #include "common.hpp"
@@ -182,6 +185,18 @@ namespace mex
         return mArray != nullptr;
       }
 
+#   ifdef MEX_ENABLE_GPU
+      /**
+       * @brief Is the array a GPU array?
+       * @return True if the array is a GPU array, false otherwise
+       */
+      [[nodiscard]] bool isGpuArray() const
+      {
+        checkValid();
+        return mxIsGPUArray(mArray);
+      }
+#   endif
+
       /**
        * @brief Is the array a scalar?
        * @return True if the array is a scalar, false otherwise
@@ -279,6 +294,15 @@ namespace mex
         checkValid();
         return ArrayCref{mArray};
       }
+    protected:
+      /// @brief Check if the array is valid
+      void checkValid() const
+      {
+        if (!isValid())
+        {
+          throw Exception{"accessing invalid array"};
+        }
+      }
     private:
       /**
        * @brief Duplicate the array
@@ -300,15 +324,6 @@ namespace mex
         }
 
         return arrayDup;
-      }
-
-      /// @brief Check if the array is valid
-      void checkValid() const
-      {
-        if (!isValid())
-        {
-          throw Exception{"accessing invalid array"};
-        }
       }
 
       /// @brief Destroy the array
