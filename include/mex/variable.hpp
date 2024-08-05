@@ -25,7 +25,7 @@
 #ifndef MEX_VARIABLE_HPP
 #define MEX_VARIABLE_HPP
 
-#include <mex.hpp>
+#include <mex.h>
 
 #include "Array.hpp"
 #include "ArrayRef.hpp"
