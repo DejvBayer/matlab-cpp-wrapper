@@ -40,8 +40,8 @@ namespace mex
   template<typename T>
   class TypedArray : public Array
   {
-    static_assert(!std::is_const_v<T>,     "T must be a non-const type");
-    static_assert(!std::is_volatile_v<T>,  "T must be a non-volatile type");
+    static_assert(!std::is_const_v<T>, "T must be a non-const type");
+    static_assert(!std::is_volatile_v<T>, "T must be a non-volatile type");
     static_assert(!std::is_reference_v<T>, "T must be a non-reference type");
 
     public:
