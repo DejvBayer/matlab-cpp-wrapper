@@ -64,15 +64,15 @@ namespace mex
        * @brief Copy constructor from reference
        * @param other Reference to other array
        */
-      explicit Array(const Ref<Array>& other)
+      explicit Array(const ArrayRef& other)
       : Array{duplicateArray(other.get())}
       {}
 
       /**
-       * @brief Copy constructor from const reference
-       * @param other Const reference to other array
+       * @brief Copy constructor from reference
+       * @param other Reference to other array
        */
-      explicit Array(const Cref<Array>& other)
+      explicit Array(const ArrayCref& other)
       : Array{duplicateArray(other.get())}
       {}
 
@@ -109,7 +109,7 @@ namespace mex
        * @param other Reference to other array
        * @return Reference to this array
        */
-      Array& operator=(const Ref<Array>& other)
+      Array& operator=(const ArrayRef& other)
       {
         if (other.get() != get())
         {
@@ -125,7 +125,7 @@ namespace mex
        * @param other Const reference to other array
        * @return Reference to this array
        */
-      Array& operator=(const Cref<Array>& other)
+      Array& operator=(const ArrayCref& other)
       {
         if (other.get() != get())
         {
@@ -246,17 +246,17 @@ namespace mex
        * @brief Get a reference to the array
        * @return Reference to the array
        */
-      [[nodiscard]] Ref<Array> ref()
+      [[nodiscard]] ArrayRef ref()
       {
         checkValid();
-        return Ref<Array>{mArray};
+        return ArrayRef{mArray};
       }
 
       /**
        * @brief Get a reference to the array
        * @return Reference to the array
        */
-      [[nodiscard]] Cref<Array> ref() const
+      [[nodiscard]] ArrayCref ref() const
       {
         return cref();
       }
@@ -265,10 +265,10 @@ namespace mex
        * @brief Get a const reference to the array
        * @return Const reference to the array
        */
-      [[nodiscard]] Cref<Array> cref() const
+      [[nodiscard]] ArrayCref cref() const
       {
         checkValid();
-        return Cref<Array>{mArray};
+        return ArrayCref{mArray};
       }
 
       /**

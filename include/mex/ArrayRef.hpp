@@ -32,35 +32,24 @@
 
 namespace mex
 {
-  /// @brief Alias for a mutable reference to an array.
-  using ArrayRef = Ref<Array>;
-
-  /// @brief Alias for a constant reference to an array.
-  using ArrayCref = Cref<Array>;
-
   /**
    * @brief Implements a reference to an array.
    * @tparam T The const or non-const type of the array.
    */
-  template<typename T>
-    requires isArray<T>
-  class Ref<T>
+  class ArrayRef
   {
-    private:
-      /// @brief The constness of the referenced array.
-      static constexpr bool isConst = std::is_const_v<T>;
     public:
       /// @brief Explicitly deleted default constructor.
-      Ref() = delete;
+      ArrayRef() = delete;
 
       /// @brief Explicitly deleted constructor from nullptr.
-      Ref(nullptr_t) = delete;
+      ArrayRef(nullptr_t) = delete;
 
       /**
        * @brief Constructor from a mxArray pointer.
        * @param array mxArray pointer
        */
-      explicit Ref(AddConstIfT<isConst, mxArray>* array)
+      explicit ArrayRef(mxArray* array)
       : mArray{array}
       {}
 
@@ -68,27 +57,154 @@ namespace mex
        * @brief Copy constructor from another reference.
        * @param other Another reference
        */
-      template<typename U>
-        requires isArray<U>
-      Ref(const Ref<U>& other)
-      : mArray{other.get()}
-      {
-        static_assert(isConst || !other.isConst);
-      }
+      ArrayRef(const ArrayRef& other) = default;
 
-      ~Ref() = default;
+      /// @brief Destructor.
+      ~ArrayRef() = default;
 
       /**
        * @brief Copy assignment operator from another reference.
        * @param other Another reference
        * @return Reference to the assigned array
        */
-      template<typename U>
-        requires isArray<U>
-      Ref& operator=(const Ref<U>& other)
-      {
-        static_assert(isConst || !other.isConst);
+      ArrayRef& operator=(const ArrayRef& other) = default;
 
+      /**
+       * @brief Gets the rank of the array.
+       * @return The rank of the array
+       */
+      [[nodiscard]] std::size_t getRank() const
+      {
+        return mxGetNumberOfDimensions(mArray);
+      }
+
+      /**
+       * @brief Gets the dimensions of the array.
+       * @return The dimensions of the array
+       */
+      [[nodiscard]] View<std::size_t> getDims() const
+      {
+        return View<std::size_t>{mxGetDimensions(mArray), getRank()};
+      }
+
+      /**
+       * @brief Gets the number of elements in the array.
+       * @return The number of elements in the array
+       */
+      [[nodiscard]] std::size_t getNumElements() const
+      {
+        return mxGetNumberOfElements(mArray);
+      }
+
+      /**
+       * @brief Is the array a scalar?
+       * @return True if the array is a scalar, false otherwise
+       */
+      [[nodiscard]] bool isScalar() const
+      {
+        return mxIsScalar(mArray);
+      }
+
+      /**
+       * @brief Is the array empty?
+       * @return True if the array is empty, false otherwise
+       */
+      [[nodiscard]] bool isEmpty() const
+      {
+        return mxIsEmpty(mArray);
+      }
+
+      /**
+       * @brief Is the array complex?
+       * @return True if the array is complex, false otherwise
+       */
+      [[nodiscard]] bool isComplex() const
+      {
+        return mxIsComplex(mArray);
+      }
+
+      /**
+       * @brief Gets the class ID of the array.
+       * @return The class ID of the array
+       */
+      [[nodiscard]] ClassId getClassId() const
+      {
+        return static_cast<ClassId>(mxGetClassID(mArray));
+      }
+
+      /**
+       * @brief Gets the data pointer.
+       * @return The data pointer
+       */
+      [[nodiscard]] void* getData() const
+      {
+        return mxGetData(mArray);
+      }
+
+      /**
+       * @brief Gets the mxArray pointer.
+       * @return The mxArray pointer
+       */
+      [[nodiscard]] mxArray* get() const noexcept
+      {
+        return mArray;
+      }
+    protected:
+      mxArray* mArray{}; ///< The mxArray pointer
+  };
+
+  /**
+   * @brief Implements a constant reference to an array.
+   * @tparam T The const or non-const type of the array.
+   */
+  class ArrayCref
+  {
+    public:
+      /// @brief Explicitly deleted default constructor.
+      ArrayCref() = delete;
+
+      /// @brief Explicitly deleted constructor from nullptr.
+      ArrayCref(nullptr_t) = delete;
+
+      /**
+       * @brief Constructor from a mxArray pointer.
+       * @param array mxArray pointer
+       */
+      explicit ArrayCref(const mxArray* array)
+      : mArray{array}
+      {}
+
+      /**
+       * @brief Copy constructor from another reference.
+       * @param other Another reference
+       */
+      ArrayCref(const ArrayCref& other) = default;
+
+      /**
+       * @brief Copy constructor from another reference.
+       * @param other Another reference
+       */
+      ArrayCref(const ArrayRef& other)
+      : mArray{other.get()}
+      {}
+
+      /// @brief Destructor.
+      ~ArrayCref() = default;
+
+      /**
+       * @brief Copy assignment operator from another reference.
+       * @param other Another reference
+       * @return Reference to the assigned array
+       */
+      ArrayCref& operator=(const ArrayCref& other) = default;
+
+      /**
+       * @brief Copy assignment operator from another reference.
+       * @param other Another reference
+       * @return Reference to the assigned array
+       */
+      ArrayCref& operator=(const ArrayRef& other)
+      {
         mArray = other.get();
         return *this;
       }
@@ -160,7 +276,7 @@ namespace mex
        * @brief Gets the data pointer.
        * @return The data pointer
        */
-      [[nodiscard]] AddConstIfT<isConst, void>* getData() const
+      [[nodiscard]] const void* getData() const
       {
         return mxGetData(mArray);
       }
@@ -169,12 +285,12 @@ namespace mex
        * @brief Gets the mxArray pointer.
        * @return The mxArray pointer
        */
-      [[nodiscard]] AddConstIfT<isConst, mxArray>* get() const noexcept
+      [[nodiscard]] const mxArray* get() const noexcept
       {
         return mArray;
       }
     protected:
-      AddConstIfT<isConst, mxArray>* mArray{}; ///< The mxArray pointer
+      const mxArray* mArray{}; ///< The mxArray pointer
   };
 } // namespace mex
 
