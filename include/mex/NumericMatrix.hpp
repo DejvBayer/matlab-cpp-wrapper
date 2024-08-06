@@ -84,6 +84,34 @@ namespace mex
 
     return NumericArray<T>{std::move(array)};
   }
+
+  /**
+   * @brief Creates a numeric array of size 1 with the specified value
+   * @tparam T Element type
+   * @param value Value
+   * @return Numeric array
+   */
+  template<typename T, std::enable_if_t<isNumeric<T>, int> = 0>
+  [[nodiscard]] NumericArray<T> makeNumericScalar(const T& value)
+  {
+    constexpr std::array<std::size_t, 1> dims{1};
+
+    mxArray* array = mxCreateUninitNumericArray(dims.size(),
+                                                const_cast<std::size_t*>(dims.data()),
+                                                static_cast<mxClassID>(TypeProperties<T>::classId),
+                                                static_cast<mxComplexity>(TypeProperties<T>::complexity));
+
+    if (array == nullptr)
+    {
+      throw Exception{"failed to create numeric array"};
+    }
+
+    NumericArray<T> numArray{std::move(array)};
+
+    numArray[0] = value;
+
+    return numArray;
+  }
 } // namespace mex
 
 #endif /* MEX_NUMERIC_MATRIX_HPP */
