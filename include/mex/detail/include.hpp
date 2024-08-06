@@ -25,6 +25,7 @@
 #ifndef MEX_DETAIL_INCLUDE_HPP
 #define MEX_DETAIL_INCLUDE_HPP
 
+#include <algorithm>
 #include <array>
 #include <complex>
 #include <cstddef>

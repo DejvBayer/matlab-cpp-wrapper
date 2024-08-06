@@ -128,7 +128,7 @@ namespace mex
     {
       throw Exception{"failed to get variable"};
     }
-
+    
     return Array{std::move(array)};
   }
 } // namespace mex

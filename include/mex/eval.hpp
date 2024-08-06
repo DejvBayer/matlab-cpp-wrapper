@@ -82,6 +82,15 @@ namespace mex
     {
       throw Exception{"MATLAB call failed"};
     }
+
+    // Make persistent if the call was successful to get consistent behavior.
+    std::for_each(lhs.begin(), lhs.end(), [](Array& array)
+    {
+      if (array.get() != nullptr)
+      {
+        mexMakeArrayPersistent(array.get());
+      }
+    });
   }
 
   /**
@@ -130,6 +139,15 @@ namespace mex
     {
       detail::handleMException(Array{std::move(exception)});
     }
+
+    // Make persistent if the call was successful to get consistent behavior.
+    std::for_each(lhs.begin(), lhs.end(), [](Array& array)
+    {
+      if (array.get() != nullptr)
+      {
+        mexMakeArrayPersistent(array.get());
+      }
+    });
   }
 
   /**

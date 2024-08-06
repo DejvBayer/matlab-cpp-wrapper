@@ -94,19 +94,7 @@ namespace mex
   template<typename T, std::enable_if_t<isNumeric<T>, int> = 0>
   [[nodiscard]] NumericArray<T> makeNumericScalar(const T& value)
   {
-    constexpr std::array<std::size_t, 1> dims{1};
-
-    mxArray* array = mxCreateUninitNumericArray(dims.size(),
-                                                const_cast<std::size_t*>(dims.data()),
-                                                static_cast<mxClassID>(TypeProperties<T>::classId),
-                                                static_cast<mxComplexity>(TypeProperties<T>::complexity));
-
-    if (array == nullptr)
-    {
-      throw Exception{"failed to create numeric array"};
-    }
-
-    NumericArray<T> numArray{std::move(array)};
+    auto array = makeUninitNumericArray<T>({{1}});
 
     numArray[0] = value;
 

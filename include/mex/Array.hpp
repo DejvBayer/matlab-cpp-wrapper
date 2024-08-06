@@ -50,7 +50,12 @@ namespace mex
        */
       explicit Array(mxArray*&& array) noexcept
       : mArray{array}
-      {}
+      {
+        if (mArray != nullptr)
+        {
+          mexMakeArrayPersistent(mArray);
+        }
+      }
 
       /**
        * @brief Copy constructor
@@ -360,6 +365,8 @@ namespace mex
         {
           throw Exception{"failed to duplicate array"};
         }
+
+        mexMakeArrayPersistent(arrayDup);
 
         return arrayDup;
       }
