@@ -162,6 +162,15 @@ namespace mex
       }
 
       /**
+       * @brief Get the class name of the array
+       * @return Class name of the array
+       */
+      [[nodiscard]] const char* getClassName() const
+      {
+        return mxGetClassName(mArray);
+      }
+
+      /**
        * @brief Gets the data pointer.
        * @return The data pointer
        */
@@ -328,6 +337,15 @@ namespace mex
       [[nodiscard]] ClassId getClassId() const
       {
         return static_cast<ClassId>(mxGetClassID(mArray));
+      }
+
+      /**
+       * @brief Get the class name of the array
+       * @return Class name of the array
+       */
+      [[nodiscard]] const char* getClassName() const
+      {
+        return mxGetClassName(mArray);
       }
 
       /**

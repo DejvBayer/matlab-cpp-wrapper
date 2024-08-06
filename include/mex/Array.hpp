@@ -266,6 +266,16 @@ namespace mex
       }
 
       /**
+       * @brief Get the class name of the array
+       * @return Class name of the array
+       */
+      [[nodiscard]] const char* getClassName() const
+      {
+        checkValid();
+        return mxGetClassName(mArray);
+      }
+
+      /**
        * @brief Get the array data
        * @return Pointer to the array data
        */

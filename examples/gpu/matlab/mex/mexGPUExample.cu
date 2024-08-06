@@ -60,7 +60,7 @@ void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
   const double* d_A = mex::gpu::NumericArrayCref<double>{A}.getData();
 
   /* Create a GPUArray to hold the result and get its underlying pointer. */
-  mex::gpu::NumericArray<double> B = mex::gpu::makeUninitNumericArray<double>(A.getDims());
+  auto B = mex::gpu::makeUninitNumericArray<double>(A.getDims());
 
   double* d_B = B.getData();
 
