@@ -30,6 +30,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <exception>
+#include <memory>
 #include <span>
 #include <string_view>
 #include <type_traits>
@@ -40,6 +41,7 @@
 # include <gpu/mxGPUArray.h>
 #endif
 
+// Undefine printf macro defined by mex.h
 #ifdef printf
 # undef printf
 #endif
