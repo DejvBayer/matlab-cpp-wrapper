@@ -67,7 +67,7 @@ namespace mex
    * @param name The name of the variable to put.
    * @param value The reference to the variable value.
    */
-  inline void putVariable(Workspace workspace, const char* name, ArrayRef value)
+  inline void putVariable(Workspace workspace, const char* name, ArrayCref value)
   {
     if (name == nullptr)
     {
@@ -88,7 +88,7 @@ namespace mex
    * @param name The name of the variable to get.
    * @return The reference to the variable value.
    */
-  [[nodiscard]] inline ArrayCref getVariableRef(Workspace workspace, const char* name)
+  [[nodiscard]] inline std::optional<ArrayCref> getVariableCref(Workspace workspace, const char* name)
   {
     if (name == nullptr)
     {
@@ -101,7 +101,7 @@ namespace mex
 
     if (array == nullptr)
     {
-      throw Exception{"failed to get variable reference"};
+      return std::nullopt;
     }
 
     return ArrayCref{array};
@@ -113,7 +113,7 @@ namespace mex
    * @param name The name of the variable to get.
    * @return The copy of variable value.
    */
-  [[nodiscard]] inline Array getVariable(Workspace workspace, const char* name)
+  [[nodiscard]] inline std::optional<Array> getVariable(Workspace workspace, const char* name)
   {
     if (name == nullptr)
     {
@@ -126,7 +126,7 @@ namespace mex
 
     if (array == nullptr)
     {
-      throw Exception{"failed to get variable"};
+      return std::nullopt;
     }
     
     return Array{std::move(array)};

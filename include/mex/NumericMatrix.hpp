@@ -92,7 +92,7 @@ namespace mex
    * @return Numeric array
    */
   template<typename T, std::enable_if_t<isNumeric<T>, int> = 0>
-  [[nodiscard]] NumericArray<T> makeNumericScalar(const T& value)
+  [[nodiscard]] NumericArray<T> makeNumericScalar(const T& value = {})
   {
     auto array = makeUninitNumericArray<T>({{1}});
 

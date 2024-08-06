@@ -100,6 +100,14 @@ namespace mex
        */
       TypedArray(TypedArray&& other) noexcept = default;
 
+      /**
+       * @brief Move constructor
+       * @param other Other array
+       */
+      TypedArray(Array&& other) noexcept
+      : Array{(checkArrayClass(other.get()), std::move(other))}
+      {}
+
       /// @brief Destructor
       ~TypedArray() noexcept = default;
 
