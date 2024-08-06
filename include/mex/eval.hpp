@@ -85,6 +85,16 @@ namespace mex
   }
 
   /**
+   * @brief Calls a MATLAB function.
+   * @param rhs The input arguments.
+   * @param functionName The name of the function to call.
+   */
+  inline void call(View<ArrayCref> rhs, const char* functionName)
+  {
+    call({}, rhs, functionName);
+  }
+
+  /**
    * @brief Calls a MATLAB function with trap.
    * @param lhs The left-hand side arguments.
    * @param rhs The right-hand side arguments.
