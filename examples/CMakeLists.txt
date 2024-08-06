@@ -22,8 +22,6 @@
 # SOFTWARE.
 ##
 
-find_package(Matlab REQUIRED COMPONENTS MEX_COMPILER)
-
 function(add_examples dir)
   set(EXAMPLES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/${dir}")
   file(GLOB EXAMPLES "${EXAMPLES_DIR}/*.cpp")
@@ -35,13 +33,13 @@ function(add_examples dir)
       NAME        ${EXAMPLE_NAME}
       SRC         ${EXAMPLE}
       OUTPUT_NAME ${EXAMPLE_NAME}
-      LINK_TO     mex::mex
+      LINK_TO     mexw::mexw
       R2018a)
   endforeach()
 endfunction()
 
 add_examples("matlab/mex")
 
-if (MEX_ENABLE_GPU)
+if (MEXW_ENABLE_GPU)
   add_subdirectory(gpu)
 endif()

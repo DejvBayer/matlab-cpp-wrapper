@@ -12,9 +12,9 @@
 /*
  * Device code
  */
-void __global__ TimesTwo(const double* const A,
-                         double* const       B,
-                         const unsigned      N)
+__global__  void TimesTwo(const double* const A,
+                          double* const       B,
+                          const unsigned      N)
 {
   /* Calculate the global linear index, assuming a 1-d grid. */
   const unsigned i = blockDim.x * blockIdx.x + threadIdx.x;
