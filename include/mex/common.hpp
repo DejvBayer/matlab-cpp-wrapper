@@ -81,6 +81,25 @@ namespace mex
     real    = mxREAL,    ///< Real.
     complex = mxCOMPLEX, ///< Complex.
   };
+
+  /**
+   * @brief Print formatted output to MATLAB command window.
+   * @tparam Args Argument types.
+   * @param format Format string.
+   * @param args Arguments.
+   */
+  template<typename... Args>
+  void printf(const char* format, Args&&... args)
+  {
+    if constexpr (sizeof...(Args) > 0)
+    {
+      mexPrintf(format, std::forward<Args>(args)...);
+    }
+    else
+    {
+      mexPrintf("%s", format);
+    }
+  }
 } // namespace mex
 
 #endif /* MEX_COMMON_HPP */
