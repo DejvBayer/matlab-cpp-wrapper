@@ -100,24 +100,25 @@ namespace mex
 extern "C" void
 mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 {
-  char* errorId{};  // Error ID string
-  char* errorMsg{}; // Error message string
+  const char* errorId{};  // Error ID string
+  const char* errorMsg{}; // Error message string
 
   // Helper function to assign error id and message. Pointer needn't be freed.
-  auto assignErrorStr = [](char*& dst, const char* src)
+  auto assignErrorStr = [](const char*& dst, const char* src)
   {
     const std::size_t size = std::char_traits<char>::length(src);
 
-    dst = static_cast<char*>(mex::malloc(size + 1, mex::nonPersistent));
+    auto dstPtr = static_cast<char*>(mex::malloc(size + 1, mex::nonPersistent));
 
-    if (dst == nullptr)
+    if (dstPtr != nullptr)
     {
       dst = "Failed to allocate memory for exception error message.";
     }
     else
     {
-      std::char_traits<char>::copy(dst, src, size);
-      dst[size] = '\0';
+      std::char_traits<char>::copy(dstPtr, src, size);
+      dstPtr[size] = '\0';
+      dst = dstPtr;
     }
   };
 

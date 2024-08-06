@@ -58,7 +58,7 @@ void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
   
   /* numberOfElements can be converted to a double without loss of 
     precision because the maximum size of an array is 2^48-1. */
-  const double sizeOfDataInKilobytes = numberOfElements * theArray.getSizeOfElement() / 1024.0;
+  const double sizeOfDataInKilobytes = static_cast<double>(numberOfElements * theArray.getSizeOfElement()) / 1024.0;
   mex::printf("Size of array in kilobytes: %.0f\n\n", sizeOfDataInKilobytes);
 
   /* Return result only if one is requested. */

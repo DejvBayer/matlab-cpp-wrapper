@@ -86,9 +86,9 @@ namespace mex
    * @brief Frees memory allocated with mxMalloc or mxCalloc.
    * @param ptr A pointer to the allocated memory.
    */
-  inline void free(void*& ptr)
+  inline void free(void* ptr)
   {
-    mxFree(std::exchange(ptr, nullptr));
+    mxFree(ptr);
   }
 
   /**

@@ -96,9 +96,9 @@ namespace mex
   {
     auto array = makeUninitNumericArray<T>({{1}});
 
-    numArray[0] = value;
+    array[0] = value;
 
-    return numArray;
+    return array;
   }
 } // namespace mex
 

@@ -13,7 +13,7 @@
 void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
 {
   /* Check for proper number of input and output arguments */    
-  if (!lhs.empty())
+  if (!rhs.empty())
   {
     throw mex::Exception{"MATLAB:mexevalstring:nInput", "No input arguments required."};
   }

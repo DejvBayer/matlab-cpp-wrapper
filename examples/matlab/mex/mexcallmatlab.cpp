@@ -38,9 +38,9 @@ static void fill_array(mex::NumericArrayRef<std::complex<double>> a)
     /* Fill real and imaginary parts of array. */
     for (std::size_t j{}; j < n; j++) {
         for (std::size_t i{}; i <= j; i++) {
-            XR(a, i, j) = n + i - j;
+            XR(a, i, j) = static_cast<double>(n + i - j);
             XR(a, j, i) = XR(a, i, j);
-            XI(a, i, j) = j - i + 1;
+            XI(a, i, j) = static_cast<double>(j - i + 1);
             XI(a, j, i) = XI(a, i, j);
         }
     }
@@ -58,9 +58,7 @@ static void fill_array(mex::NumericArrayRef<std::complex<double>> a)
 
 /* Invert diagonal elements of complex matrix of order 4 */
 static void invertd(mex::NumericArrayRef<std::complex<double>> x)
-{
-  double temp;
-  
+{  
   for(std::size_t i{}; i < n; i++)
   {
     const double temp = XR(x, i, i) * XR(x, i, i) + XI(x, i, i) * XI(x, i, i);
