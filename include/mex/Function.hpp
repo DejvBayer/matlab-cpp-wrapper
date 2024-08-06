@@ -99,31 +99,77 @@ namespace mex
 /// @brief Entry point for the MEX function. This function is called by MATLAB.
 extern "C" void
 mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
-try
 {
-  // Initialize the GPU if enabled.
-#ifdef MEX_ENABLE_GPU
-  if (mxInitGPU() != MX_GPU_SUCCESS)
+  char* errorId{};  // Error ID string
+  char* errorMsg{}; // Error message string
+
+  // Helper function to assign error id and message. Pointer needn't be freed.
+  auto assignErrorStr = [](char*& dst, const char* src)
   {
-    mexErrMsgTxt("An error occurred while initializing the GPU.");
+    const std::size_t size = std::char_traits<char>::length(src);
+
+    dst = static_cast<char*>(mex::malloc(size + 1, mex::nonPersistent));
+
+    if (dst == nullptr)
+    {
+      dst = "Failed to allocate memory for exception error message.";
+    }
+    else
+    {
+      std::char_traits<char>::copy(dst, src, size);
+      dst[size] = '\0';
+    }
+  };
+
+  try
+  {
+    // Initialize the GPU if enabled.
+# ifdef MEX_ENABLE_GPU
+    if (mxInitGPU() != MX_GPU_SUCCESS)
+    {
+      mexErrMsgTxt("An error occurred while initializing the GPU.");
+    }
+# endif
+
+    // Reinterpret trick requires that the array wrappers have the same size as mxArray*.
+    static_assert(sizeof(mxArray*) == sizeof(mex::Array));
+    static_assert(sizeof(const mxArray*) == sizeof(mex::ArrayCref));
+
+    // Call the user-defined function.
+    mex::Function{}(mex::Span<mex::Array>(reinterpret_cast<mex::Array*>(plhs), nlhs),
+                    mex::View<mex::ArrayCref>(reinterpret_cast<mex::ArrayCref*>(prhs), nrhs));
+
+    // Return if no exception occurred.
+    return;
   }
-#endif
+  catch (const mex::Exception& e)
+  {
+    if (e.hasId())
+    {
+      assignErrorStr(errorId, e.id());
+    }
+    
+    assignErrorStr(errorMsg, e.what());
+  }
+  catch (const std::exception& e)
+  {
+    errorId = "mex:std";
+    assignErrorStr(errorMsg, e.what());
+  }
+  catch (...)
+  {
+    errorId  = "mex:unknown";
+    errorMsg = "An error occurred.";
+  }
 
-  // Reinterpret trick requires that the array wrappers have the same size as mxArray*.
-  static_assert(sizeof(mxArray*) == sizeof(mex::Array));
-  static_assert(sizeof(const mxArray*) == sizeof(mex::ArrayCref));
-
-  // Call the user-defined function.
-  mex::Function{}(mex::Span<mex::Array>(reinterpret_cast<mex::Array*>(plhs), nlhs),
-                  mex::View<mex::ArrayCref>(reinterpret_cast<mex::ArrayCref*>(prhs), nrhs));
-}
-catch (const mex::Exception& e)
-{
-  mexErrMsgTxt(e.what());
-}
-catch (...)
-{
-  mexErrMsgTxt("An error occurred.");
+  if (errorId == nullptr)
+  {
+    mexErrMsgTxt(errorMsg);
+  }
+  else
+  {
+    mexErrMsgIdAndTxt(errorId, errorMsg);
+  }
 }
 
 #endif /* MEX_FUNCTION_HPP */

@@ -43,7 +43,7 @@ namespace mex
        * @param message Error message
        */
       explicit Exception(std::string_view message)
-      : mMessage{message}
+      : mMessage{(message.empty()) ? mUnknownErrorMessage : message}
       {}
 
       /**
@@ -51,7 +51,7 @@ namespace mex
        * @param message Error message
        */
       explicit Exception(std::string_view id, std::string_view message)
-      : mId{id}, mMessage{message}
+      : mId{id}, mMessage{(message.empty()) ? mUnknownErrorMessage : message}
       {}
 
       /**
@@ -78,11 +78,10 @@ namespace mex
       }
 
     private:
-      /// @brief String type using mex allocator
-      using String = std::basic_string<char, std::char_traits<char>, Allocator<char>>;
+      static constexpr std::string_view mUnknownErrorMessage{"Unknown error"}; ///< Default error message
 
-      String mId{};                     ///< Error ID
-      String mMessage{"unknown error"}; ///< Error message
+      std::string mId{};      ///< Error ID
+      std::string mMessage{}; ///< Error message
   };
 } // namespace mex
 
