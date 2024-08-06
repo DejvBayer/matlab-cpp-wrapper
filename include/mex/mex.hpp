@@ -25,6 +25,12 @@
 #ifndef MEX_MEX_HPP
 #define MEX_MEX_HPP
 
+#include "detail/include.hpp"
+
+#if MATLAB_TARGET_API_VERSION < 800
+# error "This library requires MATLAB R2018a or later."
+#endif
+
 #include "Array.hpp"
 #include "ArrayRef.hpp"
 #include "CharArray.hpp"
@@ -32,6 +38,7 @@
 #include "common.hpp"
 #include "eval.hpp"
 #include "Exception.hpp"
+#include "memory.hpp"
 #include "NumericMatrix.hpp"
 #include "NumericMatrixRef.hpp"
 #include "TypedArray.hpp"
