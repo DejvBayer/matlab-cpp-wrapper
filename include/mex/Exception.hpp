@@ -27,6 +27,8 @@
 
 #include "detail/include.hpp"
 
+#include "memory.hpp"
+
 namespace mex
 {
   /// @brief Exception class
@@ -40,8 +42,16 @@ namespace mex
        * @brief Constructor
        * @param message Error message
        */
-      explicit Exception(const char* message)
+      explicit Exception(std::string_view message)
       : mMessage{message}
+      {}
+
+      /**
+       * @brief Constructor
+       * @param message Error message
+       */
+      explicit Exception(std::string_view id, std::string_view message)
+      : mId{id}, mMessage{message}
       {}
 
       /**
@@ -50,11 +60,29 @@ namespace mex
        */
       [[nodiscard]] const char* what() const noexcept override
       {
-        return mMessage;
+        return mMessage.c_str();
+      }
+
+      [[nodiscard]] bool hasId() const noexcept
+      {
+        return !mId.empty();
+      }
+
+      /**
+       * @brief Get error ID
+       * @return Error ID
+       */
+      [[nodiscard]] const char* id() const noexcept
+      {
+        return mId.c_str();
       }
 
     private:
-      const char* mMessage{"unknown error"}; ///< Error message
+      /// @brief String type using mex allocator
+      using String = std::basic_string<char, std::char_traits<char>, Allocator<char>>;
+
+      String mId{};                     ///< Error ID
+      String mMessage{"unknown error"}; ///< Error message
   };
 } // namespace mex
 
