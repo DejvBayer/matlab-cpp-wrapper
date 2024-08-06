@@ -127,7 +127,7 @@ mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 # ifdef MEX_ENABLE_GPU
     if (mxInitGPU() != MX_GPU_SUCCESS)
     {
-      mexErrMsgTxt("An error occurred while initializing the GPU.");
+      throw mex::Exception{"mex:gpu", "An error occurred while initializing the GPU."};
     }
 # endif
 

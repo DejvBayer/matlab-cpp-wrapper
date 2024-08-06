@@ -18,7 +18,7 @@
 #include <mex/mex.hpp>
 #include <mex/Function.hpp>
 
-constexpr std::size_t n = 4;
+static constexpr std::size_t n = 4;
 
 static double& XR(mex::NumericArrayRef<std::complex<double>> a, std::size_t i, std::size_t j)
 {
@@ -85,7 +85,7 @@ void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
   } 
   
   /* Allocate x matrix */
-  auto x = mex::makeNumericArray<std::complex<double>>(n, n);
+  auto x = mex::makeNumericArray<std::complex<double>>({{n, n}});
   
   /* create values in some arrays -- remember, MATLAB stores matrices
       column-wise */

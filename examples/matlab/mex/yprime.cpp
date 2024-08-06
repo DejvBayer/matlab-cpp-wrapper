@@ -82,7 +82,7 @@ void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
   }
 
   /* Create a matrix for the return argument */
-  YP_OUT = mex::makeNumericArray<double>(m, n);
+  YP_OUT = mex::makeNumericArray<double>({{m, n}});
 
   /* Do the actual computations in a subroutine */
   yprime(mex::NumericArrayRef<double>{YP_OUT}.getData(),
