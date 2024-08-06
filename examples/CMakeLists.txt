@@ -39,6 +39,8 @@ function(add_examples dir)
 endfunction()
 
 add_examples("matlab/mex")
+add_examples("matlab/mx")
+add_examples("matlab/refbook")
 
 if (MEXW_ENABLE_GPU)
   add_subdirectory(gpu)

@@ -58,12 +58,21 @@ namespace mex
       using TypedArray<char16_t>::operator=;
 
       /**
+       * @brief Convert to std::string (ASCII)
+       * @return std::string
+       */
+      std::string toAscii() const
+      {
+        return mex::toAscii(TypedArrayCref<char16_t>{*this});
+      }
+
+      /**
        * @brief Convert to std::u16string_view
        * @return std::u16string_view
        */
       [[nodiscard]] operator std::u16string_view() const
       {
-        return std::u16string_view{getData(), getSize() - 1};
+        return std::u16string_view{getData()};
       }
 
       /// @brief Use the TypedArray<char16_t>::operator ArrayRef
@@ -113,6 +122,8 @@ namespace mex
       throw Exception{"failed to create char array"};
     }
 
+    mexMakeMemoryPersistent(array);
+
     return CharArray{std::move(array)};
   }
 
@@ -129,6 +140,8 @@ namespace mex
     {
       throw Exception{"failed to create char array"};
     }
+
+    mexMakeArrayPersistent(array);
 
     return CharArray{std::move(array)};
   }
