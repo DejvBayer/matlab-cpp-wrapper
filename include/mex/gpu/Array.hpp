@@ -55,7 +55,7 @@ namespace mex::gpu
        * @brief Constructor
        * @param array mxArray pointer
        */
-      explicit Array(mxArray* array)
+      explicit Array(const mxArray* array)
       : mArray{mxGPUCopyFromMxArray(array)}
       {
         if (mArray == nullptr)
@@ -73,6 +73,14 @@ namespace mex::gpu
       {}
 
       /**
+       * @brief Copy constructor
+       * @param other Other array
+       */
+      explicit Array(const mex::Array& other)
+      : Array{other.get()}
+      {}
+
+      /**
        * @brief Copy constructor from reference
        * @param other Reference to other array
        */
@@ -84,8 +92,24 @@ namespace mex::gpu
        * @brief Copy constructor from reference
        * @param other Reference to other array
        */
+      explicit Array(const mex::ArrayRef& other)
+      : Array{other.get()}
+      {}
+
+      /**
+       * @brief Copy constructor from reference
+       * @param other Reference to other array
+       */
       explicit Array(const ArrayCref& other)
       : Array{duplicateArray(other.get())}
+      {}
+
+      /**
+       * @brief Copy constructor from reference
+       * @param other Reference to other array
+       */
+      explicit Array(const mex::ArrayCref& other)
+      : Array{other.get()}
       {}
 
       /**
