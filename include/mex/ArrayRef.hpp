@@ -126,12 +126,12 @@ namespace mex
       }
 
       /**
-       * @brief Is the array a scalar?
-       * @return True if the array is a scalar, false otherwise
+       * @brief Is the array element class complex?
+       * @return True if the array element class is complex, false otherwise
        */
-      [[nodiscard]] bool isScalar() const
+      [[nodiscard]] bool isComplex() const
       {
-        return mxIsScalar(mArray);
+        return mxIsComplex(mArray);
       }
 
       /**
@@ -144,12 +144,102 @@ namespace mex
       }
 
       /**
-       * @brief Is the array complex?
-       * @return True if the array is complex, false otherwise
+       * @brief Is the array a scalar?
+       * @return True if the array is a scalar, false otherwise
        */
-      [[nodiscard]] bool isComplex() const
+      [[nodiscard]] bool isScalar() const
       {
-        return mxIsComplex(mArray);
+        return mxIsScalar(mArray);
+      }
+
+      /**
+       * @brief Is the array a double?
+       * @return True if the array is a double, false otherwise
+       */
+      [[nodiscard]] bool isDouble() const
+      {
+        return mxIsDouble(mArray);
+      }
+
+      /**
+       * @brief Is the array a single?
+       * @return True if the array is a single, false otherwise
+       */
+      [[nodiscard]] bool isSingle() const
+      {
+        return mxIsSingle(mArray);
+      }
+
+      /**
+       * @brief Is the array an int8?
+       * @return True if the array is an int8, false otherwise
+       */
+      [[nodiscard]] bool isInt8() const
+      {
+        return mxIsInt8(mArray);
+      }
+
+      /**
+       * @brief Is the array a uint8?
+       * @return True if the array is a uint8, false otherwise
+       */
+      [[nodiscard]] bool isUint8() const
+      {
+        return mxIsUint8(mArray);
+      }
+
+      /**
+       * @brief Is the array an int16?
+       * @return True if the array is an int16, false otherwise
+       */
+      [[nodiscard]] bool isInt16() const
+      {
+        return mxIsInt16(mArray);
+      }
+
+      /**
+       * @brief Is the array a uint16?
+       * @return True if the array is a uint16, false otherwise
+       */
+      [[nodiscard]] bool isUint16() const
+      {
+        return mxIsUint16(mArray);
+      }
+
+      /**
+       * @brief Is the array an int32?
+       * @return True if the array is an int32, false otherwise
+       */
+      [[nodiscard]] bool isInt32() const
+      {
+        return mxIsInt32(mArray);
+      }
+
+      /**
+       * @brief Is the array a uint32?
+       * @return True if the array is a uint32, false otherwise
+       */
+      [[nodiscard]] bool isUint32() const
+      {
+        return mxIsUint32(mArray);
+      }
+
+      /**
+       * @brief Is the array an int64?
+       * @return True if the array is an int64, false otherwise
+       */
+      [[nodiscard]] bool isInt64() const
+      {
+        return mxIsInt64(mArray);
+      }
+
+      /**
+       * @brief Is the array a uint64?
+       * @return True if the array is a uint64, false otherwise
+       */
+      [[nodiscard]] bool isUint64() const
+      {
+        return mxIsUint64(mArray);
       }
 
       /**
@@ -159,6 +249,75 @@ namespace mex
       [[nodiscard]] bool isSparse() const
       {
         return mxIsSparse(mArray);
+      }
+
+      /**
+       * @brief Is the array char?
+       * @return True if the array is char, false otherwise
+       */
+      [[nodiscard]] bool isChar() const
+      {
+        return mxIsChar(mArray);
+      }
+
+      /**
+       * @brief Is the array a logical?
+       * @return True if the array is a logical, false otherwise
+       */
+      [[nodiscard]] bool isLogical() const
+      {
+        return mxIsLogical(mArray);
+      }
+
+      /**
+       * @brief Is the array a logical scalar?
+       * @return True if the array is a logical scalar, false otherwise
+       */
+      [[nodiscard]] bool isLogicalScalar() const
+      {
+        return mxIsLogicalScalar(mArray);
+      }
+
+      /**
+       * @brief Is the array a true logical scalar?
+       * @return True if the array is a true logical scalar, false otherwise
+       */
+      [[nodiscard]] bool isLogicalScalarTrue() const
+      {
+        return mxIsLogicalScalarTrue(mArray);
+      }
+
+      /**
+       * @brief Is the array a class?
+       * @param name Class name
+       * @return True if the array is a class, false otherwise
+       */
+      [[nodiscard]] bool isClass(const char* name) const
+      {
+        if (name == nullptr)
+        {
+          throw Exception{"invalid class name"};
+        }
+
+        return mxIsClass(mArray, name);
+      }
+
+      /**
+       * @brief Is the array a struct?
+       * @return True if the array is a struct, false otherwise
+       */
+      [[nodiscard]] bool isStruct() const
+      {
+        return mxIsStruct(mArray);
+      }
+
+      /**
+       * @brief Is the array a cell?
+       * @return True if the array is a cell, false otherwise
+       */
+      [[nodiscard]] bool isCell() const
+      {
+        return mxIsCell(mArray);
       }
 
       /**
@@ -313,12 +472,12 @@ namespace mex
       }
 
       /**
-       * @brief Is the array a scalar?
-       * @return True if the array is a scalar, false otherwise
+       * @brief Is the array element class complex?
+       * @return True if the array element class is complex, false otherwise
        */
-      [[nodiscard]] bool isScalar() const
+      [[nodiscard]] bool isComplex() const
       {
-        return mxIsScalar(mArray);
+        return mxIsComplex(mArray);
       }
 
       /**
@@ -331,12 +490,102 @@ namespace mex
       }
 
       /**
-       * @brief Is the array complex?
-       * @return True if the array is complex, false otherwise
+       * @brief Is the array a scalar?
+       * @return True if the array is a scalar, false otherwise
        */
-      [[nodiscard]] bool isComplex() const
+      [[nodiscard]] bool isScalar() const
       {
-        return mxIsComplex(mArray);
+        return mxIsScalar(mArray);
+      }
+
+      /**
+       * @brief Is the array a double?
+       * @return True if the array is a double, false otherwise
+       */
+      [[nodiscard]] bool isDouble() const
+      {
+        return mxIsDouble(mArray);
+      }
+
+      /**
+       * @brief Is the array a single?
+       * @return True if the array is a single, false otherwise
+       */
+      [[nodiscard]] bool isSingle() const
+      {
+        return mxIsSingle(mArray);
+      }
+
+      /**
+       * @brief Is the array an int8?
+       * @return True if the array is an int8, false otherwise
+       */
+      [[nodiscard]] bool isInt8() const
+      {
+        return mxIsInt8(mArray);
+      }
+
+      /**
+       * @brief Is the array a uint8?
+       * @return True if the array is a uint8, false otherwise
+       */
+      [[nodiscard]] bool isUint8() const
+      {
+        return mxIsUint8(mArray);
+      }
+
+      /**
+       * @brief Is the array an int16?
+       * @return True if the array is an int16, false otherwise
+       */
+      [[nodiscard]] bool isInt16() const
+      {
+        return mxIsInt16(mArray);
+      }
+
+      /**
+       * @brief Is the array a uint16?
+       * @return True if the array is a uint16, false otherwise
+       */
+      [[nodiscard]] bool isUint16() const
+      {
+        return mxIsUint16(mArray);
+      }
+
+      /**
+       * @brief Is the array an int32?
+       * @return True if the array is an int32, false otherwise
+       */
+      [[nodiscard]] bool isInt32() const
+      {
+        return mxIsInt32(mArray);
+      }
+
+      /**
+       * @brief Is the array a uint32?
+       * @return True if the array is a uint32, false otherwise
+       */
+      [[nodiscard]] bool isUint32() const
+      {
+        return mxIsUint32(mArray);
+      }
+
+      /**
+       * @brief Is the array an int64?
+       * @return True if the array is an int64, false otherwise
+       */
+      [[nodiscard]] bool isInt64() const
+      {
+        return mxIsInt64(mArray);
+      }
+
+      /**
+       * @brief Is the array a uint64?
+       * @return True if the array is a uint64, false otherwise
+       */
+      [[nodiscard]] bool isUint64() const
+      {
+        return mxIsUint64(mArray);
       }
 
       /**
@@ -346,6 +595,75 @@ namespace mex
       [[nodiscard]] bool isSparse() const
       {
         return mxIsSparse(mArray);
+      }
+
+      /**
+       * @brief Is the array char?
+       * @return True if the array is char, false otherwise
+       */
+      [[nodiscard]] bool isChar() const
+      {
+        return mxIsChar(mArray);
+      }
+
+      /**
+       * @brief Is the array a logical?
+       * @return True if the array is a logical, false otherwise
+       */
+      [[nodiscard]] bool isLogical() const
+      {
+        return mxIsLogical(mArray);
+      }
+
+      /**
+       * @brief Is the array a logical scalar?
+       * @return True if the array is a logical scalar, false otherwise
+       */
+      [[nodiscard]] bool isLogicalScalar() const
+      {
+        return mxIsLogicalScalar(mArray);
+      }
+
+      /**
+       * @brief Is the array a true logical scalar?
+       * @return True if the array is a true logical scalar, false otherwise
+       */
+      [[nodiscard]] bool isLogicalScalarTrue() const
+      {
+        return mxIsLogicalScalarTrue(mArray);
+      }
+
+      /**
+       * @brief Is the array a class?
+       * @param name Class name
+       * @return True if the array is a class, false otherwise
+       */
+      [[nodiscard]] bool isClass(const char* name) const
+      {
+        if (name == nullptr)
+        {
+          throw Exception{"invalid class name"};
+        }
+
+        return mxIsClass(mArray, name);
+      }
+
+      /**
+       * @brief Is the array a struct?
+       * @return True if the array is a struct, false otherwise
+       */
+      [[nodiscard]] bool isStruct() const
+      {
+        return mxIsStruct(mArray);
+      }
+
+      /**
+       * @brief Is the array a cell?
+       * @return True if the array is a cell, false otherwise
+       */
+      [[nodiscard]] bool isCell() const
+      {
+        return mxIsCell(mArray);
       }
 
       /**
