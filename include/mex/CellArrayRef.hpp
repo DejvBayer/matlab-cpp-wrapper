@@ -34,7 +34,24 @@
 namespace mex
 {
   /// @brief Cell class (alias of Array)
-  class Cell : public Array {};
+  class Cell : public Array
+  {
+    public:
+      /// @brief Inherit constructors
+      using Array::Array;
+
+      /// @brief Destructor
+      ~Cell() = default;
+
+      /// @brief Inherit assignment operators
+      using Array::operator=;
+
+      /// @brief Inherit conversion operator to reference
+      using Array::operator ArrayRef;
+
+      /// @brief Inherit conversion operator to const reference
+      using Array::operator ArrayCref;
+  };
 
   // Check that the size of Cell is equal to the size of Array
   static_assert(sizeof(Cell) == sizeof(Array), "Cell size must be equal to Array size");
