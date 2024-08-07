@@ -264,6 +264,11 @@ namespace mex
   struct detail::TypePropertiesHelper<Index>
     : ClassIdConstant<ClassId::index>, ComplexityConstant<Complexity::real> {};
 
+  /// @brief Specialization of TypePropertiesHelper for Struct.
+  template<>
+  struct detail::TypePropertiesHelper<Struct>
+    : ClassIdConstant<ClassId::_struct> {};
+
   /**
    * @brief Type properties for a given type.
    * @tparam T Type.

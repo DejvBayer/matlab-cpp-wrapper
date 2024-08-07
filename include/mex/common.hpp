@@ -85,6 +85,7 @@ namespace mex
 
   // Forward declarations.
   class Cell;
+  class Struct;
 
   /// @brief Index type.
   enum Index : std::size_t {};

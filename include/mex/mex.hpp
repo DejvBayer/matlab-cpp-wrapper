@@ -45,6 +45,7 @@
 #include "NumericMatrixRef.hpp"
 #include "TypedArray.hpp"
 #include "TypedArrayRef.hpp"
+#include "StructArray.hpp"
 #include "typeTraits.hpp"
 #include "variable.hpp"
 
