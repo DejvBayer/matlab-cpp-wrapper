@@ -108,6 +108,15 @@ namespace mex
       mexPrintf("%s", format);
     }
   }
+
+  /**
+   * @brief Gets the `eps` variable value.
+   * @return The `eps` variable value.
+   */
+  [[nodiscard]] inline double getEps()
+  {
+    return mxGetEps();
+  }
 } // namespace mex
 
 #endif /* MEX_COMMON_HPP */
