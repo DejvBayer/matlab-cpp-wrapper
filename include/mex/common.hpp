@@ -110,6 +110,35 @@ namespace mex
   }
 
   /**
+   * @brief Warns the user with a message.
+   * @param message The message.
+   */
+  inline void warn(const char* message)
+  {
+    mexWarnMsgTxt(message);
+  }
+
+  /**
+   * @brief Warns the user with a message.
+   * @tparam Args Argument types.
+   * @param id Message identifier.
+   * @param format Format string.
+   * @param args Arguments.
+   */
+  template<typename... Args>
+  void warn(const char* id, const char* format, Args&&... args)
+  {
+    if constexpr (sizeof...(Args) > 0)
+    {
+      mexWarnMsgIdAndTxt(id, format, std::forward<Args>(args)...);
+    }
+    else
+    {
+      mexWarnMsgIdAndTxt(id, "%s", format);
+    }
+  }
+
+  /**
    * @brief Gets the `eps` variable value.
    * @return The `eps` variable value.
    */
