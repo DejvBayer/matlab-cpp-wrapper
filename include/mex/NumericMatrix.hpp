@@ -64,6 +64,19 @@ namespace mex
   }
 
   /**
+   * @brief Creates a numeric array
+   * @tparam T Element type
+   * @param m Number of rows
+   * @param n Number of columns
+   * @return Numeric array
+   */
+  template<typename T, std::enable_if_t<isNumeric<T>, int> = 0>
+  [[nodiscard]] NumericArray<T> makeNumericArray(std::size_t m, std::size_t n)
+  {
+    return makeNumericArray<T>({{m, n}});
+  }
+
+  /**
    * @brief Creates an uninitialized numeric array
    * @tparam T Element type
    * @param dims Dimensions
@@ -86,6 +99,19 @@ namespace mex
   }
 
   /**
+   * @brief Creates an uninitialized numeric array
+   * @tparam T Element type
+   * @param m Number of rows
+   * @param n Number of columns
+   * @return Uninitialized numeric array
+   */
+  template<typename T, std::enable_if_t<isNumeric<T>, int> = 0>
+  [[nodiscard]] NumericArray<T> makeUninitNumericArray(std::size_t m, std::size_t n)
+  {
+    return makeUninitNumericArray<T>({{m, n}});
+  }
+
+  /**
    * @brief Creates a numeric array of size 1 with the specified value
    * @tparam T Element type
    * @param value Value
@@ -94,7 +120,7 @@ namespace mex
   template<typename T, std::enable_if_t<isNumeric<T>, int> = 0>
   [[nodiscard]] NumericArray<T> makeNumericScalar(const T& value = {})
   {
-    auto array = makeUninitNumericArray<T>({{1}});
+    auto array = makeUninitNumericArray<T>({{1, 1}});
 
     array[0] = value;
 

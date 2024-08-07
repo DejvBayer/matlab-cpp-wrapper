@@ -180,6 +180,26 @@ namespace mex
       }
 
       /**
+       * @brief Get the number of rows
+       * @return Number of rows
+       */
+      [[nodiscard]] std::size_t getM() const
+      {
+        checkValid();
+        return mxGetM(mArray);
+      }
+
+      /**
+       * @brief Get the number of columns
+       * @return Number of columns
+       */
+      [[nodiscard]] std::size_t getN() const
+      {
+        checkValid();
+        return mxGetN(mArray);
+      }
+
+      /**
        * @brief Get the number of elements in the array
        * @return Number of elements
        */
@@ -213,6 +233,16 @@ namespace mex
         }
 
         mexMakeArrayPersistent(mArray);
+      }
+
+      /**
+       * @brief Resize the array
+       * @param m Number of rows
+       * @param n Number of columns
+       */
+      void resize(std::size_t m, std::size_t n)
+      {
+        resize({{m, n}});
       }
 
       /**

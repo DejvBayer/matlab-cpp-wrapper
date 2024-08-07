@@ -88,6 +88,24 @@ namespace mex
       }
 
       /**
+       * @brief Get the number of rows
+       * @return Number of rows
+       */
+      [[nodiscard]] std::size_t getM() const
+      {
+        return mxGetM(mArray);
+      }
+
+      /**
+       * @brief Get the number of columns
+       * @return Number of columns
+       */
+      [[nodiscard]] std::size_t getN() const
+      {
+        return mxGetN(mArray);
+      }
+
+      /**
        * @brief Gets the number of elements in the array.
        * @return The number of elements in the array
        */
@@ -431,6 +449,24 @@ namespace mex
       [[nodiscard]] View<std::size_t> getDims() const
       {
         return View<std::size_t>{mxGetDimensions(mArray), getRank()};
+      }
+
+      /**
+       * @brief Get the number of rows
+       * @return Number of rows
+       */
+      [[nodiscard]] std::size_t getM() const
+      {
+        return mxGetM(mArray);
+      }
+
+      /**
+       * @brief Get the number of columns
+       * @return Number of columns
+       */
+      [[nodiscard]] std::size_t getN() const
+      {
+        return mxGetN(mArray);
       }
 
       /**
