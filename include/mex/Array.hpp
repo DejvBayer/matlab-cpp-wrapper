@@ -86,7 +86,7 @@ namespace mex
        * @param other Other array
        */
       Array(Array&& other) noexcept
-      : mArray{std::exchange(other.mArray, nullptr)}
+      : mArray{other.release()}
       {}
 
       /// @brief Destructor
@@ -153,7 +153,7 @@ namespace mex
         if (this != &other)
         {
           destroy();
-          mArray = std::exchange(other.mArray, nullptr);
+          mArray = other.release();
         }
 
         return *this;
@@ -552,6 +552,15 @@ namespace mex
       }
 
       /**
+       * @brief Release the mxArray pointer
+       * @return mxArray pointer
+       */
+      [[nodiscard]] mxArray* release() noexcept
+      {
+        return std::exchange(mArray, nullptr);
+      }
+
+      /**
        * @brief Convert to ArrayRef
        * @return ArrayRef
        */
@@ -607,7 +616,7 @@ namespace mex
       /// @brief Destroy the array
       void destroy() noexcept
       {
-        mxDestroyArray(std::exchange(mArray, nullptr));
+        mxDestroyArray(release());
       }
 
       mxArray* mArray{}; ///< mxArray pointer
