@@ -200,6 +200,22 @@ namespace mex
       }
 
       /**
+       * @brief Resize the array
+       * @param dims Dimensions
+       */
+      void resize(View<std::size_t> dims)
+      {
+        checkValid();
+
+        if (mxSetDimensions(mArray, dims.data(), dims.size()))
+        {
+          throw Exception{"failed to resize array"};
+        }
+
+        mexMakeArrayPersistent(mArray);
+      }
+
+      /**
        * @brief Is the array valid?
        * @return True if the array is valid, false otherwise
        */
