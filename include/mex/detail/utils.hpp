@@ -22,39 +22,51 @@
   SOFTWARE.
 */
 
-#ifndef MEX_MEX_HPP
-#define MEX_MEX_HPP
+#ifndef MEX_DETAIL_UTILS_HPP
+#define MEX_DETAIL_UTILS_HPP
 
-#include "detail/include.hpp"
+#include "include.hpp"
+#include "../Exception.hpp"
+#include "../memory.hpp"
 
-#if MATLAB_TARGET_API_VERSION < 800
-# error "This library requires MATLAB R2018a or later."
-#endif
+namespace mex::detail
+{
+  /**
+   * @brief Duplicate array (non-persistent)
+   * @param array Array
+   * @param nonPersistent Non-persistent flag
+   * @return Duplicated array
+   */
+  [[nodiscard]] inline mxArray* duplicateArray(const mxArray* array, NonPersistent)
+  {
+    if (array == nullptr)
+    {
+      throw Exception{"invalid array to duplicate"};
+    }
+    
+    mxArray* arrayDup = mxDuplicateArray(array);
 
-#include "Array.hpp"
-#include "ArrayRef.hpp"
-#include "CellArray.hpp"
-#include "CellArrayRef.hpp"
-#include "CharArray.hpp"
-#include "CharArrayRef.hpp"
-#include "common.hpp"
-#include "eval.hpp"
-#include "Exception.hpp"
-#include "memory.hpp"
-#include "NumericMatrix.hpp"
-#include "NumericMatrixRef.hpp"
-#include "TypedArray.hpp"
-#include "TypedArrayRef.hpp"
-#include "StructArray.hpp"
-#include "StructArrayRef.hpp"
-#include "typeTraits.hpp"
-#include "variable.hpp"
+    if (arrayDup == nullptr)
+    {
+      throw Exception{"failed to duplicate array"};
+    }
 
-#ifdef MEX_ENABLE_GPU
-# include "gpu/Array.hpp"
-# include "gpu/ArrayRef.hpp"
-# include "gpu/TypedArray.hpp"
-# include "gpu/TypedArrayRef.hpp"
-#endif
+    return arrayDup;
+  }
 
-#endif /* MEX_MEX_HPP */
+  /**
+   * @brief Duplicate array (persistent)
+   * @param array Array
+   * @return Duplicated array
+   */
+  [[nodiscard]] inline mxArray* duplicateArray(const mxArray* array)
+  {
+    mxArray* arrayDup = duplicateArray(array, nonPersistent);
+
+    mexMakeArrayPersistent(arrayDup);
+
+    return arrayDup;
+  }
+} // namespace mex::detail
+
+#endif /* MEX_DETAIL_UTILS_HPP */

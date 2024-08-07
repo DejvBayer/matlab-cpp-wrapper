@@ -46,7 +46,7 @@ namespace mex
    * @param workspace The workspace enumeration.
    * @return The name of the workspace.
    */
-  [[nodiscard]] inline const char* getWorkspaceName(Workspace workspace)
+  [[nodiscard]] constexpr const char* getWorkspaceName(Workspace workspace)
   {
     switch (workspace)
     {

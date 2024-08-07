@@ -31,6 +31,7 @@
 #include "common.hpp"
 #include "Exception.hpp"
 #include "typeTraits.hpp"
+#include "detail/utils.hpp"
 
 namespace mex
 {
@@ -62,7 +63,7 @@ namespace mex
        * @param other Other array
        */
       explicit Array(const Array& other)
-      : Array{duplicateArray(other.get())}
+      : Array{detail::duplicateArray(other.get())}
       {}
 
       /**
@@ -70,7 +71,7 @@ namespace mex
        * @param other Reference to other array
        */
       explicit Array(const ArrayRef& other)
-      : Array{duplicateArray(other.get())}
+      : Array{detail::duplicateArray(other.get())}
       {}
 
       /**
@@ -78,7 +79,7 @@ namespace mex
        * @param other Reference to other array
        */
       explicit Array(const ArrayCref& other)
-      : Array{duplicateArray(other.get())}
+      : Array{detail::duplicateArray(other.get())}
       {}
 
       /**
@@ -105,7 +106,7 @@ namespace mex
         if (this != &other)
         {
           destroy();
-          mArray = duplicateArray(other.get());
+          mArray = detail::duplicateArray(other.get());
         }
 
         return *this;
@@ -121,7 +122,7 @@ namespace mex
         if (other.get() != get())
         {
           destroy();
-          mArray = duplicateArray(other.get());
+          mArray = detail::duplicateArray(other.get());
         }
 
         return *this;
@@ -137,7 +138,7 @@ namespace mex
         if (other.get() != get())
         {
           destroy();
-          mArray = duplicateArray(other.get());
+          mArray = detail::duplicateArray(other.get());
         }
 
         return *this;
@@ -589,30 +590,6 @@ namespace mex
         }
       }
     private:
-      /**
-       * @brief Duplicate the array
-       * @param array mxArray pointer
-       * @return Duplicated mxArray pointer
-       */
-      [[nodiscard]] static mxArray* duplicateArray(const mxArray* array)
-      {
-        if (array == nullptr)
-        {
-          throw Exception{"invalid array to duplicate"};
-        }
-        
-        mxArray* arrayDup = mxDuplicateArray(array);
-
-        if (arrayDup == nullptr)
-        {
-          throw Exception{"failed to duplicate array"};
-        }
-
-        mexMakeArrayPersistent(arrayDup);
-
-        return arrayDup;
-      }
-
       /// @brief Destroy the array
       void destroy() noexcept
       {
