@@ -28,6 +28,7 @@
 #include "detail/include.hpp"
 
 #include "common.hpp"
+#include "Exception.hpp"
 #include "typeTraits.hpp"
 
 namespace mex
