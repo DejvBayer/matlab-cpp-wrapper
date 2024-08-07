@@ -62,7 +62,7 @@ namespace mex
     return toAscii(TypedArrayCref<char16_t>{array});
   }
 
-  /// @brief CharArray class
+  /// @brief CharArrayRef class
   class CharArrayRef : public TypedArrayRef<char16_t>
   {
     public:

@@ -139,6 +139,11 @@ namespace mex
     struct TypePropertiesHelper;
   } // namespace detail
 
+  /// @brief Specialization of TypePropertiesHelper for Cell.
+  template<>
+  struct detail::TypePropertiesHelper<Cell>
+    : ClassIdConstant<ClassId::cell> {};
+
   /// @brief Specialization of TypePropertiesHelper for bool.
   template<>
   struct detail::TypePropertiesHelper<bool>
@@ -253,6 +258,11 @@ namespace mex
   template<>
   struct detail::TypePropertiesHelper<std::complex<std::uint64_t>>
     : ClassIdConstant<ClassId::uint64>, ComplexityConstant<Complexity::complex> {};
+
+  /// @brief Specialization of TypePropertiesHelper for Index.
+  template<>
+  struct detail::TypePropertiesHelper<Index>
+    : ClassIdConstant<ClassId::index>, ComplexityConstant<Complexity::real> {};
 
   /**
    * @brief Type properties for a given type.

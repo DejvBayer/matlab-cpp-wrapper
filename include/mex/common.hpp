@@ -32,8 +32,9 @@ namespace mex
   // Check types compatibility.
   static_assert(std::is_same_v<mwSize, std::size_t>, "mwSize must be std::size_t");
   static_assert(std::is_same_v<mwIndex, std::size_t>, "mwIndex must be std::size_t");
-  static_assert(std::is_same_v<mxLogical, bool>, "mwLogical must be bool");
+  static_assert(std::is_same_v<mwSignedIndex, std::ptrdiff_t>, "mwSignedIndex must be std::ptrdiff_t");
   static_assert(std::is_same_v<mxChar, char16_t>, "mxChar must be char16_t");
+  static_assert(std::is_same_v<mxLogical, bool>, "mwLogical must be bool");
 
   /**
    * @brief A span of elements.
@@ -81,6 +82,12 @@ namespace mex
     real    = mxREAL,    ///< Real.
     complex = mxCOMPLEX, ///< Complex.
   };
+
+  // Forward declarations.
+  class Cell;
+
+  /// @brief Index type.
+  enum Index : std::size_t {};
 
   /**
    * @brief Print formatted output to MATLAB command window.

@@ -22,37 +22,50 @@
   SOFTWARE.
 */
 
-#ifndef MEX_MEX_HPP
-#define MEX_MEX_HPP
+#ifndef MEX_CELL_ARRAY_REF_HPP
+#define MEX_CELL_ARRAY_REF_HPP
 
 #include "detail/include.hpp"
 
-#if MATLAB_TARGET_API_VERSION < 800
-# error "This library requires MATLAB R2018a or later."
-#endif
-
 #include "Array.hpp"
-#include "ArrayRef.hpp"
-#include "CellArray.hpp"
 #include "CellArrayRef.hpp"
-#include "CharArray.hpp"
-#include "CharArrayRef.hpp"
-#include "common.hpp"
-#include "eval.hpp"
-#include "Exception.hpp"
-#include "memory.hpp"
-#include "NumericMatrix.hpp"
-#include "NumericMatrixRef.hpp"
 #include "TypedArray.hpp"
-#include "TypedArrayRef.hpp"
-#include "typeTraits.hpp"
-#include "variable.hpp"
 
-#ifdef MEX_ENABLE_GPU
-# include "gpu/Array.hpp"
-# include "gpu/ArrayRef.hpp"
-# include "gpu/TypedArray.hpp"
-# include "gpu/TypedArrayRef.hpp"
-#endif
+namespace mex
+{
+  /// @brief Cell class (alias of Array)
+  class Cell : public Array {};
 
-#endif /* MEX_MEX_HPP */
+  // Check that the size of Cell is equal to the size of Array
+  static_assert(sizeof(Cell) == sizeof(Array), "Cell size must be equal to Array size");
+
+  /// @brief CellArrayRef class
+  class CellArrayRef : public TypedArrayRef<Cell>
+  {
+    public:
+      /// @brief Inherit constructors from TypedArrayRef<Cell>
+      using TypedArrayRef<Cell>::TypedArrayRef;
+
+      /// @brief Default destructor
+      ~CellArrayRef() = default;
+
+      /// @brief Use the TypedArrayRef<Cell>::operator=
+      using TypedArrayRef<Cell>::operator=;
+  };
+
+  /// @brief CellArrayCref class
+  class CellArrayCref : public TypedArrayCref<Cell>
+  {
+    public:
+      /// @brief Inherit constructors from TypedArrayRef<Cell>
+      using TypedArrayCref<Cell>::TypedArrayCref;
+
+      /// @brief Default destructor
+      ~CellArrayCref() = default;
+
+      /// @brief Use the TypedArrayCref<Cell>::operator=
+      using TypedArrayCref<Cell>::operator=;
+  };
+} // namespace mex
+
+#endif /* MEX_CELL_ARRAY_REF_HPP */
