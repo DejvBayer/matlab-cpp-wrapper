@@ -40,32 +40,10 @@ namespace mex
   static_assert(sizeof(Cell) == sizeof(Array), "Cell size must be equal to Array size");
 
   /// @brief CellArrayRef class
-  class CellArrayRef : public TypedArrayRef<Cell>
-  {
-    public:
-      /// @brief Inherit constructors from TypedArrayRef<Cell>
-      using TypedArrayRef<Cell>::TypedArrayRef;
-
-      /// @brief Default destructor
-      ~CellArrayRef() = default;
-
-      /// @brief Use the TypedArrayRef<Cell>::operator=
-      using TypedArrayRef<Cell>::operator=;
-  };
+  using CellArrayRef = TypedArrayRef<Cell>;
 
   /// @brief CellArrayCref class
-  class CellArrayCref : public TypedArrayCref<Cell>
-  {
-    public:
-      /// @brief Inherit constructors from TypedArrayRef<Cell>
-      using TypedArrayCref<Cell>::TypedArrayCref;
-
-      /// @brief Default destructor
-      ~CellArrayCref() = default;
-
-      /// @brief Use the TypedArrayCref<Cell>::operator=
-      using TypedArrayCref<Cell>::operator=;
-  };
+  using CellArrayCref = TypedArrayCref<Cell>;
 } // namespace mex
 
 #endif /* MEX_CELL_ARRAY_REF_HPP */

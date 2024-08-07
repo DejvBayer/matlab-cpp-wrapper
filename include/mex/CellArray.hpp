@@ -33,30 +33,7 @@
 namespace mex
 {
   /// @brief CellArray class
-  class CellArray : public TypedArray<Cell>
-  {
-    public:
-      /// @brief Inherit constructors from TypedArray<Cell>
-      using TypedArray<Cell>::TypedArray;
-
-      /// @brief Default destructor
-      ~CellArray() = default;
-
-      /// @brief Use the TypedArray<Cell>::operator=
-      using TypedArray<Cell>::operator=;
-
-      /// @brief Use the TypedArray<Cell>::operator ArrayRef
-      using TypedArray<Cell>::operator ArrayRef;
-
-      /// @brief Use the TypedArray<Cell>::operator ArrayCref
-      using TypedArray<Cell>::operator ArrayCref;
-
-      /// @brief Use the TypedArray<Cell>::operator TypedArrayRef
-      using TypedArray<Cell>::operator TypedArrayRef<Cell>;
-
-      /// @brief Use the TypedArray<Cell>::operator TypedArrayCref
-      using TypedArray<Cell>::operator TypedArrayCref<Cell>;
-  };
+  using CellArray = TypedArray<Cell>;
 
   /**
    * @brief Create a cell array
