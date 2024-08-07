@@ -277,6 +277,16 @@ namespace mex
       }
 
       /**
+       * @brief Is the array sparse?
+       * @return True if the array is sparse, false otherwise
+       */
+      [[nodiscard]] bool isSparse() const
+      {
+        checkValid();
+        return mxIsSparse(mArray);
+      }
+
+      /**
        * @brief Get the class ID of the array
        * @return Class ID of the array
        */

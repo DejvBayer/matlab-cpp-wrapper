@@ -153,6 +153,15 @@ namespace mex
       }
 
       /**
+       * @brief Is the array sparse?
+       * @return True if the array is sparse, false otherwise
+       */
+      [[nodiscard]] bool isSparse() const
+      {
+        return mxIsSparse(mArray);
+      }
+
+      /**
        * @brief Gets the class ID of the array.
        * @return The class ID of the array
        */
@@ -328,6 +337,15 @@ namespace mex
       [[nodiscard]] bool isComplex() const
       {
         return mxIsComplex(mArray);
+      }
+
+      /**
+       * @brief Is the array sparse?
+       * @return True if the array is sparse, false otherwise
+       */
+      [[nodiscard]] bool isSparse() const
+      {
+        return mxIsSparse(mArray);
       }
 
       /**
