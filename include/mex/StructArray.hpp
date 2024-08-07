@@ -54,7 +54,7 @@ namespace mex
        * @param fieldName The name of the field.
        * @return The field.
        */
-      [[nodiscard]] ArrayRef getField(std::size_t i, const char* fieldName)
+      [[nodiscard]] std::optional<ArrayRef> getField(std::size_t i, const char* fieldName)
       {
         const FieldIndex fieldIdx = getFieldIndex(fieldName);
 
@@ -67,7 +67,7 @@ namespace mex
        * @param fieldIndex The index of the field.
        * @return The field.
        */
-      [[nodiscard]] ArrayRef getField(std::size_t i, FieldIndex fieldIndex)
+      [[nodiscard]] std::optional<ArrayRef> getField(std::size_t i, FieldIndex fieldIndex)
       {
         checkValid();
 
@@ -80,7 +80,7 @@ namespace mex
 
         if (field == nullptr)
         {
-          throw Exception("failed to get field");
+          return std::nullopt;
         }
 
         return ArrayRef{field};
@@ -92,7 +92,7 @@ namespace mex
        * @param fieldName The name of the field.
        * @return The field.
        */
-      [[nodiscard]] ArrayCref getField(std::size_t i, const char* fieldName) const
+      [[nodiscard]] std::optional<ArrayCref> getField(std::size_t i, const char* fieldName) const
       {
         const FieldIndex fieldIdx = getFieldIndex(fieldName);
 
@@ -105,7 +105,7 @@ namespace mex
        * @param fieldIndex The index of the field.
        * @return The field.
        */
-      [[nodiscard]] ArrayCref getField(std::size_t i, FieldIndex fieldIndex) const
+      [[nodiscard]] std::optional<ArrayCref> getField(std::size_t i, FieldIndex fieldIndex) const
       {
         checkValid();
 
@@ -118,7 +118,7 @@ namespace mex
 
         if (field == nullptr)
         {
-          throw Exception("failed to get field");
+          return std::nullopt;
         }
 
         return ArrayCref{field};

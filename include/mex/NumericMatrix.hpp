@@ -77,6 +77,47 @@ namespace mex
   }
 
   /**
+   * @brief Creates a numeric array
+   * @param dims Dimensions
+   * @param classId Class ID
+   * @param complexity Complexity
+   * @return Numeric array
+   */
+  [[nodiscard]] inline Array makeNumericArray(View<std::size_t> dims,
+                                              const ClassId     classId,
+                                              const Complexity  complexity = Complexity::real)
+  {
+    mxArray* array = mxCreateNumericArray(dims.size(),
+                                          const_cast<std::size_t*>(dims.data()),
+                                          static_cast<mxClassID>(classId),
+                                          static_cast<mxComplexity>(complexity));
+
+    if (array == nullptr)
+    {
+      throw Exception{"failed to create numeric array"};
+    }
+
+    return Array{std::move(array)};
+  }
+
+  /**
+   * @brief Creates a numeric array
+   * @param m Number of rows
+   * @param n Number of columns
+   * @param classId Class ID
+   * @param complexity Complexity
+   * @return Numeric array
+   */
+  [[nodiscard]] inline Array makeNumericArray(const std::size_t m,
+                                              const std::size_t n,
+                                              const ClassId     classId,
+                                              const Complexity  complexity = Complexity::real)
+  {
+    return makeNumericArray({{m, n}}, classId, complexity);
+  }
+
+
+  /**
    * @brief Creates an uninitialized numeric array
    * @tparam T Element type
    * @param dims Dimensions
@@ -112,6 +153,46 @@ namespace mex
   }
 
   /**
+   * @brief Creates an unitiliazed numeric array
+   * @param dims Dimensions
+   * @param classId Class ID
+   * @param complexity Complexity
+   * @return Uninitialized numeric array
+   */
+  [[nodiscard]] inline Array makeUninitNumericArray(View<std::size_t> dims,
+                                                    const ClassId     classId,
+                                                    const Complexity  complexity = Complexity::real)
+  {
+    mxArray* array = mxCreateUninitNumericArray(dims.size(),
+                                                const_cast<std::size_t*>(dims.data()),
+                                                static_cast<mxClassID>(classId),
+                                                static_cast<mxComplexity>(complexity));
+
+    if (array == nullptr)
+    {
+      throw Exception{"failed to create uninitialized numeric array"};
+    }
+
+    return Array{std::move(array)};
+  }
+
+  /**
+   * @brief Creates an uninitialized numeric array
+   * @param m Number of rows
+   * @param n Number of columns
+   * @param classId Class ID
+   * @param complexity Complexity
+   * @return Uninitialized numeric array
+   */
+  [[nodiscard]] inline Array makeUninitNumericArray(const std::size_t m,
+                                                    const std::size_t n,
+                                                    const ClassId     classId,
+                                                    const Complexity  complexity = Complexity::real)
+  {
+    return makeUninitNumericArray({{m, n}}, classId, complexity);
+  }
+
+  /**
    * @brief Creates a numeric array of size 1 with the specified value
    * @tparam T Element type
    * @param value Value
@@ -123,6 +204,19 @@ namespace mex
     auto array = makeUninitNumericArray<T>({{1, 1}});
 
     array[0] = value;
+
+    return array;
+  }
+
+  /**
+   * @brief Creates a zeroed numeric array of size 1.
+   * @param classId Class ID
+   * @param complexity Complexity
+   * @return Numeric array
+   */
+  [[nodiscard]] Array makeNumericScalar(const ClassId classId, const Complexity complexity = Complexity::real)
+  {
+    auto array = makeNumericArray({{1, 1}}, classId, complexity);
 
     return array;
   }

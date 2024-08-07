@@ -16,18 +16,18 @@ void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
   /* Check for proper number of input and output arguments */
   if (rhs.size() != 1)
   {
-    mexErrMsgIdAndTxt("MATLAB:mxIsScalar:invalidNumInputs","One input argument required.");
+    throw mex::Exception{"MATLAB:mxIsScalar:invalidNumInputs","One input argument required."};
   }
 
   if (lhs.size() > 1)
   {
-    mexErrMsgIdAndTxt("MATLAB:mxIsScalar:maxlhs", "Too many output arguments.");
+    throw mex::Exception{"MATLAB:mxIsScalar:maxlhs", "Too many output arguments."};
   }
   
   /* Check to be sure input argument is a scalar */
   if (!rhs[0].isScalar())
   {
-    mexErrMsgIdAndTxt("MATLAB:mxIsScalar:invalidInputType", "Input must be a scalar.");
+    throw mex::Exception{"MATLAB:mxIsScalar:invalidInputType", "Input must be a scalar."};
   }
   
   /* Get input variable */
