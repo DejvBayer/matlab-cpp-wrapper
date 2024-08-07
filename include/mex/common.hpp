@@ -117,6 +117,24 @@ namespace mex
   {
     return mxGetEps();
   }
+
+  /**
+   * @brief Gets the `inf` variable value.
+   * @return The `inf` variable value.
+   */
+  [[nodiscard]] inline double getInf()
+  {
+    return mxGetInf();
+  }
+
+  /**
+   * @brief Gets the `nan` variable value.
+   * @return The `nan` variable value.
+   */
+  [[nodiscard]] inline double getNan()
+  {
+    return mxGetNaN();
+  }
 } // namespace mex
 
 #endif /* MEX_COMMON_HPP */

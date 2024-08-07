@@ -22,29 +22,29 @@ void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
   /* Check for proper number of input and output arguments */
   if (rhs.size() != 2)
   {
-    mexErrMsgIdAndTxt("MATLAB:mxgeteps:invalidNumInputs", "Two input arguments required.");
+    throw mex::Exception{"MATLAB:mxgeteps:invalidNumInputs", "Two input arguments required."};
   }
   if (lhs.size() > 1)
   {
-    mexErrMsgIdAndTxt("MATLAB:mxgeteps:maxlhs", "Too many output arguments.");
+    throw mex::Exception{"MATLAB:mxgeteps:maxlhs", "Too many output arguments."};
   }
 
   /* Check data type of first input argument */
   if (!rhs[0].isDouble() || !rhs[1].isDouble() || rhs[0].isComplex() || rhs[1].isComplex())
   {
-    mexErrMsgIdAndTxt("MATLAB:mxgeteps:inputNotRealDouble", "Input arguments must be real of type double.");
+    throw mex::Exception{"MATLAB:mxgeteps:inputNotRealDouble", "Input arguments must be real of type double."};
   }
 
   /* Check that dimensions are the same for input arguments. */
   if (rhs[0].getRank() != rhs[1].getRank())
   {
-    mexErrMsgIdAndTxt("MATLAB:mxgeteps:numElementMismatch", "Inputs must have the same number of dimensions.\n");
+    throw mex::Exception{"MATLAB:mxgeteps:numElementMismatch", "Inputs must have the same number of dimensions.\n"};
   }
 
   /* Check that inputs have the same dimensions. */
   if (!std::equal(rhs[0].getDims().begin(), rhs[0].getDims().end(), rhs[1].getDims().begin()))
   {
-    mexErrMsgIdAndTxt("MATLAB:mxgeteps:numDimensionsMismatch", "Inputs must have the same dimensions.\n");
+    throw mex::Exception{"MATLAB:mxgeteps:numDimensionsMismatch", "Inputs must have the same dimensions.\n"};
   }
 
   /* Get the number of elements in the input argument */
