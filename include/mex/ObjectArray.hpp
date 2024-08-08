@@ -28,6 +28,7 @@
 #include "detail/include.hpp"
 
 #include "Array.hpp"
+#include "ObjectArrayRef.hpp"
 #include "StructArray.hpp"
 
 namespace mex
@@ -122,6 +123,32 @@ namespace mex
         }
 
         mxSetProperty(get(), i, propName, value.get());
+      }
+
+      /// @brief Inherit conversion to ArrayRef
+      using Array::operator ArrayRef;
+
+      /// @brief Inherit conversion to ArrayCref
+      using Array::operator ArrayCref;
+
+      /**
+       * @brief Convert to ObjectArrayRef
+       * @return ObjectArrayRef
+       */
+      [[nodiscard]] operator ObjectArrayRef()
+      {
+        checkValid();
+        return ObjectArrayRef{get()};
+      }
+
+      /**
+       * @brief Convert to ObjectArrayCref
+       * @return ObjectArrayCref
+       */
+      [[nodiscard]] operator ObjectArrayCref() const
+      {
+        checkValid();
+        return ObjectArrayCref{get()};
       }
   };
 } // namespace mex

@@ -22,20 +22,40 @@
   SOFTWARE.
 */
 
-#ifndef MEX_DETAIL_MEXCEPTION_HPP
-#define MEX_DETAIL_MEXCEPTION_HPP
+#ifndef MEX_MEXCEPTION_HPP
+#define MEX_MEXCEPTION_HPP
 
-#include "include.hpp"
+#include "detail/include.hpp"
 
-#include "../ArrayRef.hpp"
+#include "ObjectArray.hpp"
+#include "ObjectArrayRef.hpp"
 
-namespace mex::detail
+namespace mex
 {
-  /// @brief MATLAB exception. Only used internally.
-  struct MException
+  class MException : public ObjectArray
   {
-    ArrayRef e; ///< The exception object.
-  };
-} // namespace mex::detail
+    public:
+      /// @brief Inherited constructors.
+      using ObjectArray::ObjectArray;
 
-#endif /* MEX_DETAIL_MEXCEPTION_HPP */
+      /// @brief Default destructor.
+      ~MException() = default;
+
+      /// @brief Inherit assignment operator.
+      using ObjectArray::operator=;
+
+      /// @brief Inherit conversion to ArrayRef
+      using ObjectArray::operator ArrayRef;
+
+      /// @brief Inherit conversion to ArrayCref
+      using ObjectArray::operator ArrayCref;
+
+      /// @brief Inherit conversion to ObjectArrayRef
+      using ObjectArray::operator ObjectArrayRef;
+
+      /// @brief Inherit conversion to ObjectArrayCref
+      using ObjectArray::operator ObjectArrayCref;
+  };
+} // namespace mex
+
+#endif /* MEX_MEXCEPTION_HPP */
