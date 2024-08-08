@@ -27,24 +27,25 @@
 
 #include "detail/include.hpp"
 
-#include "TypedArray.hpp"
+#include "Array.hpp"
 #include "StructArray.hpp"
 
 namespace mex
 {
   /// @brief ObjectArray class
-  class ObjectArray : public TypedArray<Object>
+  class ObjectArray : public Array
   {
     public:
       /// @brief Inherit constructors
-      using TypedArray<Object>::TypedArray;
+      using Array::Array;
 
       /**
        * @brief Construct an object array from a struct array
        * @param src Source struct array
        * @param name Class name
        */
-      ObjectArray(StructArray src, const char* name)
+      ObjectArray(Array src, const char* name)
+      : Array{[&]()
       {
         if (name == nullptr)
         {
@@ -58,14 +59,15 @@ namespace mex
           throw Exception{"failed to set class name"};
         }
 
-        *this = std::move(array);
-      }
+        return array;
+      }()}
+      {}
 
       /// @brief Default destructor
       ~ObjectArray() = default;
 
       /// @brief Use inherited assignment operators
-      using TypedArray<Object>::operator=;
+      using Array::operator=;
 
       /**
        * @brief Get the class name of the object

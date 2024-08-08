@@ -27,22 +27,22 @@
 
 #include "detail/include.hpp"
 
-#include "TypedArrayRef.hpp"
+#include "ArrayRef.hpp"
 
 namespace mex
 {
   /// @brief ObjectArrayRef class
-  class ObjectArrayRef : public TypedArrayRef<Object>
+  class ObjectArrayRef : public ArrayRef
   {
     public:
       /// @brief Inherit constructors
-      using TypedArrayRef<Object>::TypedArrayRef;
+      using ArrayRef::ArrayRef;
 
       /// @brief Default destructor
       ~ObjectArrayRef() = default;
 
       /// @brief Inherit assignment operators
-      using TypedArrayRef<Object>::operator=;
+      using ArrayRef::operator=;
 
       /**
        * @brief Get the class name of the object
@@ -96,17 +96,17 @@ namespace mex
   };
 
   /// @brief ObjectArrayCref type alias
-  class ObjectArrayCref : public ObjectArrayRef
+  class ObjectArrayCref : public ArrayCref
   {
     public:
       /// @brief Inherit constructors
-      using ObjectArrayRef::ObjectArrayRef;
+      using ArrayCref::ArrayCref;
 
       /// @brief Default destructor
       ~ObjectArrayCref() = default;
 
       /// @brief Inherit assignment operators
-      using ObjectArrayRef::operator=;
+      using ArrayCref::operator=;
 
       /**
        * @brief Get the class name of the object
@@ -143,3 +143,5 @@ namespace mex
       }
   };
 }
+
+#endif /* MEX_OBJECT_ARRAY_REF_HPP */
