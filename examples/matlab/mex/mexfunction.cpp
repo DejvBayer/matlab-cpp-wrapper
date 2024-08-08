@@ -26,7 +26,7 @@ void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
   }
 
   /* Examine output (left-hand-side) arguments. */
-  mexPrintf("\n\n%d output argument(s).\n", lhs.size());
+  mex::printf("\n\n%d output argument(s).\n", lhs.size());
 
   if (lhs.size() != rhs.size())
   {
@@ -37,6 +37,6 @@ void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
   {
     const double nel = static_cast<double>(rhs[i].getSize());
 
-    lhs[i] = mex::makeNumericScalar<double>(nel);
+    lhs[i] = mex::makeNumericScalar(nel);
   }
 }

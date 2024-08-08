@@ -33,9 +33,6 @@
 
 namespace mex
 {
-  /// @brief FieldIndex type.
-  enum class FieldIndex : std::size_t {};
-
   /// @brief StructArrayRef class
   class StructArrayRef : public TypedArrayRef<Struct>
   {

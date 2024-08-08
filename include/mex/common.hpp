@@ -85,10 +85,14 @@ namespace mex
 
   // Forward declarations.
   class Cell;
+  class Object;
   class Struct;
 
-  /// @brief Index type.
+  /// @brief Index type. Enable implicit conversion from/to std::size_t.
   enum Index : std::size_t {};
+
+  /// @brief FieldIndex type.
+  enum class FieldIndex : std::size_t {};
 
   /**
    * @brief Print formatted output to MATLAB command window.

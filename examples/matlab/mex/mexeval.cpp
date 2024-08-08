@@ -25,11 +25,7 @@ void mex::Function::operator()(Span<Array>, View<ArrayCref> rhs)
      * or statement the biggest limitation is that it won't 
      * evaluate any left-hand arguments except 'ans'
      */
-    const std::size_t buflen = rhs[0].getDims()[0];
-
-    std::string fcn(buflen, '\0');
-
-    mxGetString(rhs[0].get(), fcn.data(), buflen);
+    std::string fcn = mex::toAscii(mex::CharArrayCref{rhs[0]});
     
     try
     {
@@ -40,15 +36,12 @@ void mex::Function::operator()(Span<Array>, View<ArrayCref> rhs)
       if (rhs.size() == 2)
       {
         /* provides the ability to catch errors.  It
-        * executes string s1 and returns if the operation was
-        * successful. If the operation generates an error,
-        * string s2 is evaluated before returning.
-        */        
-        const std::size_t buflen = rhs[1].getDims()[0];
-
-        std::string cmd(buflen, '\0');
+         * executes string s1 and returns if the operation was
+         * successful. If the operation generates an error,
+         * string s2 is evaluated before returning.
+         */        
+        std::string cmd = mex::toAscii(mex::CharArrayCref{rhs[1]});
         
-        mxGetString(rhs[1].get(), cmd.data(), buflen);
         mex::eval(cmd.c_str());
       }
     }

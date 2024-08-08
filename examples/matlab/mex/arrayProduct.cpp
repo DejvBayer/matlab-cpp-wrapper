@@ -69,7 +69,7 @@ void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
   const std::size_t ncols = rhs[1].getDims()[1];
 
   /* create the output matrix */
-  mex::NumericArray<double> out = mex::makeUninitNumericArray<double>({{1, ncols}});
+  mex::NumericArray<double> out = mex::makeUninitNumericArray<double>(1, ncols);
 
   /* get a pointer to the real data in the output matrix */
   double* outMatrix = out.getData();

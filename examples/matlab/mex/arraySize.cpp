@@ -51,7 +51,7 @@ void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
   mex::NumericArray<std::uint8_t> theArray = mex::makeUninitNumericArray<std::uint8_t>({{dim, dim}});
 
   /* Display the mxArray's dimension. */
-  mex::printf("\nDimensions: %" FMT_SIZE_T "u x %" FMT_SIZE_T "u\n", theArray.getDims()[0], theArray.getDims()[1]);
+  mex::printf("\nDimensions: %zu x %zu\n", theArray.getDims()[0], theArray.getDims()[1]);
 
   /* Display the mxArray's size. */
   const std::size_t numberOfElements = theArray.getSize();
@@ -64,7 +64,7 @@ void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
   /* Return result only if one is requested. */
   if (lhs.size() == 1)
   {
-    lhs[0] = makeNumericScalar(sizeOfDataInKilobytes);
+    lhs[0] = mex::makeNumericScalar(sizeOfDataInKilobytes);
   }
 }
 

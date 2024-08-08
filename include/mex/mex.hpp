@@ -43,6 +43,8 @@
 #include "memory.hpp"
 #include "NumericMatrix.hpp"
 #include "NumericMatrixRef.hpp"
+#include "ObjectArray.hpp"
+#include "ObjectArrayRef.hpp"
 #include "TypedArray.hpp"
 #include "TypedArrayRef.hpp"
 #include "StructArray.hpp"
