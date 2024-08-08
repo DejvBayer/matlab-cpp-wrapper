@@ -139,12 +139,6 @@ mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
     // Return if no exception occurred.
     return;
   }
-  catch (mex::MException& mexception)
-  {
-    mxArray* meArray = mexception.release();
-
-    mexCallMATLAB(0, nullptr, 1, reinterpret_cast<mxArray**>(&meArray), "throw");
-  }
   catch (const mex::Exception& e)
   {
     if (e.hasId())

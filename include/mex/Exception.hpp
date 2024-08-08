@@ -42,16 +42,16 @@ namespace mex
        * @brief Constructor
        * @param message Error message
        */
-      explicit Exception(std::string_view message)
-      : mMessage{(message.empty()) ? mUnknownErrorMessage : message}
+      explicit Exception(std::string message)
+      : Exception{"mex:unidentified", std::move(message)}
       {}
 
       /**
        * @brief Constructor
        * @param message Error message
        */
-      explicit Exception(std::string_view id, std::string_view message)
-      : mId{id}, mMessage{(message.empty()) ? mUnknownErrorMessage : message}
+      explicit Exception(std::string id, std::string message)
+      : mId{std::move(id)}, mMessage{(message.empty()) ? "Unknown error" : std::move(message)}
       {}
 
       /**
@@ -63,6 +63,10 @@ namespace mex
         return mMessage.c_str();
       }
 
+      /**
+       * @brief Check if error has an ID
+       * @return True if error has an ID
+       */
       [[nodiscard]] bool hasId() const noexcept
       {
         return !mId.empty();
@@ -78,8 +82,6 @@ namespace mex
       }
 
     private:
-      static constexpr std::string_view mUnknownErrorMessage{"Unknown error"}; ///< Default error message
-
       std::string mId{};      ///< Error ID
       std::string mMessage{}; ///< Error message
   };

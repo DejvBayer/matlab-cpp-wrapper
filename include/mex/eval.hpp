@@ -30,7 +30,7 @@
 #include "Array.hpp"
 #include "ArrayRef.hpp"
 #include "common.hpp"
-#include "MException.hpp"
+#include "detail/MException.hpp"
 
 namespace mex
 {
@@ -66,12 +66,7 @@ namespace mex
     const int nrhs = static_cast<int>(rhs.size());
     mxArray** prhs = reinterpret_cast<mxArray**>(const_cast<ArrayCref*>(rhs.data()));
 
-    MException mexception{mexCallMATLABWithTrap(nlhs, plhs, nrhs, prhs, functionName)};
-
-    if (mexception.isValid())
-    {
-      throw std::move(mexception);
-    }
+    detail::handleMException(mexCallMATLABWithTrap(nlhs, plhs, nrhs, prhs, functionName));
 
     // Make persistent if the call was successful to get consistent behavior.
     std::for_each(lhs.begin(), lhs.end(), [](Array& array)
@@ -104,12 +99,7 @@ namespace mex
       throw Exception{"invalid expression"};
     }
 
-    MException mexception{mexEvalStringWithTrap(expr)};
-
-    if (mexception.isValid())
-    {
-      throw std::move(mexception);
-    }
+    detail::handleMException(mexEvalStringWithTrap(expr));
   }
 } // namespace mex
 

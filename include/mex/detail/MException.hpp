@@ -22,40 +22,55 @@
   SOFTWARE.
 */
 
-#ifndef MEX_MEXCEPTION_HPP
-#define MEX_MEXCEPTION_HPP
+#ifndef MEX_DETAIL_MEXCEPTION_HPP
+#define MEX_DETAIL_MEXCEPTION_HPP
 
-#include "detail/include.hpp"
+#include "include.hpp"
 
-#include "ObjectArray.hpp"
-#include "ObjectArrayRef.hpp"
+#include "../CharArray.hpp"
+#include "../ObjectArray.hpp"
+#include "../ObjectArrayRef.hpp"
 
-namespace mex
+namespace mex::detail
 {
-  class MException : public ObjectArray
+  /**
+   * @brief Handle a MATLAB exception
+   * @param me The MException object
+   * @return The exception
+   */
+  inline void handleMException(mxArray* me)
   {
-    public:
-      /// @brief Inherited constructors.
-      using ObjectArray::ObjectArray;
+    if (me == nullptr)
+    {
+      return;
+    }
 
-      /// @brief Default destructor.
-      ~MException() = default;
+    ObjectArrayRef meObj{me};
 
-      /// @brief Inherit assignment operator.
-      using ObjectArray::operator=;
+    if (meObj.isEmpty())
+    {
+      throw Exception{"failed to get MException object"};
+    }
 
-      /// @brief Inherit conversion to ArrayRef
-      using ObjectArray::operator ArrayRef;
+    std::string id{};
+    std::string message{};
 
-      /// @brief Inherit conversion to ArrayCref
-      using ObjectArray::operator ArrayCref;
+    auto idArray = meObj.getProperty(0, "identifier");
 
-      /// @brief Inherit conversion to ObjectArrayRef
-      using ObjectArray::operator ObjectArrayRef;
+    if (idArray.has_value() && idArray->isChar())
+    {
+      id = toAscii(*idArray);
+    }
 
-      /// @brief Inherit conversion to ObjectArrayCref
-      using ObjectArray::operator ObjectArrayCref;
-  };
-} // namespace mex
+    auto messageArray = meObj.getProperty(0, "message");
 
-#endif /* MEX_MEXCEPTION_HPP */
+    if (messageArray.has_value() && messageArray->isChar())
+    {
+      message = toAscii(*messageArray);
+    }
+
+    throw Exception{std::move(id), std::move(message)};
+  }
+} // namespace mex::detail
+
+#endif /* MEX_DETAIL_MEXCEPTION_HPP */
