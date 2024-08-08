@@ -113,10 +113,6 @@ mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 
     if (dstPtr != nullptr)
     {
-      dst = "Failed to allocate memory for exception error message.";
-    }
-    else
-    {
       std::char_traits<char>::copy(dstPtr, src, size);
       dstPtr[size] = '\0';
       dst = dstPtr;
@@ -146,9 +142,9 @@ mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
   }
   catch (mex::detail::MException& mexception)
   {
-    mxArray* earray = mexception.e.get();
+    mxArray* meArray = mexception.e.get();
 
-    mexCallMATLAB(0, nullptr, 1, reinterpret_cast<mxArray**>(&earray), "throw");
+    mexCallMATLAB(0, nullptr, 1, reinterpret_cast<mxArray**>(&meArray), "throw");
   }
   catch (const mex::Exception& e)
   {
@@ -167,6 +163,10 @@ mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
   catch (...)
   {
     errorId  = "mex:unknown";
+  }
+
+  if (errorMsg == nullptr)
+  {
     errorMsg = "An error occurred.";
   }
 
