@@ -30,6 +30,7 @@
 #include "Array.hpp"
 #include "ArrayRef.hpp"
 #include "common.hpp"
+#include "detail/MException.hpp"
 
 namespace mex
 {
@@ -142,6 +143,12 @@ mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 
     // Return if no exception occurred.
     return;
+  }
+  catch (mex::detail::MException& mexception)
+  {
+    mxArray* earray = mexception.e.get();
+
+    mexCallMATLAB(0, nullptr, 1, reinterpret_cast<mxArray**>(&earray), "throw");
   }
   catch (const mex::Exception& e)
   {
