@@ -124,6 +124,20 @@ namespace mex
         return mxGetElementSize(mArray);
       }
 
+      /**
+       * @brief Resize the array
+       * @param dims Dimensions
+       */
+      void resize(View<std::size_t> dims) const
+      {
+        if (mxSetDimensions(mArray, dims.data(), dims.size()))
+        {
+          throw Exception{"failed to resize array"};
+        }
+
+        mexMakeArrayPersistent(mArray);
+      }
+
 #   ifdef MEX_ENABLE_GPU
       /**
        * @brief Is the array a GPU array?

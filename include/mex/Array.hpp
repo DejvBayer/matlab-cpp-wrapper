@@ -103,7 +103,7 @@ namespace mex
        */
       Array& operator=(const Array& other)
       {
-        if (this != &other)
+        if (get() != other.get())
         {
           destroy();
           mArray = detail::duplicateArray(other.get());
@@ -119,7 +119,7 @@ namespace mex
        */
       Array& operator=(const ArrayRef& other)
       {
-        if (other.get() != get())
+        if (get() != other.get())
         {
           destroy();
           mArray = detail::duplicateArray(other.get());
@@ -135,7 +135,7 @@ namespace mex
        */
       Array& operator=(const ArrayCref& other)
       {
-        if (other.get() != get())
+        if (get() != other.get())
         {
           destroy();
           mArray = detail::duplicateArray(other.get());
@@ -151,7 +151,7 @@ namespace mex
        */
       Array& operator=(Array&& other) noexcept
       {
-        if (this != &other)
+        if (this != std::addressof(other))
         {
           destroy();
           mArray = other.release();
