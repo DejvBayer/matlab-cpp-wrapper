@@ -51,7 +51,10 @@ namespace mex
   {
     void* ptr = malloc(sizeInBytes, nonPersistent);
 
-    mexMakeMemoryPersistent(ptr);
+    if (ptr != nullptr)
+    {
+      mexMakeMemoryPersistent(ptr);
+    }
 
     return ptr;
   }
@@ -77,7 +80,10 @@ namespace mex
   {
     T* ptr = calloc<T>(n, nonPersistent);
 
-    mexMakeMemoryPersistent(ptr);
+    if (ptr != nullptr)
+    {
+      mexMakeMemoryPersistent(ptr);
+    }
 
     return ptr;
   }
