@@ -61,14 +61,18 @@ namespace mex
     static_assert(sizeof(mxArray*) == sizeof(mex::Array));
     static_assert(sizeof(const mxArray*) == sizeof(mex::ArrayCref));
 
+    // Set lhs
     const int nlhs = static_cast<int>(lhs.size());
     mxArray** plhs = reinterpret_cast<mxArray**>(lhs.data());
+
+    // Set rhs
     const int nrhs = static_cast<int>(rhs.size());
     mxArray** prhs = reinterpret_cast<mxArray**>(const_cast<ArrayCref*>(rhs.data()));
 
+    // Call the function
     detail::handleMException(mexCallMATLABWithTrap(nlhs, plhs, nrhs, prhs, functionName));
 
-    // Make persistent if the call was successful to get consistent behavior.
+    // Make lhs arrays persistent if the call was successful to get consistent behavior.
     std::for_each(lhs.begin(), lhs.end(), [](Array& array)
     {
       if (array.get() != nullptr)
