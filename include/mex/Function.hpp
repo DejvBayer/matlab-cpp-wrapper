@@ -156,11 +156,13 @@ mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
   catch (...)
   {
     errorId  = "mex:unknown";
+    // Error message will be assigned in the next block.
   }
 
+  // If error message is not assigned, assign a default message.
   if (errorMsg == nullptr)
   {
-    errorMsg = "An error occurred.";
+    errorMsg = "An unknown error occurred.";
   }
 
   if (errorId == nullptr)
