@@ -42,12 +42,12 @@ namespace mex
    */
   inline void call(Span<Array> lhs, View<ArrayCref> rhs, const char* functionName)
   {
-    if (!lhs.empty() && lhs.data() == nullptr)
+    if (!std::empty(lhs) && std::data(lhs) == nullptr)
     {
       throw Exception{"invalid output"};
     }
 
-    if (!rhs.empty() && rhs.data() == nullptr)
+    if (!std::empty(rhs) && std::data(rhs) == nullptr)
     {
       throw Exception{"invalid input"};
     }
@@ -67,7 +67,7 @@ namespace mex
 
     // Set rhs
     const int nrhs = static_cast<int>(rhs.size());
-    mxArray** prhs = reinterpret_cast<mxArray**>(const_cast<ArrayCref*>(rhs.data()));
+    mxArray** prhs = reinterpret_cast<mxArray**>(const_cast<ArrayCref*>(std::data(rhs)));
 
     // Call the function
     detail::handleMException(mexCallMATLABWithTrap(nlhs, plhs, nrhs, prhs, functionName));

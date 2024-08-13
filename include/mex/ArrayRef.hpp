@@ -138,6 +138,16 @@ namespace mex
         mexMakeArrayPersistent(mArray);
       }
 
+      /**
+       * @brief Resize the array
+       * @param m Number of rows
+       * @param n Number of columns
+       */
+      void resize(std::size_t m, std::size_t n)
+      {
+        resize({{m, n}});
+      }
+
 #   ifdef MEX_ENABLE_GPU
       /**
        * @brief Is the array a GPU array?

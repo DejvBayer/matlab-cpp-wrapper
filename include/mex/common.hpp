@@ -168,6 +168,30 @@ namespace mex
   {
     return mxGetNaN();
   }
+
+  /**
+   * @brief Creates a scalar span.
+   * @tparam T The type of the scalar.
+   * @param scalar The scalar.
+   * @return The scalar span.
+   */
+  template<typename T>
+  [[nodiscard]] inline Span<T> makeScalarSpan(T& scalar)
+  {
+    return Span<T>{&scalar, 1};
+  }
+
+  /**
+   * @brief Creates a scalar view.
+   * @tparam T The type of the scalar.
+   * @param scalar The scalar.
+   * @return The scalar view.
+   */
+  template<typename T>
+  [[nodiscard]] inline View<T> makeScalarView(const T& scalar)
+  {
+    return View<T>{&scalar, 1};
+  }
 } // namespace mex
 
 #endif /* MEX_COMMON_HPP */
