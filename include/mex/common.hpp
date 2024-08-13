@@ -164,9 +164,39 @@ namespace mex
    * @brief Gets the `nan` variable value.
    * @return The `nan` variable value.
    */
-  [[nodiscard]] inline double getNan()
+  [[nodiscard]] inline double getNaN()
   {
     return mxGetNaN();
+  }
+
+  /**
+   * @brief Checks if a value is finite.
+   * @param value The value.
+   * @return True if the value is finite, false otherwise.
+   */
+  [[nodiscard]] inline bool isFinite(double value)
+  {
+    return mxIsFinite(value);
+  }
+
+  /**
+   * @brief Checks if a value is infinite.
+   * @param value The value.
+   * @return True if the value is infinite, false otherwise.
+   */
+  [[nodiscard]] inline bool isInf(double value)
+  {
+    return mxIsInf(value);
+  }
+
+  /**
+   * @brief Checks if a value is NaN.
+   * @param value The value.
+   * @return True if the value is NaN, false otherwise.
+   */
+  [[nodiscard]] inline bool isNaN(double value)
+  {
+    return mxIsNaN(value);
   }
 
   /**

@@ -38,7 +38,7 @@ void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
   mex::NumericArray<double> output{rhs[0]};
   
   const double inf = mex::getInf();
-  const double nan = mex::getNan();
+  const double nan = mex::getNaN();
 
   /* Check for 0, in real part of data, if the data is zero, replace
      with NaN.  Also check for INT_MAX and INT_MIN and replace with
