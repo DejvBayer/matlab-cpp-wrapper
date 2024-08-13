@@ -765,6 +765,17 @@ namespace mex
     protected:
       const mxArray* mArray{}; ///< The mxArray pointer
   };
+
+  /**
+   * @brief Calculate the linear index of a multi-dimensional subscript.
+   * @param array Array
+   * @param subs Subscripts
+   * @return Linear index
+   */
+  [[nodiscard]] inline std::size_t calcSingleSubscript(const ArrayCref array, View<std::size_t> subs)
+  {
+    return mxCalcSingleSubscript(array.get(), subs.size(), subs.data());
+  }
 } // namespace mex
 
 #endif /* MEX_ARRAY_REF_HPP */
