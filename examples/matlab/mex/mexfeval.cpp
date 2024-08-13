@@ -26,5 +26,5 @@ void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
    */
   std::string fcn = mex::toAscii(rhs[0]);
 
-  mex::call(lhs, mex::View{rhs.data() + 1, rhs.size() - 1}, fcn.c_str());
+  mex::call(lhs, rhs.subspan(1, rhs.size() - 1), fcn.c_str());
 }
