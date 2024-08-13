@@ -62,6 +62,16 @@ namespace mex
       }
 
       /**
+       * @brief Get the field of the structure array at index 0.
+       * @param fieldName The name of the field.
+       * @return The field.
+       */
+      [[nodiscard]] std::optional<ArrayRef> getField(const char* fieldName)
+      {
+        return getField(0, fieldName);
+      }
+
+      /**
        * @brief Get the field of the structure array.
        * @param i The index of the structure.
        * @param fieldIndex The index of the field.
@@ -87,6 +97,16 @@ namespace mex
       }
 
       /**
+       * @brief Get the field of the structure array at index 0.
+       * @param fieldIndex The index of the field.
+       * @return The field.
+       */
+      [[nodiscard]] std::optional<ArrayRef> getField(FieldIndex fieldIndex)
+      {
+        return getField(0, fieldIndex);
+      }
+
+      /**
        * @brief Get the field of the structure array.
        * @param i The index of the structure.
        * @param fieldName The name of the field.
@@ -97,6 +117,16 @@ namespace mex
         const FieldIndex fieldIdx = getFieldIndex(fieldName);
 
         return getField(i, fieldIdx);
+      }
+
+      /**
+       * @brief Get the field of the structure array at index 0.
+       * @param fieldName The name of the field.
+       * @return The field.
+       */
+      [[nodiscard]] std::optional<ArrayCref> getField(const char* fieldName) const
+      {
+        return getField(0, fieldName);
       }
 
       /**
@@ -125,6 +155,16 @@ namespace mex
       }
 
       /**
+       * @brief Get the field of the structure array at index 0.
+       * @param fieldIndex The index of the field.
+       * @return The field.
+       */
+      [[nodiscard]] std::optional<ArrayCref> getField(FieldIndex fieldIndex) const
+      {
+        return getField(0, fieldIndex);
+      }
+
+      /**
        * @brief Set the field of the structure array.
        * @param i The index of the structure.
        * @param fieldName The name of the field.
@@ -135,6 +175,16 @@ namespace mex
         const FieldIndex fieldIdx = getFieldIndex(fieldName);
 
         setField(i, fieldIdx, value);
+      }
+
+      /**
+       * @brief Set the field of the structure array at index 0.
+       * @param fieldIndex The index of the field.
+       * @param value The value.
+       */
+      void setField(const char* fieldName, ArrayCref value)
+      {
+        setField(0, fieldName, value);
       }
 
       /**
@@ -158,6 +208,16 @@ namespace mex
       }
 
       /**
+       * @brief Set the field of the structure array at index 0.
+       * @param fieldIndex The index of the field.
+       * @param value The value.
+       */
+      void setField(FieldIndex fieldIndex, ArrayCref value)
+      {
+        setField(0, fieldIndex, value);
+      }
+
+      /**
        * @brief Set the field of the structure array.
        * @param i The index of the structure.
        * @param fieldName The name of the field.
@@ -168,6 +228,16 @@ namespace mex
         const FieldIndex fieldIdx = getFieldIndex(fieldName);
 
         setField(i, fieldIdx, std::move(value));
+      }
+
+      /**
+       * @brief Set the field of the structure array at index 0.
+       * @param fieldIndex The index of the field.
+       * @param value The value.
+       */
+      void setField(const char* fieldName, Array&& value)
+      {
+        setField(0, fieldName, std::move(value));
       }
 
       /**
@@ -186,6 +256,16 @@ namespace mex
         }
 
         mxSetFieldByNumber(get(), i, static_cast<int>(fieldIndex), value.release());
+      }
+
+      /**
+       * @brief Set the field of the structure array at index 0.
+       * @param fieldIndex The index of the field.
+       * @param value The value.
+       */
+      void setField(FieldIndex fieldIndex, Array&& value)
+      {
+        setField(0, fieldIndex, std::move(value));
       }
 
       /**

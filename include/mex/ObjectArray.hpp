@@ -28,129 +28,34 @@
 #include "detail/include.hpp"
 
 #include "Array.hpp"
-#include "ObjectArrayRef.hpp"
 #include "StructArray.hpp"
 
 namespace mex
 {
-  /// @brief ObjectArray class
-  class ObjectArray : public Array
+  /**
+   * @brief Create an object array
+   * @param dims Dimensions of the object array
+   * @return ObjectArray
+   */
+  [[nodiscard]] inline Array makeObjectArray(StructArray&& srcArray, const char* className)
   {
-    public:
-      /// @brief Inherit constructors
-      using Array::Array;
+    if (!srcArray.isValid())
+    {
+      throw Exception{"invalid source array"};
+    }
 
-      /**
-       * @brief Construct an object array from a struct array
-       * @param src Source struct array
-       * @param name Class name
-       */
-      ObjectArray(Array src, const char* name)
-      : Array{[&]()
-      {
-        if (name == nullptr)
-        {
-          throw Exception{"class name must not be null"};
-        }
+    if (className == nullptr)
+    {
+      throw Exception{"invalid class name"};
+    }
 
-        Array array{src.release()};
+    if (mxSetClassName(srcArray.release(), className))
+    {
+      throw Exception{"failed to set class name"};
+    }
 
-        if (mxSetClassName(array.get(), name))
-        {
-          throw Exception{"failed to set class name"};
-        }
-
-        return array;
-      }()}
-      {}
-
-      /// @brief Default destructor
-      ~ObjectArray() = default;
-
-      /// @brief Use inherited assignment operators
-      using Array::operator=;
-
-      /**
-       * @brief Get the class name of the object
-       * @return Class name
-       */
-      [[nodiscard]] const char* getClassName() const
-      {
-        checkValid();
-        return mxGetClassName(get());
-      }
-
-      /**
-       * @brief Gets the property of the object
-       * @param i Index
-       * @param propName Property name
-       * @return Property value
-       */
-      [[nodiscard]] std::optional<ArrayCref> getProperty(std::size_t i, const char* propName) const
-      {
-        checkValid();
-
-        if (propName == nullptr)
-        {
-          throw Exception{"property name must not be null"};
-        }
-
-        mxArray* array = mxGetProperty(get(), i, propName);
-
-        if (array == nullptr)
-        {
-          return std::nullopt;
-        }
-
-        mexMakeArrayPersistent(array);
-
-        return ArrayCref{array};
-      }
-
-      /**
-       * @brief Sets the property of the object
-       * @param i Index
-       * @param propName Property name
-       * @param value Property value
-       */
-      void setProperty(std::size_t i, const char* propName, ArrayCref value)
-      {
-        checkValid();
-
-        if (propName == nullptr)
-        {
-          throw Exception{"property name must not be null"};
-        }
-
-        mxSetProperty(get(), i, propName, value.get());
-      }
-
-      /// @brief Inherit conversion to ArrayRef
-      using Array::operator ArrayRef;
-
-      /// @brief Inherit conversion to ArrayCref
-      using Array::operator ArrayCref;
-
-      /**
-       * @brief Convert to ObjectArrayRef
-       * @return ObjectArrayRef
-       */
-      [[nodiscard]] operator ObjectArrayRef()
-      {
-        checkValid();
-        return ObjectArrayRef{get()};
-      }
-
-      /**
-       * @brief Convert to ObjectArrayCref
-       * @return ObjectArrayCref
-       */
-      [[nodiscard]] operator ObjectArrayCref() const
-      {
-        checkValid();
-        return ObjectArrayCref{get()};
-      }
-  };
+    return Array{std::move(srcArray)};
+  }
 } // namespace mex
 
 #endif /* MEX_OBJECT_ARRAY_HPP */

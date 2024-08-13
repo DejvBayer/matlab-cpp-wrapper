@@ -29,7 +29,7 @@
 
 #include "../CharArray.hpp"
 #include "../ObjectArray.hpp"
-#include "../ObjectArrayRef.hpp"
+#include "../propery.hpp"
 
 namespace mex::detail
 {
@@ -45,7 +45,7 @@ namespace mex::detail
       return;
     }
 
-    ObjectArrayRef meObj{me};
+    ArrayRef meObj{me};
 
     if (meObj.isEmpty())
     {
@@ -55,14 +55,14 @@ namespace mex::detail
     std::string id{};
     std::string message{};
 
-    auto idArray = meObj.getProperty(0, "identifier");
+    auto idArray = getProperty(meObj, "identifier");
 
     if (idArray.has_value() && idArray->isChar())
     {
       id = toAscii(*idArray);
     }
 
-    auto messageArray = meObj.getProperty(0, "message");
+    auto messageArray = getProperty(meObj, "message");
 
     if (messageArray.has_value() && messageArray->isChar())
     {
