@@ -24,15 +24,12 @@
 struct FileDeleter
 {
   /* Here is the exit function, which gets run when the MEX-file is
-   cleared and when the user exits MATLAB. The mexAtExit function
-   should always be declared as static. */
+     cleared and when the user exits MATLAB. The mexAtExit function
+     should always be declared as static. */
   void operator()(FILE* fp) const noexcept
   {
-    if (fp != nullptr)
-    {
-      mex::printf("Closing file matlab.data.\n");
-      std::fclose(fp);
-    }
+    mex::printf("Closing file matlab.data.\n");
+    std::fclose(fp);
   }
 };
 
@@ -51,7 +48,7 @@ void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
     throw mex::Exception{"MATLAB:mexatexit:maxrhs", "Too many output arguments."};
   }
 
-  if (rhs[0].getClassId() != mex::ClassId::_char)
+  if (!rhs[0].isChar())
   {
     throw mex::Exception{"MATLAB:mexatexit:invalidInput", "Input must be of type string.\n."};
   }
@@ -68,7 +65,7 @@ void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
     mex::printf("Opening file matlab.data.\n");
 
     /* Register an exit function. You should only register the
-        exit function after the file has been opened successfully*/
+       exit function after the file has been opened successfully*/
     fp.reset(tmpfp);
   }
 

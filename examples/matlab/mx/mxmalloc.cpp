@@ -17,23 +17,23 @@ void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
   /* Check for proper number of input and output arguments */
   if (rhs.size() != 1)
   { 
-    mexErrMsgIdAndTxt("MATLAB:mxmalloc:invalidNumInputs", "One input argument required.");
+    throw mex::Exception{"MATLAB:mxmalloc:invalidNumInputs", "One input argument required."};
   }
 
   if (lhs.size() > 1)
   {
-    mexErrMsgIdAndTxt("MATLAB:MXMALLOC:maxlhs", "Too many output arguments.");
+    throw mex::Exception{"MATLAB:MXMALLOC:maxlhs", "Too many output arguments."};
   }
   
   /* Check for proper input type */
-  if (rhs[0].getClassId() != mex::ClassId::_char || rhs[0].getDims()[0] != 1)
+  if (!rhs[0].isChar() || rhs[0].getDims()[0] != 1)
   {
-    mexErrMsgIdAndTxt("MATLAB:mxmalloc:invalidInput", "Input argument must be a string.");
+    throw mex::Exception{"MATLAB:mxmalloc:invalidInput", "Input argument must be a string."};
   }
   
   std::string str = mex::CharArrayCref{rhs[0]}.toAscii();
 
   mex::printf("The input string is:  %s\n", str.c_str());
   /* NOTE: You could add your own code here to manipulate 
-      the string */
+     the string */
 }

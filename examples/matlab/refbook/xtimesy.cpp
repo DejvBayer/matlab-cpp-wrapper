@@ -25,10 +25,6 @@ void xtimesy(const double        x,
 /* the gateway function */
 void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
 {
-  mxDouble *y, *z, x;
-
-  size_t mrows, ncols;
-
   /* check for proper number of arguments */
   /* NOTE: You do not need an else statement when using mexErrMsgIdAndTxt
      within an if statement, because it will never get to the else

@@ -37,12 +37,12 @@ void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
   }
 
   /* Make copy of MEX-file name, then create variable for MATLAB
-      workspace from MEX-file name. */
-  std::strcpy(array_name, mexFunctionName());
+     workspace from MEX-file name. */
+  std::strcpy(array_name, getName());
   std::strcat(array_name, "_called");
 
   /* Get variable that keeps count of how many times MEX-file has
-      been called from MATLAB global workspace. */
+     been called from MATLAB global workspace. */
   NumericArray<double> array{};
   
 

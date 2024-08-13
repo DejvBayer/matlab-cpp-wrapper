@@ -60,13 +60,13 @@ void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
   }
 
   /* check to make sure the first input argument is a real matrix */
-  if (T_IN.getClassId() != mex::ClassId::_double || T_IN.isComplex())
+  if (!T_IN.isDouble() || T_IN.isComplex())
   {
     throw mex::Exception{"MATLAB:yprime:invalidT", "First input argument must be a real matrix."};
   }
 
   /* check to make sure the second input argument is a real matrix */
-  if (Y_IN.getClassId() != mex::ClassId::_double || Y_IN.isComplex())
+  if (!Y_IN.isDouble() || Y_IN.isComplex())
   {
     throw mex::Exception{"MATLAB:yprime:invalidY", "Second input argument must be a real matrix."};
   }

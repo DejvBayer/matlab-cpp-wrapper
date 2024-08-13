@@ -15,7 +15,7 @@ void mex::Function::operator()(Span<Array>, View<ArrayCref> rhs)
   {
     throw mex::Exception{"MATLAB:mexeval:minrhs", "Function requires one input.\n"};
   }
-  else if (rhs[0].getClassId() != mex::ClassId::_char)
+  else if (!rhs[0].isChar())
   {
     throw mex::Exception{"MATLAB:mexeval:UndefinedFunction", "Function 'mexeval' defined only for for variables of class 'char'\n"};
   }

@@ -28,7 +28,7 @@ void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
   }
 
   /* Create an m-by-n mxArray. */
-  auto array = mex::makeUninitNumericArray<double>({{ROWS, COLUMNS}});
+  auto array = mex::makeUninitNumericArray<double>(ROWS, COLUMNS);
 
   /* Copy existing data. */
   std::copy(data.begin(), data.end(), array.begin());

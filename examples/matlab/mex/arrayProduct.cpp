@@ -42,13 +42,13 @@ void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
   }
 
   /* make sure the first input argument is scalar */
-  if (rhs[0].getClassId() != mex::ClassId::_double || rhs[0].isComplex() || rhs[0].getSize() != 1)
+  if (!rhs[0].isDouble() || rhs[0].isComplex() || !rhs[0].isScalar())
   {
     throw mex::Exception{"MyToolbox:arrayProduct:notScalar", "Input multiplier must be a scalar."};
   }
   
   /* make sure the second input argument is type double */
-  if (rhs[1].getClassId() != mex::ClassId::_double || rhs[1].isComplex())
+  if (!rhs[1].isDouble() || rhs[1].isComplex())
   {
     throw mex::Exception{"MyToolbox:arrayProduct:notDouble", "Input matrix must be type double."};
   }

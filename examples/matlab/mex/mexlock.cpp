@@ -21,7 +21,7 @@
 void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
 {  
   /* Check for proper number of input and output arguments */   
-  if (rhs.size() != 1 || rhs[0].getClassId() != mex::ClassId::_double || rhs[0].getSize() != 1)
+  if (rhs.size() != 1 || !rhs[0].isDouble() || !rhs[0].isScalar())
   {
     throw mex::Exception{"MATLAB:mexlock:inputNotRealScalarDouble", "Input argument must be a real scalar double"};
   }

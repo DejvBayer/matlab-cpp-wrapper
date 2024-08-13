@@ -62,7 +62,7 @@ void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
 
     /* Use mxSetFieldByNumber instead of mxSetField for efficiency
      * mxSetField(plhs[0],i,"name",mxCreateString(friends[i].name); */
-    array.setField(i, phone_field, mex::makeNumericScalar<double>(friends[i].phone));
+    array.setField(i, phone_field, mex::makeNumericScalar(friends[i].phone));
   }
 
   lhs[0] = std::move(array);
