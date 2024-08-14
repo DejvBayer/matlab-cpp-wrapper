@@ -43,41 +43,6 @@ namespace mex
 
   /**
    * @brief Creates a numeric array
-   * @tparam T Element type
-   * @param dims Dimensions
-   * @return Numeric array
-   */
-  template<typename T, std::enable_if_t<isNumeric<T>, int> = 0>
-  [[nodiscard]] NumericArray<T> makeNumericArray(View<std::size_t> dims)
-  {
-    mxArray* array = mxCreateNumericArray(dims.size(),
-                                          const_cast<std::size_t*>(dims.data()),
-                                          static_cast<mxClassID>(TypeProperties<T>::classId),
-                                          static_cast<mxComplexity>(TypeProperties<T>::complexity));
-
-    if (array == nullptr)
-    {
-      throw Exception{"failed to create numeric array"};
-    }
-
-    return NumericArray<T>{std::move(array)};
-  }
-
-  /**
-   * @brief Creates a numeric array
-   * @tparam T Element type
-   * @param m Number of rows
-   * @param n Number of columns
-   * @return Numeric array
-   */
-  template<typename T, std::enable_if_t<isNumeric<T>, int> = 0>
-  [[nodiscard]] NumericArray<T> makeNumericArray(std::size_t m, std::size_t n)
-  {
-    return makeNumericArray<T>({{m, n}});
-  }
-
-  /**
-   * @brief Creates a numeric array
    * @param dims Dimensions
    * @param classId Class ID
    * @param complexity Complexity
@@ -102,6 +67,20 @@ namespace mex
 
   /**
    * @brief Creates a numeric array
+   * @tparam T Element type
+   * @param dims Dimensions
+   * @return Numeric array
+   */
+  template<typename T, std::enable_if_t<isNumeric<T>, int> = 0>
+  [[nodiscard]] NumericArray<T> makeNumericArray(View<std::size_t> dims)
+  {
+    return makeNumericArray(dims,
+                            static_cast<ClassId>(TypeProperties<T>::classId),
+                            static_cast<Complexity>(TypeProperties<T>::complexity));
+  }
+
+  /**
+   * @brief Creates a numeric array
    * @param m Number of rows
    * @param n Number of columns
    * @param classId Class ID
@@ -116,41 +95,18 @@ namespace mex
     return makeNumericArray({{m, n}}, classId, complexity);
   }
 
-
   /**
-   * @brief Creates an uninitialized numeric array
-   * @tparam T Element type
-   * @param dims Dimensions
-   * @return Uninitialized numeric array
-   */
-  template<typename T, std::enable_if_t<isNumeric<T>, int> = 0>
-  [[nodiscard]] NumericArray<T> makeUninitNumericArray(View<std::size_t> dims)
-  {
-    mxArray* array = mxCreateUninitNumericArray(dims.size(),
-                                                const_cast<std::size_t*>(dims.data()),
-                                                static_cast<mxClassID>(TypeProperties<T>::classId),
-                                                static_cast<mxComplexity>(TypeProperties<T>::complexity));
-
-    if (array == nullptr)
-    {
-      throw Exception{"failed to create uninitialized numeric array"};
-    }
-
-    return NumericArray<T>{std::move(array)};
-  }
-
-  /**
-   * @brief Creates an uninitialized numeric array
+   * @brief Creates a numeric array
    * @tparam T Element type
    * @param m Number of rows
    * @param n Number of columns
-   * @return Uninitialized numeric array
+   * @return Numeric array
    */
   template<typename T, std::enable_if_t<isNumeric<T>, int> = 0>
-  [[nodiscard]] NumericArray<T> makeUninitNumericArray(std::size_t m, std::size_t n)
+  [[nodiscard]] NumericArray<T> makeNumericArray(std::size_t m, std::size_t n)
   {
-    return makeUninitNumericArray<T>({{m, n}});
-  }
+    return makeNumericArray<T>({{m, n}});
+  }  
 
   /**
    * @brief Creates an unitiliazed numeric array
@@ -178,6 +134,20 @@ namespace mex
 
   /**
    * @brief Creates an uninitialized numeric array
+   * @tparam T Element type
+   * @param dims Dimensions
+   * @return Uninitialized numeric array
+   */
+  template<typename T, std::enable_if_t<isNumeric<T>, int> = 0>
+  [[nodiscard]] NumericArray<T> makeUninitNumericArray(View<std::size_t> dims)
+  {
+    return makeUninitNumericArray(dims,
+                                  static_cast<ClassId>(TypeProperties<T>::classId),
+                                  static_cast<Complexity>(TypeProperties<T>::complexity));
+  }
+
+  /**
+   * @brief Creates an uninitialized numeric array
    * @param m Number of rows
    * @param n Number of columns
    * @param classId Class ID
@@ -190,6 +160,19 @@ namespace mex
                                                     const Complexity  complexity = Complexity::real)
   {
     return makeUninitNumericArray({{m, n}}, classId, complexity);
+  }
+
+  /**
+   * @brief Creates an uninitialized numeric array
+   * @tparam T Element type
+   * @param m Number of rows
+   * @param n Number of columns
+   * @return Uninitialized numeric array
+   */
+  template<typename T, std::enable_if_t<isNumeric<T>, int> = 0>
+  [[nodiscard]] NumericArray<T> makeUninitNumericArray(std::size_t m, std::size_t n)
+  {
+    return makeUninitNumericArray<T>({{m, n}});
   }
 
   /**
