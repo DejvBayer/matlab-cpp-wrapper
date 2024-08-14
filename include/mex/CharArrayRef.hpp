@@ -40,9 +40,12 @@ namespace mex
   {
     const std::size_t size = std::char_traits<char16_t>::length(array.getData());
 
-    std::string str(size + 1, '\0');
+    std::string str(size, '\0');
 
-    mxGetString(array.get(), str.data(), size);
+    if (mxGetString(array.get(), str.data(), size + 1))
+    {
+      throw Exception{"MATLAB:toAscii:invalidInput", "Failed to convert char16_t array to string.\n"};
+    }
 
     return str;
   }
