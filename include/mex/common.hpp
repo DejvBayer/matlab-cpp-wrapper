@@ -114,12 +114,33 @@ namespace mex
   }
 
   /**
+   * @brief Print formatted output to MATLAB command window.
+   * @tparam Args Argument types.
+   * @param format Format string.
+   * @param args Arguments.
+   */
+  template<typename... Args>
+  void printf(std::string_view format, Args&&... args)
+  {
+    printf(format.data(), std::forward<Args>(args)...);
+  }
+
+  /**
    * @brief Warns the user with a message.
    * @param message The message.
    */
   inline void warn(const char* message)
   {
     mexWarnMsgTxt(message);
+  }
+
+  /**
+   * @brief Warns the user with a message.
+   * @param message The message.
+   */
+  inline void warn(std::string_view message)
+  {
+    warn(message.data());
   }
 
   /**
@@ -140,6 +161,19 @@ namespace mex
     {
       mexWarnMsgIdAndTxt(id, "%s", format);
     }
+  }
+
+  /**
+   * @brief Warns the user with a message.
+   * @tparam Args Argument types.
+   * @param id Message identifier.
+   * @param format Format string.
+   * @param args Arguments.
+   */
+  template<typename... Args>
+  void warn(std::string_view id, std::string_view format, Args&&... args)
+  {
+    warn(id.data(), format.data(), std::forward<Args>(args)...);
   }
 
   /**

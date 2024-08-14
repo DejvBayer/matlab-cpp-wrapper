@@ -56,6 +56,16 @@ namespace mex
 
     return Array{std::move(srcArray)};
   }
+
+  /**
+   * @brief Create an object array
+   * @param dims Dimensions of the object array
+   * @return ObjectArray
+   */
+  [[nodiscard]] inline Array makeObjectArray(StructArray&& srcArray, std::string_view className)
+  {
+    return makeObjectArray(std::move(srcArray), className.data());
+  }
 } // namespace mex
 
 #endif /* MEX_OBJECT_ARRAY_HPP */

@@ -83,6 +83,17 @@ namespace mex
   }
 
   /**
+   * @brief Put a variable into the specified workspace.
+   * @param workspace The workspace into which to put the variable.
+   * @param name The name of the variable to put.
+   * @param value The reference to the variable value.
+   */
+  inline void putVariable(Workspace workspace, std::string_view name, ArrayCref value)
+  {
+    putVariable(workspace, name.data(), value);
+  }
+
+  /**
    * @brief Get a variable reference from the specified workspace.
    * @param workspace The workspace from which to get the variable.
    * @param name The name of the variable to get.
@@ -108,6 +119,17 @@ namespace mex
   }
 
   /**
+   * @brief Get a variable reference from the specified workspace.
+   * @param workspace The workspace from which to get the variable.
+   * @param name The name of the variable to get.
+   * @return The reference to the variable value.
+   */
+  [[nodiscard]] inline std::optional<ArrayCref> getVariableCref(Workspace workspace, std::string_view name)
+  {
+    return getVariableCref(workspace, name.data());
+  }
+
+  /**
    * @brief Get a variable from the specified workspace.
    * @param workspace The workspace from which to get the variable.
    * @param name The name of the variable to get.
@@ -130,6 +152,17 @@ namespace mex
     }
     
     return Array{std::move(array)};
+  }
+
+  /**
+   * @brief Get a variable from the specified workspace.
+   * @param workspace The workspace from which to get the variable.
+   * @param name The name of the variable to get.
+   * @return The copy of variable value.
+   */
+  [[nodiscard]] inline std::optional<Array> getVariable(Workspace workspace, std::string_view name)
+  {
+    return getVariable(workspace, name.data());
   }
 } // namespace mex
 

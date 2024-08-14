@@ -32,7 +32,7 @@ void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
 
   /* Invoke the function specified as the first input, which must take 
    * zero inputs and have zero outputs */
-  mex::call({}, function_name.c_str());
+  mex::call({}, function_name);
 
   mex::printf("%s called successfully\n", function_name.c_str());
 }

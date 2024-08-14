@@ -84,12 +84,33 @@ namespace mex
 
   /**
    * @brief Calls a MATLAB function.
+   * @param lhs The left-hand side arguments.
+   * @param rhs The right-hand side arguments.
+   * @param functionName The name of the function to call.
+   */
+  inline void call(Span<Array> lhs, View<ArrayCref> rhs, std::string_view functionName)
+  {
+    call(lhs, rhs, functionName);
+  }
+
+  /**
+   * @brief Calls a MATLAB function.
    * @param rhs The input arguments.
    * @param functionName The name of the function to call.
    */
   inline void call(View<ArrayCref> rhs, const char* functionName)
   {
     call({}, rhs, functionName);
+  }
+
+  /**
+   * @brief Calls a MATLAB function.
+   * @param rhs The input arguments.
+   * @param functionName The name of the function to call.
+   */
+  inline void call(View<ArrayCref> rhs, std::string_view functionName)
+  {
+    call(rhs, functionName.data());
   }
 
   /**
@@ -104,6 +125,15 @@ namespace mex
     }
 
     detail::handleMException(mexEvalStringWithTrap(expr));
+  }
+
+  /**
+   * @brief Evaluates a MATLAB expression.
+   * @param expr The expression to evaluate.
+   */
+  inline void eval(std::string_view expr)
+  {
+    eval(expr.data());
   }
 } // namespace mex
 

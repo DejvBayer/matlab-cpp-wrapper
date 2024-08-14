@@ -475,6 +475,16 @@ namespace mex
       }
 
       /**
+       * @brief Is the array a class?
+       * @param name Class name
+       * @return True if the array is a class, false otherwise
+       */
+      [[nodiscard]] bool isClass(std::string_view name) const
+      {
+        return isClass(name.data());
+      }
+
+      /**
        * @brief Is the array a struct?
        * @return True if the array is a struct, false otherwise
        */

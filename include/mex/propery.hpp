@@ -40,9 +40,9 @@ namespace mex
    * @param propName Property name
    * @return Property value
    */
-  [[nodiscard]] std::optional<ArrayCref> getProperty(const ArrayRef    array,
-                                                     const std::size_t index,
-                                                     const char* const propName)
+  [[nodiscard]] inline std::optional<ArrayCref> getProperty(const ArrayRef    array,
+                                                            const std::size_t index,
+                                                            const char* const propName)
   {
     if (propName == nullptr)
     {
@@ -60,6 +60,20 @@ namespace mex
 
     return ArrayCref{prop};
   }
+  
+  /**
+   * @brief Gets the property of the object
+   * @param array Array
+   * @param index Index
+   * @param propName Property name
+   * @return Property value
+   */
+  [[nodiscard]] inline std::optional<ArrayCref> getProperty(const ArrayRef         array,
+                                                            const std::size_t      index,
+                                                            const std::string_view propName)
+  {
+    return getProperty(array, index, propName.data());
+  }
 
   /**
    * @brief Gets the property of the object
@@ -67,10 +81,22 @@ namespace mex
    * @param propName Property name
    * @return Property value
    */
-  [[nodiscard]] std::optional<ArrayCref> getProperty(const ArrayRef    array,
-                                                     const char* const propName)
+  [[nodiscard]] inline std::optional<ArrayCref> getProperty(const ArrayRef    array,
+                                                            const char* const propName)
   {
     return getProperty(array, 0, propName);
+  }
+
+  /**
+   * @brief Gets the property of the object
+   * @param array Array
+   * @param propName Property name
+   * @return Property value
+   */
+  [[nodiscard]] inline std::optional<ArrayCref> getProperty(const ArrayRef         array,
+                                                            const std::string_view propName)
+  {
+    return getProperty(array, 0, propName.data());
   }
 
   /**
@@ -96,6 +122,21 @@ namespace mex
   /**
    * @brief Sets the property of the object
    * @param array Array
+   * @param index Index
+   * @param propName Property name
+   * @param value Property value
+   */
+  inline void setProperty(const ArrayRef         array,
+                          const std::size_t      index,
+                          const std::string_view propName,
+                          const ArrayCref        value)
+  {
+    setProperty(array, index, propName.data(), value);
+  }
+
+  /**
+   * @brief Sets the property of the object
+   * @param array Array
    * @param propName Property name
    * @param value Property value
    */
@@ -104,6 +145,19 @@ namespace mex
                           const ArrayCref   value)
   {
     setProperty(array, 0, propName, value);
+  }
+
+  /**
+   * @brief Sets the property of the object
+   * @param array Array
+   * @param propName Property name
+   * @param value Property value
+   */
+  inline void setProperty(const ArrayRef         array,
+                          const std::string_view propName,
+                          const ArrayCref        value)
+  {
+    setProperty(array, 0, propName.data(), value);
   }
 } // namespace mex
 

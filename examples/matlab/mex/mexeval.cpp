@@ -29,7 +29,7 @@ void mex::Function::operator()(Span<Array>, View<ArrayCref> rhs)
     
     try
     {
-      mex::eval(fcn.c_str());
+      mex::eval(fcn);
     }
     catch (const mex::Exception&)
     {
@@ -42,7 +42,7 @@ void mex::Function::operator()(Span<Array>, View<ArrayCref> rhs)
          */        
         std::string cmd = mex::toAscii(mex::CharArrayCref{rhs[1]});
         
-        mex::eval(cmd.c_str());
+        mex::eval(cmd);
       }
     }
   }
