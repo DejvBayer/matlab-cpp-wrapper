@@ -32,12 +32,14 @@
 #include <cstdint>
 #include <exception>
 #include <memory>
+#include <numeric>
 #include <optional>
 #include <span>
 #include <string>
 #include <string_view>
 #include <type_traits>
 #include <utility>
+#include <vector>
 
 #include <mex.h>
 #ifdef MEX_ENABLE_GPU
