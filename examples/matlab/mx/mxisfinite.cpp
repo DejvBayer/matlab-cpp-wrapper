@@ -72,8 +72,6 @@ void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
     throw mex::Exception{"MATLAB:mxisfinite:empty", "Input argument is empty\n"};
   }
 
-  const std::size_t n = rhs[0].getSize();
-
   if (rhs[0].isComplex())
   {
     mex::NumericArrayCref<std::complex<double>> c{rhs[0]};

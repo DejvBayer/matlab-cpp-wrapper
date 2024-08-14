@@ -23,8 +23,7 @@ static int mex_count = 0;
 void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
 {
   char array_name[40];
-  int status;
-
+  
   /* Check for proper number of input and output arguments */
   if (!rhs.empty())
   {
@@ -68,7 +67,7 @@ void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
 
   /* Increment both MATLAB and MEX counters by 1 */
   array[0] += 1;
-  mex_count = array[0];
+  mex_count = static_cast<int>(array[0]);
   mex::printf("%s has been called %i time(s)\n", getName(), mex_count);
 
   /* Put variable in MATLAB global workspace */

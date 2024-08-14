@@ -43,7 +43,7 @@ namespace mex
       Array() noexcept = default;
 
       /// @brief Explicitly deleted constructor from nullptr.
-      Array(nullptr_t) = delete;
+      Array(std::nullptr_t) = delete;
 
       /**
        * @brief Constructor

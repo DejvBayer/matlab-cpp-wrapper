@@ -90,7 +90,7 @@ namespace mex
    */
   inline void call(Span<Array> lhs, View<ArrayCref> rhs, std::string_view functionName)
   {
-    call(lhs, rhs, functionName);
+    call(lhs, rhs, functionName.data());
   }
 
   /**

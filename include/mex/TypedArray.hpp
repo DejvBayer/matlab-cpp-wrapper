@@ -62,7 +62,7 @@ namespace mex
       TypedArray() noexcept = default;
 
       /// @brief Explicitly deleted constructor from nullptr.
-      TypedArray(nullptr_t) = delete;
+      TypedArray(std::nullptr_t) = delete;
 
       /**
        * @brief Constructor

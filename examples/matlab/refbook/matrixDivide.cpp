@@ -37,17 +37,13 @@ void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
   {
     throw mex::Exception{"MATLAB:matrixDivide:fieldNotRealMatrix", "Second input argument must be a real, double matrix."};
   }
-  
-  /* Validate matrix input arguments */
-  const double* A = mex::NumericArrayCref<double>{rhs[0]}.getData(); /* pointer to first input matrix */
-  const double* B = mex::NumericArrayCref<double>{rhs[1]}.getData(); /* pointer to second input matrix */
 
   /* dimensions of input matrices */
   const std::ptrdiff_t m = static_cast<std::ptrdiff_t>(rhs[0].getM());
   const std::ptrdiff_t p = static_cast<std::ptrdiff_t>(rhs[0].getN());
   const std::ptrdiff_t n = static_cast<std::ptrdiff_t>(rhs[1].getN());
 
-  if (p != rhs[1].getM())
+  if (static_cast<std::size_t>(p) != rhs[1].getM())
   {
     throw mex::Exception{"MATLAB:matrixDivide:matchdims", "Inner dimensions of matrices do not match."};
   }
@@ -66,13 +62,13 @@ void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
   double* A2 = Awork.data();
 
   /* Create output for DGESV */
-  auto output = mex::makeUninitNumericArray<double>(p, n);
-  std::copy_n(B, p * n, output.begin());
+  auto output = mex::makeUninitNumericArray<double>(static_cast<std::size_t>(p), static_cast<std::size_t>(n));
+  std::copy(mex::NumericArrayCref<double>{rhs[1]}.begin(), mex::NumericArrayCref<double>{rhs[1]}.end(), output.begin());
 
   double* B2 = output.getData();
 
   /* Create inputs for DGESV */
-  std::vector<std::ptrdiff_t> pivot(m * p);
+  std::vector<std::ptrdiff_t> pivot(static_cast<std::size_t>(m * p));
 
   std::ptrdiff_t info{};
 

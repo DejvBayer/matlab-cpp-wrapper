@@ -11,8 +11,6 @@
 
 void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
 {
-  mxArray * exception = NULL;
-
   /* Check for proper number of input and output arguments */    
   if (rhs.size() != 1)
   { 

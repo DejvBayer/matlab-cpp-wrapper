@@ -44,7 +44,7 @@ namespace mex
       ArrayRef() = delete;
 
       /// @brief Explicitly deleted constructor from nullptr.
-      ArrayRef(nullptr_t) = delete;
+      ArrayRef(std::nullptr_t) = delete;
 
       /**
        * @brief Constructor from a mxArray pointer.
@@ -423,7 +423,7 @@ namespace mex
       ArrayCref() = delete;
 
       /// @brief Explicitly deleted constructor from nullptr.
-      ArrayCref(nullptr_t) = delete;
+      ArrayCref(std::nullptr_t) = delete;
 
       /**
        * @brief Constructor from a mxArray pointer.

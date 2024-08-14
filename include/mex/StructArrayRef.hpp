@@ -203,7 +203,7 @@ namespace mex
        */
       void setField(std::size_t i, std::string_view fieldName, Array&& value)
       {
-        setField(i, fieldName, std::move(value));
+        setField(i, fieldName.data(), std::move(value));
       }
 
       /**
@@ -228,7 +228,7 @@ namespace mex
        */
       [[nodiscard]] std::size_t getFieldCount() const
       {
-        return mxGetNumberOfFields(get());
+        return static_cast<std::size_t>(mxGetNumberOfFields(get()));
       }
 
       /**
@@ -405,7 +405,7 @@ namespace mex
        */
       [[nodiscard]] std::size_t getFieldCount() const
       {
-        return mxGetNumberOfFields(get());
+        return static_cast<std::size_t>(mxGetNumberOfFields(get()));
       }
 
       /**

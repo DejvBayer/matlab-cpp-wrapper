@@ -29,7 +29,6 @@ void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
                                       Phonebook{"Mary Smith",    3912},
                                       Phonebook{"Stacy Flora",   3238},
                                       Phonebook{"Harry Alpert",  3077}};
-  mwSize dims[2] = {1, friends.size()};
 
   /* Check for proper number of input and  output arguments */
   if (!rhs.empty())

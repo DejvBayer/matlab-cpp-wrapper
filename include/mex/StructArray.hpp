@@ -359,7 +359,7 @@ namespace mex
       [[nodiscard]] std::size_t getFieldCount() const
       {
         checkValid();
-        return mxGetNumberOfFields(get());
+        return static_cast<std::size_t>(mxGetNumberOfFields(get()));
       }
 
       /**

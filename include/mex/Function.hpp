@@ -133,8 +133,8 @@ mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
     static_assert(sizeof(const mxArray*) == sizeof(mex::ArrayCref));
 
     // Call the user-defined function.
-    mex::Function{}(mex::Span<mex::Array>(reinterpret_cast<mex::Array*>(plhs), nlhs),
-                    mex::View<mex::ArrayCref>(reinterpret_cast<mex::ArrayCref*>(prhs), nrhs));
+    mex::Function{}(mex::Span<mex::Array>(reinterpret_cast<mex::Array*>(plhs), static_cast<std::size_t>(nlhs)),
+                    mex::View<mex::ArrayCref>(reinterpret_cast<mex::ArrayCref*>(prhs), static_cast<std::size_t>(nrhs)));
 
     // Return if no exception occurred.
     return;
