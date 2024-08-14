@@ -57,7 +57,7 @@ void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
   {
     FILE* tmpfp = std::fopen("matlab.data", "w");
 
-    if (fp == NULL)
+    if (tmpfp == NULL)
     {
       throw mex::Exception{"MATLAB:mexatexit:errorOpeningFile", "Could not open file matlab.data."}; 
     }
