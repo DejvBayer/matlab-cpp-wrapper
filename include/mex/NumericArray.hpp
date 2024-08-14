@@ -22,13 +22,13 @@
   SOFTWARE.
 */
 
-#ifndef MEX_NUMERIC_MATRIX_HPP
-#define MEX_NUMERIC_MATRIX_HPP
+#ifndef MEX_NUMERIC_ARRAY_HPP
+#define MEX_NUMERIC_ARRAY_HPP
 
 #include "detail/include.hpp"
 
 #include "Exception.hpp"
-#include "NumericMatrixRef.hpp"
+#include "NumericArrayRef.hpp"
 #include "TypedArray.hpp"
 #include "typeTraits.hpp"
 
@@ -205,5 +205,5 @@ namespace mex
   }
 } // namespace mex
 
-#endif /* MEX_NUMERIC_MATRIX_HPP */
+#endif /* MEX_NUMERIC_ARRAY_HPP */
 

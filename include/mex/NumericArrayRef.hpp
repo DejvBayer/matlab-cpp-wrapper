@@ -22,8 +22,8 @@
   SOFTWARE.
 */
 
-#ifndef MEX_NUMERIC_MATRIX_REF_HPP
-#define MEX_NUMERIC_MATRIX_REF_HPP
+#ifndef MEX_NUMERIC_ARRAY_REF_HPP
+#define MEX_NUMERIC_ARRAY_REF_HPP
 
 #include "TypedArrayRef.hpp"
 
@@ -44,4 +44,4 @@ namespace mex
   using NumericArrayCref = TypedArrayCref<T>;
 } // namespace mex
 
-#endif /* MEX_NUMERIC_MATRIX_REF_HPP */
+#endif /* MEX_NUMERIC_ARRAY_REF_HPP */
