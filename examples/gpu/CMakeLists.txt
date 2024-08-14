@@ -27,20 +27,24 @@ enable_language(CUDA)
 find_package(CUDAToolkit REQUIRED)
 
 function(add_gpu_examples dir)
-  set(EXAMPLES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/${dir}")
-  file(GLOB EXAMPLES "${EXAMPLES_DIR}/*.cu")
+  # Get all CUDA examples
+  file(GLOB EXAMPLES "${dir}/*.cu")
 
+  # Set output directory for mex libraries
+  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${dir}")
+
+  # Compile all examples
   foreach(EXAMPLE ${EXAMPLES})
+    # Get name of example
     get_filename_component(EXAMPLE_NAME ${EXAMPLE} NAME_WE)
     
+    # Add mex library
     matlab_add_mex(
       NAME        ${EXAMPLE_NAME}
       SRC         ${EXAMPLE}
       OUTPUT_NAME ${EXAMPLE_NAME}
       LINK_TO     mexw::mexw-gpu CUDA::cudart
       R2018a)
-
-    target_compile_features(${EXAMPLE_NAME} PRIVATE cuda_std_17)
   endforeach()
 endfunction()
 

@@ -23,14 +23,18 @@
 ##
 
 function(add_examples dir)
-  set(EXAMPLES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/${dir}")
-  file(GLOB EXAMPLES "${EXAMPLES_DIR}/*.cpp")
+  # Get all C++ examples
+  file(GLOB EXAMPLES "${dir}/*.cpp")
 
+  # Set output directory for mex libraries
   set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${dir}")
 
+  # Compile all examples
   foreach(EXAMPLE ${EXAMPLES})
+    # Get name of example
     get_filename_component(EXAMPLE_NAME ${EXAMPLE} NAME_WE)
     
+    # Add mex library
     matlab_add_mex(
       NAME        ${EXAMPLE_NAME}
       SRC         ${EXAMPLE}
@@ -44,6 +48,6 @@ add_examples("matlab/mex")
 add_examples("matlab/mx")
 add_examples("matlab/refbook")
 
-if (MEXW_ENABLE_GPU)
+if(MEXW_ENABLE_GPU)
   add_subdirectory(gpu)
 endif()
