@@ -22,43 +22,26 @@
   SOFTWARE.
 */
 
-#ifndef MEX_MEX_HPP
-#define MEX_MEX_HPP
+#ifndef MEX_GPU_NUMERIC_ARRAY_REF_HPP
+#define MEX_GPU_NUMERIC_ARRAY_REF_HPP
 
-#include "detail/include.hpp"
-
-#if MATLAB_TARGET_API_VERSION < 800
-# error "This library requires MATLAB R2018a or later."
-#endif
-
-#include "Array.hpp"
-#include "ArrayRef.hpp"
-#include "CellArray.hpp"
-#include "CellArrayRef.hpp"
-#include "CharArray.hpp"
-#include "CharArrayRef.hpp"
-#include "common.hpp"
-#include "eval.hpp"
-#include "Exception.hpp"
-#include "memory.hpp"
-#include "NumericArray.hpp"
-#include "NumericArrayRef.hpp"
-#include "ObjectArray.hpp"
-#include "propery.hpp"
-#include "TypedArray.hpp"
 #include "TypedArrayRef.hpp"
-#include "StructArray.hpp"
-#include "StructArrayRef.hpp"
-#include "typeTraits.hpp"
-#include "variable.hpp"
 
-#ifdef MEX_ENABLE_GPU
-# include "gpu/Array.hpp"
-# include "gpu/ArrayRef.hpp"
-# include "gpu/NumericArray.hpp"
-# include "gpu/NumericArrayRef.hpp"
-# include "gpu/TypedArray.hpp"
-# include "gpu/TypedArrayRef.hpp"
-#endif
+namespace mex::gpu
+{
+  /**
+   * @brief Numeric typed array reference
+   * @tparam T Element type
+   */
+  template<typename T, std::enable_if_t<isNumeric<T>, int> = 0>
+  using NumericArrayRef = TypedArrayRef<T>;
 
-#endif /* MEX_MEX_HPP */
+  /**
+   * @brief Numeric typed array const reference
+   * @tparam T Element type
+   */
+  template<typename T, std::enable_if_t<isNumeric<T>, int> = 0>
+  using NumericArrayCref = TypedArrayCref<T>;
+} // namespace mex::gpu
+
+#endif /* MEX_GPU_NUMERIC_ARRAY_REF_HPP */

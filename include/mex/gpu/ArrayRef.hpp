@@ -42,13 +42,13 @@ namespace mex::gpu
       ArrayRef() = delete;
 
       /// @brief Explicitly deleted constructor from nullptr.
-      ArrayRef(nullptr_t) = delete;
+      ArrayRef(std::nullptr_t) = delete;
 
       /**
        * @brief Constructor from a mxGPUArray pointer.
        * @param array mxGPUArray pointer
        */
-      explicit ArrayRef(mxGPUArray* array)
+      explicit ArrayRef(Array& array)
       : mArray{array}
       {}
 
@@ -173,7 +173,7 @@ namespace mex::gpu
         return mArray;
       }
     protected:
-      mxGPUArray* mArray{}; ///< The mxGPUArray pointer
+      std::reference_wrapper<Array> mArray; ///< The mxGPUArray pointer
   };
 
   /**
@@ -187,7 +187,7 @@ namespace mex::gpu
       ArrayCref() = delete;
 
       /// @brief Explicitly deleted constructor from nullptr.
-      ArrayCref(nullptr_t) = delete;
+      ArrayCref(std::nullptr_t) = delete;
 
       /**
        * @brief Constructor from a mxGPUArray pointer.
@@ -337,7 +337,7 @@ namespace mex::gpu
         return mArray;
       }
     protected:
-      const mxGPUArray* mArray{}; ///< The mxGPUArray pointer
+      std::reference_wrapper<const Array> mArray; ///< The mxGPUArray pointer
   };
 } // namespace mex::gpu
 

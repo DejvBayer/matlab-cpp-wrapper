@@ -30,6 +30,7 @@
 #include "ArrayRef.hpp"
 #include "../common.hpp"
 #include "../Exception.hpp"
+#include "../memory.hpp"
 
 namespace mex::gpu
 {
@@ -41,7 +42,7 @@ namespace mex::gpu
       Array() noexcept = default;
 
       /// @brief Explicitly deleted constructor from nullptr.
-      Array(nullptr_t) = delete;
+      Array(std::nullptr_t) = delete;
 
       /**
        * @brief Constructor
@@ -117,7 +118,8 @@ namespace mex::gpu
        * @param other Other array
        */
       Array(Array&& other) noexcept
-      : mArray{std::exchange(other.mArray, nullptr)}
+      : mArray{std::exchange(other.mArray, nullptr)},
+        mDims{std::move(other.mDims)}
       {}
 
       /// @brief Destructor
@@ -185,6 +187,7 @@ namespace mex::gpu
         {
           destroy();
           mArray = std::exchange(other.mArray, nullptr);
+          mDims  = std::move(other.mDims);
         }
 
         return *this;
@@ -207,7 +210,13 @@ namespace mex::gpu
       [[nodiscard]] View<std::size_t> getDims() const
       {
         checkValid();
-        return View<std::size_t>{mxGPUGetDimensions(mArray), getRank()};
+        
+        if (mDims == nullptr)
+        {
+          mDims.reset(mxGPUGetDimensions(mArray));
+        }
+
+        return {mDims.get(), getRank()};
       }
 
       /**
@@ -218,6 +227,35 @@ namespace mex::gpu
       {
         checkValid();
         return mxGPUGetNumberOfElements(mArray);
+      }
+
+      /**
+       * @brief Resize the array
+       * @param dims Dimensions
+       * @warning The overall number of elements in the array must not be increased
+       */
+      void resize(View<std::size_t> dims)
+      {
+        checkValid();
+
+        if (getSize() < std::accumulate(dims.begin(), dims.end(), std::size_t{1}, std::multiplies<>{}))
+        {
+          throw Exception{"number of elements in the array must not be increased"};
+        }
+
+        mxGPUSetDimensions(mArray, dims.data(), dims.size());
+        mDims.reset();
+      }
+
+      /**
+       * @brief Resize the array
+       * @param m Number of rows
+       * @param n Number of columns
+       * @warning The overall number of elements in the array must not be increased
+       */
+      void resize(std::size_t m, std::size_t n)
+      {
+        resize({{m, n}});
       }
 
       /**
@@ -256,13 +294,13 @@ namespace mex::gpu
       }
 
       /**
-       * @brief Is the array a scalar?
-       * @return True if the array is a scalar, false otherwise
+       * @brief Is the array element class complex?
+       * @return True if the array element class is complex, false otherwise
        */
-      [[nodiscard]] bool isScalar() const
+      [[nodiscard]] bool isComplex() const
       {
         checkValid();
-        return getSize() == 1;
+        return mxGPUGetComplexity(mArray) == mxCOMPLEX;
       }
 
       /**
@@ -271,18 +309,116 @@ namespace mex::gpu
        */
       [[nodiscard]] bool isEmpty() const
       {
-        checkValid();
         return getSize() == 0;
       }
 
       /**
-       * @brief Is the array element class complex?
-       * @return True if the array element class is complex, false otherwise
+       * @brief Is the array a scalar?
+       * @return True if the array is a scalar, false otherwise
        */
-      [[nodiscard]] bool isComplex() const
+      [[nodiscard]] bool isScalar() const
+      {
+        return getSize() == 1;
+      }
+
+      /**
+       * @brief Is the array a double?
+       * @return True if the array is a double, false otherwise
+       */
+      [[nodiscard]] bool isDouble() const
+      {
+        return getClassId() == ClassId::_double;
+      }
+
+      /**
+       * @brief Is the array a single?
+       * @return True if the array is a single, false otherwise
+       */
+      [[nodiscard]] bool isSingle() const
+      {
+        return getClassId() == ClassId::single;
+      }
+
+      /**
+       * @brief Is the array an int8?
+       * @return True if the array is an int8, false otherwise
+       */
+      [[nodiscard]] bool isInt8() const
+      {
+        return getClassId() == ClassId::int8;
+      }
+
+      /**
+       * @brief Is the array a uint8?
+       * @return True if the array is a uint8, false otherwise
+       */
+      [[nodiscard]] bool isUint8() const
+      {
+        return getClassId() == ClassId::uint8;
+      }
+
+      /**
+       * @brief Is the array an int16?
+       * @return True if the array is an int16, false otherwise
+       */
+      [[nodiscard]] bool isInt16() const
+      {
+        return getClassId() == ClassId::int16;
+      }
+
+      /**
+       * @brief Is the array a uint16?
+       * @return True if the array is a uint16, false otherwise
+       */
+      [[nodiscard]] bool isUint16() const
+      {
+        return getClassId() == ClassId::uint16;
+      }
+
+      /**
+       * @brief Is the array an int32?
+       * @return True if the array is an int32, false otherwise
+       */
+      [[nodiscard]] bool isInt32() const
+      {
+        return getClassId() == ClassId::int32;
+      }
+
+      /**
+       * @brief Is the array a uint32?
+       * @return True if the array is a uint32, false otherwise
+       */
+      [[nodiscard]] bool isUint32() const
+      {
+        return getClassId() == ClassId::uint32;
+      }
+
+      /**
+       * @brief Is the array an int64?
+       * @return True if the array is an int64, false otherwise
+       */
+      [[nodiscard]] bool isInt64() const
+      {
+        return getClassId() == ClassId::int64;
+      }
+
+      /**
+       * @brief Is the array a uint64?
+       * @return True if the array is a uint64, false otherwise
+       */
+      [[nodiscard]] bool isUint64() const
+      {
+        return getClassId() == ClassId::uint64;
+      }
+
+      /**
+       * @brief Is the array sparse?
+       * @return True if the array is sparse, false otherwise
+       */
+      [[nodiscard]] bool isSparse() const
       {
         checkValid();
-        return mxGPUGetComplexity(mArray) == mxCOMPLEX;
+        return mxGPUIsSparse(mArray);
       }
 
       /**
@@ -339,7 +475,7 @@ namespace mex::gpu
        */
       [[nodiscard]] Array release() noexcept
       {
-        mxArray* array = mxGPUCreateMxArrayOnGPU(mArray);
+        mxArray* array = mxGPUCreateMxArrayOnGPU(nullptr);
 
         destroy();
 
@@ -401,9 +537,14 @@ namespace mex::gpu
       void destroy() noexcept
       {
         mxGPUDestroyGPUArray(std::exchange(mArray, nullptr));
+        mDims.reset();
       }
 
-      mxGPUArray* mArray{}; ///< mxArray pointer
+      /// @brief Dimensions cache, implemented as unique pointer
+      using DimsCache = std::unique_ptr<const std::size_t[], mex::Deleter>;
+
+      mxGPUArray*       mArray{}; ///< mxGPUArray pointer
+      mutable DimsCache mDims{};  ///< Dimensions cache, mutable for lazy initialization
   };
 } // namespace mex::gpu
 

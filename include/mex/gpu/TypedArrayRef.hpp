@@ -62,7 +62,7 @@ namespace mex::gpu
       TypedArrayRef() = delete;
 
       /// @brief Explicitly deleted constructor from nullptr.
-      TypedArrayRef(nullptr_t) = delete;
+      TypedArrayRef(std::nullptr_t) = delete;
 
       /**
        * @brief Constructor from a mxArray pointer.
@@ -228,7 +228,7 @@ namespace mex::gpu
       TypedArrayCref() = delete;
 
       /// @brief Explicitly deleted constructor from nullptr.
-      TypedArrayCref(nullptr_t) = delete;
+      TypedArrayCref(std::nullptr_t) = delete;
 
       /**
        * @brief Constructor from a mxArray pointer.
