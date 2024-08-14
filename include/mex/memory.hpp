@@ -99,15 +99,15 @@ namespace mex
 
   /**
    * @brief A deleter for freeing memory allocated with mxMalloc or mxCalloc.
-   * @tparam T The type of the allocated memory.
    */
-  template<typename T>
   struct Deleter
   {
     /**
      * @brief Frees the allocated memory.
+     * @tparam T The type of the allocated memory.
      * @param ptr A pointer to the allocated memory.
      */
+    template<typename T>
     void operator()(T* ptr) const
     {
       mxFree(ptr);
