@@ -26,6 +26,8 @@ function(add_examples dir)
   set(EXAMPLES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/${dir}")
   file(GLOB EXAMPLES "${EXAMPLES_DIR}/*.cpp")
 
+  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${dir}")
+
   foreach(EXAMPLE ${EXAMPLES})
     get_filename_component(EXAMPLE_NAME ${EXAMPLE} NAME_WE)
     
