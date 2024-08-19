@@ -545,6 +545,28 @@ namespace mex
       }
 
       /**
+       * @brief Get the array data as a specific type
+       * @tparam T Type
+       * @return Pointer to the array data
+       */
+      template<typename T>
+      [[nodiscard]] const T* getDataAs() const
+      {
+        return static_cast<const T*>(getData());
+      }
+
+      /**
+       * @brief Get the array data as a specific type
+       * @tparam T Type
+       * @return Pointer to the array data
+       */
+      template<typename T>
+      [[nodiscard]] T* getDataAs()
+      {
+        return static_cast<T*>(getData());
+      }
+
+      /**
        * @brief Get the mxArray pointer
        * @return mxArray pointer
        */
