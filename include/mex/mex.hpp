@@ -54,7 +54,6 @@
 
 #ifdef MEX_ENABLE_GPU
 # include "gpu/Array.hpp"
-# include "gpu/ArrayRef.hpp"
 # include "gpu/NumericArray.hpp"
 # include "gpu/NumericArrayRef.hpp"
 # include "gpu/TypedArray.hpp"

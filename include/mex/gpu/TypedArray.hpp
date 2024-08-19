@@ -68,16 +68,8 @@ namespace mex::gpu
        * @brief Constructor
        * @param array mxArray pointer (rvalue reference)
        */
-      explicit TypedArray(mxArray*&& array) noexcept
-      : Array{(checkArrayClass(array), std::move(array))}
-      {}
-
-      /**
-       * @brief Copy constructor from reference
-       * @param other Reference to other array
-       */
-      explicit TypedArray(const ArrayRef& other)
-      : Array{(checkArrayClass(other.get()), other)}
+      explicit TypedArray(const mex::ArrayCref& array) noexcept
+      : Array{(checkArrayClass(array.getClassId()), array)}
       {}
 
       /**
@@ -85,7 +77,7 @@ namespace mex::gpu
        * @param other Const reference to other array
        */
       explicit TypedArray(const ArrayCref& other)
-      : Array{(checkArrayClass(other.get()), other)}
+      : Array{(checkArrayClass(other.getClassId()), other)}
       {}
 
       /**
@@ -104,25 +96,13 @@ namespace mex::gpu
       ~TypedArray() noexcept = default;
 
       /**
-       * @brief Copy assignment operator from reference
-       * @param other Reference to other array
-       * @return Reference to this array
-       */
-      TypedArray& operator=(const ArrayRef& other)
-      {
-        checkArrayClass(other.get());
-
-        return Array::operator=(other);
-      }
-
-      /**
        * @brief Copy assignment operator from const reference
        * @param other Const reference to other array
        * @return Reference to this array
        */
       TypedArray& operator=(const ArrayCref& other)
       {
-        checkArrayClass(other.get());
+        checkArrayClass(other.getClassId());
 
         return Array::operator=(other);
       }
@@ -142,17 +122,8 @@ namespace mex::gpu
       TypedArray& operator=(TypedArray&& other) noexcept = default;
 
       /**
-       * @brief Gets the data pointer
-       * @return Data pointer
-       */
-      [[nodiscard]] pointer getData()
-      {
-        return static_cast<pointer>(Array::getData());
-      }
-
-      /**
-       * @brief Gets the data pointer
-       * @return Const data pointer
+       * @brief Gets a pointer to the data.
+       * @return Pointer to the data
        */
       [[nodiscard]] const_pointer getData() const
       {
@@ -160,161 +131,12 @@ namespace mex::gpu
       }
 
       /**
-       * @brief Gets the element at the specified index
-       * @param i Index
-       * @return Reference to the element
+       * @brief Gets a pointer to the data.
+       * @return Pointer to the data
        */
-      [[nodiscard]] reference at(std::size_t i)
+      [[nodiscard]] pointer getData()
       {
-        if (i >= getSize())
-        {
-          throw Exception{"index out of range"};
-        }
-
-        return getData()[i];
-      }
-
-      /**
-       * @brief Gets the element at the specified index
-       * @param i Index
-       * @return Const reference to the element
-       */
-      [[nodiscard]] const_reference at(std::size_t i) const
-      {
-        if (i >= getSize())
-        {
-          throw Exception{"index out of range"};
-        }
-
-        return getData()[i];
-      }
-
-      /**
-       * @brief Gets the element at the specified index
-       * @param i Index
-       * @return Reference to the element
-       */
-      [[nodiscard]] reference operator[](std::size_t i)
-      {
-        return getData()[i];
-      }
-
-      /**
-       * @brief Gets the element at the specified index
-       * @param i Index
-       * @return Const reference to the element
-       */
-      [[nodiscard]] const_reference operator[](std::size_t i) const
-      {
-        return getData()[i];
-      }
-
-      /**
-       * @brief Gets the iterator to the beginning
-       * @return Iterator to the beginning
-       */
-      [[nodiscard]] iterator begin()
-      {
-        return getData();
-      }
-
-      /**
-       * @brief Gets the const iterator to the beginning
-       * @return Const iterator to the beginning
-       */
-      [[nodiscard]] const_iterator begin() const
-      {
-        return getData();
-      }
-
-      /**
-       * @brief Gets the const iterator to the beginning
-       * @return Const iterator to the beginning
-       */
-      [[nodiscard]] const_iterator cbegin() const
-      {
-        return getData();
-      }
-
-      /**
-       * @brief Gets the iterator to the end
-       * @return Iterator to the end
-       */
-      [[nodiscard]] iterator end()
-      {
-        return getData() + getSize();
-      }
-
-      /**
-       * @brief Gets the const iterator to the end
-       * @return Const iterator to the end
-       */
-      [[nodiscard]] const_iterator end() const
-      {
-        return getData() + getSize();
-      }
-
-      /**
-       * @brief Gets the const iterator to the end
-       * @return Const iterator to the end
-       */
-      [[nodiscard]] const_iterator cend() const
-      {
-        return getData() + getSize();
-      }
-
-      /**
-       * @brief Gets the reverse iterator to the beginning
-       * @return Reverse iterator to the beginning
-       */
-      [[nodiscard]] reverse_iterator rbegin()
-      {
-        return reverse_iterator{end()};
-      }
-
-      /**
-       * @brief Gets the const reverse iterator to the beginning
-       * @return Const reverse iterator to the beginning
-       */
-      [[nodiscard]] const_reverse_iterator rbegin() const
-      {
-        return const_reverse_iterator{end()};
-      }
-
-      /**
-       * @brief Gets the const reverse iterator to the beginning
-       * @return Const reverse iterator to the beginning
-       */
-      [[nodiscard]] const_reverse_iterator crbegin() const
-      {
-        return const_reverse_iterator{end()};
-      }
-
-      /**
-       * @brief Gets the reverse iterator to the end
-       * @return Reverse iterator to the end
-       */
-      [[nodiscard]] reverse_iterator rend()
-      {
-        return reverse_iterator{begin()};
-      }
-
-      /**
-       * @brief Gets the const reverse iterator to the end
-       * @return Const reverse iterator to the end
-       */
-      [[nodiscard]] const_reverse_iterator rend() const
-      {
-        return const_reverse_iterator{begin()};
-      }
-
-      /**
-       * @brief Gets the const reverse iterator to the end
-       * @return Const reverse iterator to the end
-       */
-      [[nodiscard]] const_reverse_iterator crend() const
-      {
-        return const_reverse_iterator{begin()};
+        return static_cast<pointer>(Array::getData());
       }
 
       /// @brief Use the Array::operator ArrayRef
@@ -344,12 +166,15 @@ namespace mex::gpu
       }
     private:
       /**
-       * @brief Check the array class
-       * @param array mxArray pointer
+       * @brief Checks if the array is of the correct class.
+       * @param otherClassId Class ID
        */
-      void checkArrayClass(const mxArray* array) const
+      void checkArrayClass(const ClassId otherClassId) const
       {
-        return detail::checkArrayClass<classId>(array);
+        if (otherClassId != classId)
+        {
+          throw Exception{"invalid class ID"};
+        }
       }
   };
 } // namespace mex::gpu
