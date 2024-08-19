@@ -110,7 +110,7 @@ namespace mex
     template<typename T>
     void operator()(T* ptr) const
     {
-      mxFree(ptr);
+      mxFree((void*)ptr); // use C-style cast to avoid complicated casting as it does not matter here
     }
   };
 

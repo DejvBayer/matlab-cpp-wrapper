@@ -75,9 +75,9 @@ namespace mex::gpu
   template<typename T, std::enable_if_t<isNumeric<T>, int> = 0>
   [[nodiscard]] NumericArray<T> makeNumericArray(View<std::size_t> dims)
   {
-    return makeNumericArray(dims,
-                            static_cast<ClassId>(TypeProperties<T>::classId),
-                            static_cast<Complexity>(TypeProperties<T>::complexity));
+    return gpu::makeNumericArray(dims,
+                                 static_cast<ClassId>(TypeProperties<T>::classId),
+                                 static_cast<Complexity>(TypeProperties<T>::complexity));
   }
 
   /**
@@ -93,7 +93,7 @@ namespace mex::gpu
                                               const ClassId     classId,
                                               const Complexity  complexity = Complexity::real)
   {
-    return makeNumericArray({{m, n}}, classId, complexity);
+    return gpu::makeNumericArray({{m, n}}, classId, complexity);
   }
 
   /**
@@ -106,7 +106,7 @@ namespace mex::gpu
   template<typename T, std::enable_if_t<isNumeric<T>, int> = 0>
   [[nodiscard]] NumericArray<T> makeNumericArray(std::size_t m, std::size_t n)
   {
-    return makeNumericArray<T>({{m, n}});
+    return gpu::makeNumericArray<T>({{m, n}});
   }  
 
   /**
@@ -143,9 +143,9 @@ namespace mex::gpu
   template<typename T, std::enable_if_t<isNumeric<T>, int> = 0>
   [[nodiscard]] NumericArray<T> makeUninitNumericArray(View<std::size_t> dims)
   {
-    return makeUninitNumericArray(dims,
-                                  static_cast<ClassId>(TypeProperties<T>::classId),
-                                  static_cast<Complexity>(TypeProperties<T>::complexity));
+    return NumericArray<T>{gpu::makeUninitNumericArray(dims,
+                                                       static_cast<ClassId>(TypeProperties<T>::classId),
+                                                       static_cast<Complexity>(TypeProperties<T>::complexity))};
   }
 
   /**
@@ -161,7 +161,7 @@ namespace mex::gpu
                                                     const ClassId     classId,
                                                     const Complexity  complexity = Complexity::real)
   {
-    return makeUninitNumericArray({{m, n}}, classId, complexity);
+    return gpu::makeUninitNumericArray({{m, n}}, classId, complexity);
   }
 
   /**
@@ -174,7 +174,7 @@ namespace mex::gpu
   template<typename T, std::enable_if_t<isNumeric<T>, int> = 0>
   [[nodiscard]] NumericArray<T> makeUninitNumericArray(std::size_t m, std::size_t n)
   {
-    return makeUninitNumericArray<T>({{m, n}});
+    return gpu::makeUninitNumericArray<T>({{m, n}});
   }
 } // namespace mex::gpu
 

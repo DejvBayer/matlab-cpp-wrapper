@@ -27,7 +27,7 @@
 
 #include "../detail/include.hpp"
 
-#include "ArrayRef.hpp"
+#include "Array.hpp"
 #include "../ArrayRef.hpp"
 #include "../common.hpp"
 
@@ -61,23 +61,12 @@ namespace mex::gpu
       /// @brief Explicitly deleted default constructor.
       TypedArrayRef() = delete;
 
-      /// @brief Explicitly deleted constructor from nullptr.
-      TypedArrayRef(std::nullptr_t) = delete;
-
-      /**
-       * @brief Constructor from a mxArray pointer.
-       * @param array mxArray pointer
-       */
-      explicit TypedArrayRef(mxArray* array)
-      : ArrayRef{(checkArrayClass(array), array)}
-      {}
-
       /**
        * @brief Constructor from an ArrayRef.
        * @param other ArrayRef
        */
       explicit TypedArrayRef(const ArrayRef& other)
-      : ArrayRef{(checkArrayClass(other.get()), other)}
+      : ArrayRef{(checkArrayClass(other.getClassId()), other)}
       {}
 
       /**
@@ -86,7 +75,7 @@ namespace mex::gpu
        */
       TypedArrayRef& operator=(const ArrayRef& other)
       {
-        checkArrayClass(other.get());
+        checkArrayClass(other.getClassId());
         return ArrayRef::operator=(other);
       }
 
@@ -99,107 +88,17 @@ namespace mex::gpu
         return static_cast<pointer>(ArrayRef::getData());
       }
 
-      /**
-       * @brief Accesses an element with bounds checking.
-       * @param i Index
-       * @return Reference to the element
-       */
-      [[nodiscard]] reference at(std::size_t i) const
-      {
-        if (i >= getSize())
-        {
-          throw Exception{"index out of range"};
-        }
-
-        return getData()[i];
-      }
-
-      /**
-       * @brief Accesses an element without bounds checking.
-       * @param i Index
-       * @return Reference to the element
-       */
-      [[nodiscard]] reference operator[](std::size_t i) const
-      {
-        return getData()[i];
-      }
-
-      /**
-       * @brief Gets an iterator to the beginning.
-       * @return Iterator to the beginning
-       */
-      [[nodiscard]] iterator begin() const
-      {
-        return getData();
-      }
-
-      /**
-       * @brief Gets a const iterator to the beginning.
-       * @return Const iterator to the beginning
-       */
-      [[nodiscard]] const_iterator cbegin() const
-      {
-        return getData();
-      }
-
-      /**
-       * @brief Gets an iterator to the end.
-       * @return Iterator to the end
-       */
-      [[nodiscard]] iterator end() const
-      {
-        return getData() + getSize();
-      }
-
-      /**
-       * @brief Gets a const iterator to the end.
-       * @return Const iterator to the end
-       */
-      [[nodiscard]] const_iterator cend() const
-      {
-        return getData() + getSize();
-      }
-
-      /**
-       * @brief Gets a reverse iterator to the beginning.
-       * @return Reverse iterator to the beginning
-       */
-      [[nodiscard]] reverse_iterator rbegin() const
-      {
-        return reverse_iterator{end()};
-      }
-
-      /**
-       * @brief Gets a const reverse iterator to the beginning.
-       * @return Const reverse iterator to the beginning
-       */
-      [[nodiscard]] const_reverse_iterator crbegin() const
-      {
-        return const_reverse_iterator{end()};
-      }
-
-      /**
-       * @brief Gets a reverse iterator to the end.
-       * @return Reverse iterator to the end
-       */
-      [[nodiscard]] reverse_iterator rend() const
-      {
-        return reverse_iterator{begin()};
-      }
-
-      /**
-       * @brief Gets a const reverse iterator to the end.
-       * @return Const reverse iterator to the end
-       */
-      [[nodiscard]] const_reverse_iterator crend() const
-      {
-        return const_reverse_iterator{begin()};
-      }
     private:
-      /// @brief Checks if the array is of the correct class
-      void checkArrayClass(const mxArray* array) const
+      /**
+       * @brief Checks if the array is of the correct class.
+       * @param otherClassId Class ID
+       */
+      void checkArrayClass(const ClassId otherClassId) const
       {
-        return detail::checkArrayClass<classId>(array);
+        if (otherClassId != classId)
+        {
+          throw Exception{"invalid class ID"};
+        }
       }
   };
 
@@ -227,15 +126,12 @@ namespace mex::gpu
       /// @brief Explicitly deleted default constructor.
       TypedArrayCref() = delete;
 
-      /// @brief Explicitly deleted constructor from nullptr.
-      TypedArrayCref(std::nullptr_t) = delete;
-
       /**
-       * @brief Constructor from a mxArray pointer.
-       * @param array mxArray pointer
+       * @brief Constructor from an Array.
+       * @param other Array
        */
-      explicit TypedArrayCref(const mxArray* array)
-      : ArrayCref{(checkArrayClass(array), array)}
+      explicit TypedArrayCref(const Array& other)
+      : ArrayCref{(checkArrayClass(other.getClassId()), other)}
       {}
 
       /**
@@ -243,7 +139,7 @@ namespace mex::gpu
        * @param other ArrayCref
        */
       explicit TypedArrayCref(const ArrayCref& other)
-      : ArrayCref{(checkArrayClass(other.get()), other)}
+      : ArrayCref{(checkArrayClass(other.getClassId()), other)}
       {}
 
       /**
@@ -251,7 +147,7 @@ namespace mex::gpu
        * @param other ArrayRef
        */
       explicit TypedArrayCref(const ArrayRef& other)
-      : ArrayCref{(checkArrayClass(other.get()), other)}
+      : ArrayCref{(checkArrayClass(other.getClassId()), other)}
       {}
 
       /**
@@ -260,7 +156,7 @@ namespace mex::gpu
        */
       TypedArrayCref& operator=(const ArrayCref& other)
       {
-        checkArrayClass(other.get());
+        checkArrayClass(other.getClassId());
         return ArrayCref::operator=(other);
       }
 
@@ -270,7 +166,7 @@ namespace mex::gpu
        */
       TypedArrayCref& operator=(const ArrayRef& other)
       {
-        checkArrayClass(other.get());
+        checkArrayClass(other.getClassId());
         return ArrayCref::operator=(other);
       }
 
@@ -282,108 +178,17 @@ namespace mex::gpu
       {
         return static_cast<const_pointer>(ArrayCref::getData());
       }
-
-      /**
-       * @brief Accesses an element with bounds checking.
-       * @param i Index
-       * @return Reference to the element
-       */
-      [[nodiscard]] reference at(std::size_t i) const
-      {
-        if (i >= getSize())
-        {
-          throw Exception{"index out of range"};
-        }
-
-        return getData()[i];
-      }
-
-      /**
-       * @brief Accesses an element without bounds checking.
-       * @param i Index
-       * @return Reference to the element
-       */
-      [[nodiscard]] reference operator[](std::size_t i) const
-      {
-        return getData()[i];
-      }
-
-      /**
-       * @brief Gets an iterator to the beginning.
-       * @return Iterator to the beginning
-       */
-      [[nodiscard]] iterator begin() const
-      {
-        return getData();
-      }
-
-      /**
-       * @brief Gets a const iterator to the beginning.
-       * @return Const iterator to the beginning
-       */
-      [[nodiscard]] const_iterator cbegin() const
-      {
-        return begin();
-      }
-
-      /**
-       * @brief Gets an iterator to the end.
-       * @return Iterator to the end
-       */
-      [[nodiscard]] iterator end() const
-      {
-        return getData() + getSize();
-      }
-
-      /**
-       * @brief Gets a const iterator to the end.
-       * @return Const iterator to the end
-       */
-      [[nodiscard]] const_iterator cend() const
-      {
-        return end();
-      }
-
-      /**
-       * @brief Gets a reverse iterator to the beginning.
-       * @return Reverse iterator to the beginning
-       */
-      [[nodiscard]] reverse_iterator rbegin() const
-      {
-        return reverse_iterator{end()};
-      }
-
-      /**
-       * @brief Gets a const reverse iterator to the beginning.
-       * @return Const reverse iterator to the beginning
-       */
-      [[nodiscard]] const_reverse_iterator crbegin() const
-      {
-        return rbegin();
-      }
-
-      /**
-       * @brief Gets a reverse iterator to the end.
-       * @return Reverse iterator to the end
-       */
-      [[nodiscard]] reverse_iterator rend() const
-      {
-        return reverse_iterator{begin()};
-      }
-
-      /**
-       * @brief Gets a const reverse iterator to the end.
-       * @return Const reverse iterator to the end
-       */
-      [[nodiscard]] const_reverse_iterator crend() const
-      {
-        return rend();
-      }
     private:
-      /// @brief Checks if the array is of the correct class
-      void checkArrayClass(const mxArray* array) const
+      /**
+       * @brief Checks if the array is of the correct class.
+       * @param otherClassId Class ID
+       */
+      void checkArrayClass(const ClassId otherClassId) const
       {
-        return detail::checkArrayClass<classId>(array);
+        if (otherClassId != classId)
+        {
+          throw Exception{"invalid class ID"};
+        }
       }
   };
 } // namespace mex::gpu
