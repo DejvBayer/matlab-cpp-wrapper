@@ -43,7 +43,7 @@ function(add_gpu_examples dir)
       NAME        ${EXAMPLE_NAME}
       SRC         ${EXAMPLE}
       OUTPUT_NAME ${EXAMPLE_NAME}
-      LINK_TO     matlabw::mex-gpu CUDA::cudart
+      LINK_TO     matlabw::matlabw-gpu CUDA::cudart
       R2018a)
   endforeach()
 endfunction()

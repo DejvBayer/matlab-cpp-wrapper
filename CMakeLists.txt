@@ -45,11 +45,11 @@ endif()
 
 find_package(Matlab REQUIRED COMPONENTS MEX_COMPILER)
 
-add_library(mex INTERFACE)
-add_library(matlabw::mex ALIAS mex)
-target_compile_features(mex INTERFACE cxx_std_20)
-target_include_directories(mex INTERFACE include)
-target_link_libraries(mex INTERFACE Matlab::mex)
+add_library(matlabw INTERFACE)
+add_library(matlabw::matlabw ALIAS matlabw)
+target_compile_features(matlabw INTERFACE cxx_std_20)
+target_include_directories(matlabw INTERFACE include)
+target_link_libraries(matlabw INTERFACE Matlab::mex)
 
 if(MATLABW_ENABLE_GPU)
   set(MATLAB_GPU_INCLUDE_DIR "${Matlab_ROOT_DIR}/toolbox/parallel/gpu/extern/include")
@@ -63,11 +63,11 @@ if(MATLABW_ENABLE_GPU)
     PATHS "${Matlab_ROOT_DIR}/bin/${MATLAB_BIN_PLATFORM_DIR_NAME}"
     REQUIRED)
 
-  add_library(mex-gpu INTERFACE)
-  add_library(matlabw::mex-gpu ALIAS mex-gpu)
-  target_compile_definitions(mex-gpu INTERFACE MATLABW_ENABLE_GPU)
-  target_include_directories(mex-gpu INTERFACE ${MATLAB_GPU_INCLUDE_DIR})
-  target_link_libraries(mex-gpu INTERFACE matlabw::mex ${MW_GPU_MEX_BINDER_LIB})
+  add_library(matlabw-gpu INTERFACE)
+  add_library(matlabw::matlabw-gpu ALIAS matlabw-gpu)
+  target_compile_definitions(matlabw-gpu INTERFACE MATLABW_ENABLE_GPU)
+  target_include_directories(matlabw-gpu INTERFACE ${MATLAB_GPU_INCLUDE_DIR})
+  target_link_libraries(matlabw-gpu INTERFACE matlabw::matlabw ${MW_GPU_MEX_BINDER_LIB})
 endif()
 
 if(MATLABW_BUILD_EXAMPLES)

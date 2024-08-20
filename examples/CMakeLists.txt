@@ -39,7 +39,7 @@ function(add_examples dir)
       NAME        ${EXAMPLE_NAME}
       SRC         ${EXAMPLE}
       OUTPUT_NAME ${EXAMPLE_NAME}
-      LINK_TO     matlabw::mex
+      LINK_TO     matlabw::matlabw
       R2018a)
   endforeach()
 endfunction()
