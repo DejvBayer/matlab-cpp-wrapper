@@ -10,25 +10,27 @@
  *
  *=================================================================*/
 
-#include <mex/mex.hpp>
-#include <mex/Function.hpp>
+#include <matlabw/mex/mex.hpp>
+#include <matlabw/mex/Function.hpp>
+
+using namespace matlabw;
 
 /* The mxArray in this example is 2x2 */
 static constexpr std::size_t ROWS    = 2;
 static constexpr std::size_t COLUMNS = 2;
 
-void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
+void mex::Function::operator()(mx::Span<mx::Array> lhs, mx::View<mx::ArrayCref> rhs)
 {
   static constexpr std::array data{2.1, 3.4, 2.3, 2.45}; /* existing data */
 
   /* Check for proper number of arguments. */
   if (!rhs.empty())
   {
-    throw mex::Exception{"MATLAB:mxcreateuninitnumericmatrix:rhs", "This function takes no input arguments."};
+    throw mx::Exception{"MATLAB:mxcreateuninitnumericmatrix:rhs", "This function takes no input arguments."};
   }
 
   /* Create an m-by-n mxArray. */
-  auto array = mex::makeUninitNumericArray<double>(ROWS, COLUMNS);
+  auto array = mx::makeUninitNumericArray<double>(ROWS, COLUMNS);
 
   /* Copy existing data. */
   std::copy(data.begin(), data.end(), array.begin());

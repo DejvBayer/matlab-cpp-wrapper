@@ -12,33 +12,35 @@
  * Copyright 1984-2017 The MathWorks, Inc.
  *=================================================================*/
 
-#include <mex/mex.hpp>
-#include <mex/Function.hpp>
+#include <matlabw/mex/mex.hpp>
+#include <matlabw/mex/Function.hpp>
 
-void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
+using namespace matlabw;
+
+void mex::Function::operator()(mx::Span<mx::Array> lhs, mx::View<mx::ArrayCref> rhs)
 {  
   /* Check for proper number of input and output arguments */    
   if (rhs.size() != 1)
   {
-    throw mex::Exception{"MATLAB:mxgetinf:invalidNumInputs", "One input argument required."};
+    throw mx::Exception{"MATLAB:mxgetinf:invalidNumInputs", "One input argument required."};
   }
 
   if (lhs.size() > 1)
   {
-    throw mex::Exception{"MATLAB:mxgetinf:maxlhs", "Too many output arguments."};
+    throw mx::Exception{"MATLAB:mxgetinf:maxlhs", "Too many output arguments."};
   }
   
   /* Check data type of input argument  */
   if (!rhs[0].isDouble() || rhs[0].isComplex())
   {
-    throw mex::Exception{"MATLAB:mxgetinf:invalidInputType", "Input argument must be of type real double."};
+    throw mx::Exception{"MATLAB:mxgetinf:invalidInputType", "Input argument must be of type real double."};
   }	
   
   /* Duplicate input array */
-  mex::NumericArray<double> output{rhs[0]};
+  mx::NumericArray<double> output{rhs[0]};
   
-  const double inf = mex::getInf();
-  const double nan = mex::getNaN();
+  const double inf = mx::getInf();
+  const double nan = mx::getNaN();
 
   /* Check for 0, in real part of data, if the data is zero, replace
      with NaN.  Also check for INT_MAX and INT_MIN and replace with

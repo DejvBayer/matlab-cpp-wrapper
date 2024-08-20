@@ -14,8 +14,10 @@
  *
  *========================================================*/
 
-#include <mex/mex.hpp>
-#include <mex/Function.hpp>
+#include <matlabw/mex/mex.hpp>
+#include <matlabw/mex/Function.hpp>
+
+using namespace matlabw;
 
 /* The computational routine */
 void arrayProduct(double x, const double* y, double* z, std::size_t n)
@@ -28,48 +30,48 @@ void arrayProduct(double x, const double* y, double* z, std::size_t n)
 }
 
 /* The gateway function */
-void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
+void mex::Function::operator()(mx::Span<mx::Array> lhs, mx::View<mx::ArrayCref> rhs)
 {
   /* check for proper number of arguments */
   if (rhs.size() != 2)
   {
-    throw mex::Exception{"MyToolbox:arrayProduct:nrhs", "Two inputs required."};
+    throw mx::Exception{"MyToolbox:arrayProduct:nrhs", "Two inputs required."};
   }
 
   if (lhs.size() != 1)
   {
-    throw mex::Exception("MyToolbox:arrayProduct:nlhs", "One output required.");
+    throw mx::Exception("MyToolbox:arrayProduct:nlhs", "One output required.");
   }
 
   /* make sure the first input argument is scalar */
   if (!rhs[0].isDouble() || rhs[0].isComplex() || !rhs[0].isScalar())
   {
-    throw mex::Exception{"MyToolbox:arrayProduct:notScalar", "Input multiplier must be a scalar."};
+    throw mx::Exception{"MyToolbox:arrayProduct:notScalar", "Input multiplier must be a scalar."};
   }
   
   /* make sure the second input argument is type double */
   if (!rhs[1].isDouble() || rhs[1].isComplex())
   {
-    throw mex::Exception{"MyToolbox:arrayProduct:notDouble", "Input matrix must be type double."};
+    throw mx::Exception{"MyToolbox:arrayProduct:notDouble", "Input matrix must be type double."};
   }
   
   /* check that number of rows in second input argument is 1 */
-  if (rhs[1].getDims()[0] != 1)
+  if (rhs[1].getDimM() != 1)
   {
-    throw mex::Exception{"MyToolbox:arrayProduct:notRowVector", "Input must be a row vector."};
+    throw mx::Exception{"MyToolbox:arrayProduct:notRowVector", "Input must be a row vector."};
   }
   
   /* get the value of the scalar input */
-  const double multiplier = mex::NumericArrayCref<double>{rhs[0]}[0];
+  const double multiplier = rhs[0].getScalarAs<double>();
 
   /* create a pointer to the real data in the input matrix  */
-  const double* inMatrix = mex::NumericArrayCref<double>(rhs[1]).getData();
+  const double* inMatrix = rhs[1].getDataAs<double>();
 
   /* get dimensions of the input matrix */
-  const std::size_t ncols = rhs[1].getDims()[1];
+  const std::size_t ncols = rhs[1].getDimN();
 
   /* create the output matrix */
-  mex::NumericArray<double> out = mex::makeUninitNumericArray<double>(1, ncols);
+  mx::NumericArray<double> out = mx::makeUninitNumericArray<double>(1, ncols);
 
   /* get a pointer to the real data in the output matrix */
   double* outMatrix = out.getData();

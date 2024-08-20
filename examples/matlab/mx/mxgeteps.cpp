@@ -12,53 +12,55 @@
  * Copyright 1984-2018 The MathWorks, Inc.
  *=================================================================*/
 
-#include <mex/mex.hpp>
-#include <mex/Function.hpp>
+#include <matlabw/mex/mex.hpp>
+#include <matlabw/mex/Function.hpp>
 
-void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
+using namespace matlabw;
+
+void mex::Function::operator()(mx::Span<mx::Array> lhs, mx::View<mx::ArrayCref> rhs)
 {
   std::size_t j{};
 
   /* Check for proper number of input and output arguments */
   if (rhs.size() != 2)
   {
-    throw mex::Exception{"MATLAB:mxgeteps:invalidNumInputs", "Two input arguments required."};
+    throw mx::Exception{"MATLAB:mxgeteps:invalidNumInputs", "Two input arguments required."};
   }
   if (lhs.size() > 1)
   {
-    throw mex::Exception{"MATLAB:mxgeteps:maxlhs", "Too many output arguments."};
+    throw mx::Exception{"MATLAB:mxgeteps:maxlhs", "Too many output arguments."};
   }
 
   /* Check data type of first input argument */
   if (!rhs[0].isDouble() || !rhs[1].isDouble() || rhs[0].isComplex() || rhs[1].isComplex())
   {
-    throw mex::Exception{"MATLAB:mxgeteps:inputNotRealDouble", "Input arguments must be real of type double."};
+    throw mx::Exception{"MATLAB:mxgeteps:inputNotRealDouble", "Input arguments must be real of type double."};
   }
 
   /* Check that dimensions are the same for input arguments. */
   if (rhs[0].getRank() != rhs[1].getRank())
   {
-    throw mex::Exception{"MATLAB:mxgeteps:numElementMismatch", "Inputs must have the same number of dimensions.\n"};
+    throw mx::Exception{"MATLAB:mxgeteps:numElementMismatch", "Inputs must have the same number of dimensions.\n"};
   }
 
   /* Check that inputs have the same dimensions. */
   if (!std::equal(rhs[0].getDims().begin(), rhs[0].getDims().end(), rhs[1].getDims().begin()))
   {
-    throw mex::Exception{"MATLAB:mxgeteps:numDimensionsMismatch", "Inputs must have the same dimensions.\n"};
+    throw mx::Exception{"MATLAB:mxgeteps:numDimensionsMismatch", "Inputs must have the same dimensions.\n"};
   }
 
   /* Get the number of elements in the input argument */
   const std::size_t elements = rhs[0].getSize();
 
   /* Get the input values */
-  const double* first_ptr  = mex::NumericArrayCref<double>{rhs[0]}.getData();
-  const double* second_ptr = mex::NumericArrayCref<double>{rhs[1]}.getData();
+  const double* first_ptr  = rhs[0].getDataAs<double>();
+  const double* second_ptr = rhs[1].getDataAs<double>();
 
   /* Create output */
-  auto ret = mex::makeNumericScalar(0.0);
+  auto ret = mx::makeNumericScalar(0.0);
 
   /* Get the value of eps */
-  const double eps = mex::getEps();
+  const double eps = mx::getEps();
 
   /* Check for equality within eps */
   for (j = 0; j < elements; ++j)

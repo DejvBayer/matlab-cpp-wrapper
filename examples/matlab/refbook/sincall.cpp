@@ -12,8 +12,10 @@
  * Copyright 1984-2018 The MathWorks, Inc.
  *===================================================================*/
 
-#include <mex/mex.hpp>
-#include <mex/Function.hpp>
+#include <matlabw/mex/mex.hpp>
+#include <matlabw/mex/Function.hpp>
+
+using namespace matlabw;
 
 static constexpr std::size_t MAX = 1000;
 
@@ -34,9 +36,9 @@ void fill(double* const     ptr,
 }
 
 /* gateway function */
-void mex::Function::operator()(Span<Array>, View<ArrayCref>)
+void mex::Function::operator()(mx::Span<mx::Array>, mx::View<mx::ArrayCref>)
 {
-  auto rhs = mex::makeNumericArray<double>(MAX, 1);
+  auto rhs = mx::makeNumericArray<double>(MAX, 1);
 
   /* pass the pointers and let fill() fill up data */
   std::size_t m{};
@@ -45,12 +47,12 @@ void mex::Function::operator()(Span<Array>, View<ArrayCref>)
   
   rhs.resize(m, n);
 
-  std::array<Array, 2> inplot{};          /* input to plot function */
+  std::array<mx::Array, 2> inplot{};          /* input to plot function */
   inplot[0] = rhs;
 
   /* get the sin wave */
-  Array lhs0{};
-  mex::call(mex::makeScalarSpan<mex::Array>(lhs0), mex::makeScalarView<mex::ArrayCref>(rhs), "sin");
+  mx::Array lhs0{};
+  mex::call(mx::makeScalarSpan<mx::Array>(lhs0), mx::makeScalarView<mx::ArrayCref>(rhs), "sin");
 
   inplot[1] = std::move(lhs0);
   

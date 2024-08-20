@@ -6,8 +6,10 @@
  * Copyright 2012 The MathWorks, Inc.
  */
 
-#include <mex/mex.hpp>
-#include <mex/Function.hpp>
+#include <matlabw/mex/mex.hpp>
+#include <matlabw/mex/Function.hpp>
+
+using namespace matlabw;
 
 /*
  * Device code
@@ -28,7 +30,7 @@ __global__  void TimesTwo(const double* const A,
 /*
  * Host code
  */
-void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
+void mex::Function::operator()(mx::Span<mx::Array> lhs, mx::View<mx::ArrayCref> rhs)
 {
   /* Declare all variables.*/
   static constexpr char errId[]  = "parallel:gpu:mexGPUExample:InvalidInput";
@@ -40,27 +42,27 @@ void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
   /* Throw an error if the input is not a GPU array. */
   if (rhs.size() != 1 || !rhs[0].isGpuArray())
   {
-    throw mex::Exception{errId, errMsg};
+    throw mx::Exception{errId, errMsg};
   }
 
-  mex::gpu::Array A{rhs[0]};
+  mx::gpu::Array A{rhs[0]};
 
   /*
     * Verify that A really is a double array before extracting the pointer.
     */
-  if (A.getClassId() != mex::ClassId::_double)
+  if (A.getClassId() != mx::ClassId::_double)
   {
-    throw mex::Exception{errId, errMsg};
+    throw mx::Exception{errId, errMsg};
   }
 
   /*
     * Now that we have verified the data type, extract a pointer to the input
     * data on the device.
     */
-  const double* d_A = mex::gpu::NumericArrayCref<double>{A}.getData();
+  const double* d_A = mx::gpu::NumericArrayCref<double>{A}.getData();
 
   /* Create a GPUArray to hold the result and get its underlying pointer. */
-  auto B = mex::gpu::makeUninitNumericArray<double>(A.getDims());
+  auto B = mx::gpu::makeUninitNumericArray<double>(A.getDims());
 
   double* d_B = B.getData();
 

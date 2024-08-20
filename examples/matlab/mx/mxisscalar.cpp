@@ -8,31 +8,33 @@
  * Copyright 2015 The MathWorks, Inc.
  *=================================================================*/
 
-#include <mex/mex.hpp>
-#include <mex/Function.hpp>
+#include <matlabw/mex/mex.hpp>
+#include <matlabw/mex/Function.hpp>
 
-void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
+using namespace matlabw;
+
+void mex::Function::operator()(mx::Span<mx::Array> lhs, mx::View<mx::ArrayCref> rhs)
 {  
   /* Check for proper number of input and output arguments */
   if (rhs.size() != 1)
   {
-    throw mex::Exception{"MATLAB:mxIsScalar:invalidNumInputs","One input argument required."};
+    throw mx::Exception{"MATLAB:mxIsScalar:invalidNumInputs","One input argument required."};
   }
 
   if (lhs.size() > 1)
   {
-    throw mex::Exception{"MATLAB:mxIsScalar:maxlhs", "Too many output arguments."};
+    throw mx::Exception{"MATLAB:mxIsScalar:maxlhs", "Too many output arguments."};
   }
   
   /* Check to be sure input argument is a scalar */
   if (!rhs[0].isScalar())
   {
-    throw mex::Exception{"MATLAB:mxIsScalar:invalidInputType", "Input must be a scalar."};
+    throw mx::Exception{"MATLAB:mxIsScalar:invalidInputType", "Input must be a scalar."};
   }
   
   /* Get input variable */
-  const double variable = mex::NumericArray<double>{rhs[0]}[0];
+  const double variable = rhs[0].getScalarAs<double>();
 
   /* Initialize a scalar double precision array */
-  lhs[0] = mex::makeNumericScalar(variable);
+  lhs[0] = mx::makeNumericScalar(variable);
 }

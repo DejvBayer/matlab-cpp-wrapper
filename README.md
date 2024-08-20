@@ -1,2 +1,2 @@
-# mex-cpp-wrapper
-C++17 wrapper library for MATLAB C MEX API with GPU support
+# MATLAB External C++ Wrapper
+C++20 wrapper library for MATLAB C external API with GPU support.

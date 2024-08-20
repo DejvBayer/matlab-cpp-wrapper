@@ -1,7 +1,7 @@
 /*=================================================================
- * mexcallmatlab.c
+ * mexcallmatlabw.c
  *
- * mexcallmatlab takes no inputs.  This routine first forms and
+ * mexcallmatlabw takes no inputs.  This routine first forms and
  * displays the following matrix (in MATLAB notation):
  *
  *      hankel(1:4,4:-1:1) + sqrt(-1)*toeplitz(1:4,1:4)
@@ -15,22 +15,24 @@
  * Copyright 1984-2017 The MathWorks, Inc.
  *================================================================*/
 
-#include <mex/mex.hpp>
-#include <mex/Function.hpp>
+#include <matlabw/mex/mex.hpp>
+#include <matlabw/mex/Function.hpp>
+
+using namespace matlabw;
 
 static constexpr std::size_t n = 4;
 
-static double& XR(mex::NumericArrayRef<std::complex<double>> a, std::size_t i, std::size_t j)
+static double& XR(mx::NumericArrayRef<std::complex<double>> a, std::size_t i, std::size_t j)
 {
   return reinterpret_cast<double*>(a.getData() + i + n * j)[0];
 }
 
-static double& XI(mex::NumericArrayRef<std::complex<double>> a, std::size_t i, std::size_t j)
+static double& XI(mx::NumericArrayRef<std::complex<double>> a, std::size_t i, std::size_t j)
 {
   return reinterpret_cast<double*>(a.getData() + i + n * j)[1];
 }
 
-static void fill_array(mex::NumericArrayRef<std::complex<double>> a)
+static void fill_array(mx::NumericArrayRef<std::complex<double>> a)
 {
       /* Remember, MATLAB stores matrices in their transposed form,
        i.e., columnwise, like FORTRAN. */
@@ -57,7 +59,7 @@ static void fill_array(mex::NumericArrayRef<std::complex<double>> a)
 
 
 /* Invert diagonal elements of complex matrix of order 4 */
-static void invertd(mex::NumericArrayRef<std::complex<double>> x)
+static void invertd(mx::NumericArrayRef<std::complex<double>> x)
 {  
   for(std::size_t i{}; i < n; i++)
   {
@@ -67,23 +69,23 @@ static void invertd(mex::NumericArrayRef<std::complex<double>> x)
   }
 }
 
-void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
+void mex::Function::operator()(mx::Span<mx::Array> lhs, mx::View<mx::ArrayCref> rhs)
 {
-  std::array<mex::Array, 2> tmplhs{};
+  std::array<mx::Array, 2> tmplhs{};
   
   /* Check for proper number of input and output arguments */    
   if (rhs.size() != 0)
   {
-    throw mex::Exception{"MATLAB:mexcallmatlab:maxrhs", "No input arguments required."};
+    throw mx::Exception{"MATLAB:mexcallmatlabw:maxrhs", "No input arguments required."};
   }
 
   if (lhs.size() > 1)
   {
-    throw mex::Exception{"MATLAB:mexcallmatlab:maxlhs", "Too many output arguments."};
+    throw mx::Exception{"MATLAB:mexcallmatlabw:maxlhs", "Too many output arguments."};
   } 
   
   /* Allocate x matrix */
-  auto x = mex::makeNumericArray<std::complex<double>>({{n, n}});
+  auto x = mx::makeNumericArray<std::complex<double>>(n, n);
   
   /* create values in some arrays -- remember, MATLAB stores matrices
       column-wise */
@@ -98,7 +100,7 @@ void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
   mex::call({{tmplhs[1]}}, "disp");
   
   /* take inverse of complex eigenvalues, just on diagonal */
-  invertd(mex::NumericArrayRef<std::complex<double>>{tmplhs[1]});
+  invertd(mx::NumericArrayRef<std::complex<double>>{tmplhs[1]});
   /* and print these out */
   mex::call({{tmplhs[1]}}, "disp");
   

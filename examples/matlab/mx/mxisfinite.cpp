@@ -11,8 +11,10 @@
  * Copyright 1984-2017 The MathWorks, Inc.
  *=================================================================*/
 
-#include <mex/mex.hpp>
-#include <mex/Function.hpp>
+#include <matlabw/mex/mex.hpp>
+#include <matlabw/mex/Function.hpp>
+
+using namespace matlabw;
 
 /* Function that converts double to int32 */
 static std::int32_t dtoi32(double d)
@@ -21,7 +23,7 @@ static std::int32_t dtoi32(double d)
 
   std::int32_t i{};
   
-  if (mex::isFinite(d))
+  if (mx::isFinite(d))
   {
     if (d < static_cast<double>(Int32Limits::max()) && d > static_cast<double>(Int32Limits::min()))
     {
@@ -32,13 +34,13 @@ static std::int32_t dtoi32(double d)
       i = ((d > 0.0) ? Int32Limits::max() : Int32Limits::min());
     }
   }
-  else if (mex::isInf(d))
+  else if (mx::isInf(d))
   {
     i = ((d > 0.0) ? Int32Limits::max() : Int32Limits::min());
     /* NOTE: Test for NaN is here for illustration only. If a double
      * is not finite and is not infinity, then it is a NaN */
   }
-  else if (mex::isNaN(d))
+  else if (mx::isNaN(d))
   {
     mex::warn("MATLAB:mxisfinite:NaN", "dtoi32: NaN detected. Translating to 0.\n");
 
@@ -48,35 +50,35 @@ static std::int32_t dtoi32(double d)
   return i;
 }
 
-void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
+void mex::Function::operator()(mx::Span<mx::Array> lhs, mx::View<mx::ArrayCref> rhs)
 {
   /* Check for proper number of input and output arguments */    
   if (rhs.size() != 1)
   {
-    throw mex::Exception{"MATLAB:mxisfinite:invalidNumInputs", "One input argument required."};
+    throw mx::Exception{"MATLAB:mxisfinite:invalidNumInputs", "One input argument required."};
   }
 
   if (lhs.size() > 1)
   {
-    throw mex::Exception{"MATLAB:mxisfinite:maxlhs", "Too many output arguments."};
+    throw mx::Exception{"MATLAB:mxisfinite:maxlhs", "Too many output arguments."};
   }
   
   /* Check data type of input argument  */
   if (!rhs[0].isDouble())
   {
-    throw mex::Exception{"MATLAB:mxisfinite:invalidInputType", "Input argument must be of type double."};
+    throw mx::Exception{"MATLAB:mxisfinite:invalidInputType", "Input argument must be of type double."};
   }	
 
   if (rhs[0].isEmpty())
   {
-    throw mex::Exception{"MATLAB:mxisfinite:empty", "Input argument is empty\n"};
+    throw mx::Exception{"MATLAB:mxisfinite:empty", "Input argument is empty\n"};
   }
 
   if (rhs[0].isComplex())
   {
-    mex::NumericArrayCref<std::complex<double>> c{rhs[0]};
+    mx::NumericArrayCref<std::complex<double>> c{rhs[0]};
 
-    auto c32 = mex::makeNumericArray<std::complex<std::int32_t>>(c.getDims());
+    auto c32 = mx::makeNumericArray<std::complex<std::int32_t>>(c.getDims());
 
     std::transform(c.begin(),
                    c.end(),
@@ -90,9 +92,9 @@ void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
   }
   else
   {
-    mex::NumericArrayCref<double> r{rhs[0]};
+    mx::NumericArrayCref<double> r{rhs[0]};
 
-    auto r32 = mex::makeNumericArray<std::int32_t>(r.getDims());
+    auto r32 = mx::makeNumericArray<std::int32_t>(r.getDims());
 
     std::transform(r.begin(),
                    r.end(),

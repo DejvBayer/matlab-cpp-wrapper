@@ -8,8 +8,10 @@
  * Copyright 1984-2007 The MathWorks, Inc.
  */
 
-#include <mex/mex.hpp>
-#include <mex/Function.hpp>
+#include <matlabw/mex/mex.hpp>
+#include <matlabw/mex/Function.hpp>
+
+using namespace matlabw;
 
 /* the computational subroutine */
 void dbl_elem(unsigned short *x)
@@ -26,7 +28,7 @@ void dbl_elem(unsigned short *x)
 }
 
 /* the gateway function */
-void mex::Function::operator()(Span<Array> lhs, View<ArrayCref>)
+void mex::Function::operator()(mx::Span<mx::Array> lhs, mx::View<mx::ArrayCref>)
 {
   static constexpr std::array<std::size_t, 2> dims{2, 2};
 
@@ -36,7 +38,7 @@ void mex::Function::operator()(Span<Array> lhs, View<ArrayCref>)
   dbl_elem(data.data());
 
   /* create a 2-by-2 array of unsigned 16-bit integers */
-  auto array = mex::makeNumericArray<unsigned short>(dims);
+  auto array = mx::makeNumericArray<unsigned short>(dims);
 
   /* populate the real part of the created array */
   std::copy(data.begin(), data.end(), array.begin());

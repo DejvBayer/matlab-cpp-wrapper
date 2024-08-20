@@ -11,47 +11,49 @@
  * Copyright 2007-2011 The MathWorks, Inc.
  *=================================================================*/
 
-#include <mex/mex.hpp>
-#include <mex/Function.hpp>
+#include <matlabw/mex/mex.hpp>
+#include <matlabw/mex/Function.hpp>
 
-void errorCheck(std::size_t nlhs, mex::View<mex::ArrayCref> rhs)
+using namespace matlabw;
+
+void errorCheck(std::size_t nlhs, mx::View<mx::ArrayCref> rhs)
 {
   /* Check for proper number of arguments. */
   if (rhs.size() != 1 || !rhs[0].isNumeric() || !rhs[0].isScalar())
   {
-    throw mex::Exception{"MATLAB:arraySize:rhs", "This function requires one scalar numeric input."};
+    throw mx::Exception{"MATLAB:arraySize:rhs", "This function requires one scalar numeric input."};
   } 
 
-  const double dim = mex::NumericArrayCref<double>{rhs[0]}[0];
+  const double dim = rhs[0].getScalarAs<double>();
 
   if (dim < 0.0)
   {
-    throw mex::Exception{"MATLAB:arraySize:dimensionNegative", "The input dimension must be positive."};
+    throw mx::Exception{"MATLAB:arraySize:dimensionNegative", "The input dimension must be positive."};
   }
 
   /* Make sure that it is safe to cast dim to mwSize when using largeArrayDims.*/
-  if (dim > MWSIZE_MAX)
+  if (dim > mx::maxSize)
   {
-    throw mex::Exception{"MATLAB:arraySize:dimensionTooLarge", "The input dimension is larger than the maximum value of mwSize when built with largeArrayDims."};
+    throw mx::Exception{"MATLAB:arraySize:dimensionTooLarge", "The input dimension is larger than the maximum value of mwSize when built with largeArrayDims."};
   }
 
   if (nlhs > 1)
   {
-    throw mex::Exception{"MATLAB:arraySize:lhs","Too many output arguments."};
+    throw mx::Exception{"MATLAB:arraySize:lhs","Too many output arguments."};
   }
 }
 
-void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
+void mex::Function::operator()(mx::Span<mx::Array> lhs, mx::View<mx::ArrayCref> rhs)
 {
   errorCheck(lhs.size(), rhs);
 
-  const std::size_t dim = static_cast<std::size_t>(mex::NumericArrayCref<double>(rhs[0])[0]);
+  const std::size_t dim = static_cast<std::size_t>(rhs[0].getScalarAs<double>());
   
   /* Create an mxArray of size dim x dim of type uint8.*/
-  mex::NumericArray<std::uint8_t> theArray = mex::makeUninitNumericArray<std::uint8_t>({{dim, dim}});
+  mx::NumericArray<std::uint8_t> theArray = mx::makeUninitNumericArray<std::uint8_t>(dim, dim);
 
   /* Display the mxArray's dimension. */
-  mex::printf("\nDimensions: %zu x %zu\n", theArray.getDims()[0], theArray.getDims()[1]);
+  mex::printf("\nDimensions: %zu x %zu\n", theArray.getDimM(), theArray.getDimN());
 
   /* Display the mxArray's size. */
   const std::size_t numberOfElements = theArray.getSize();
@@ -64,9 +66,6 @@ void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
   /* Return result only if one is requested. */
   if (lhs.size() == 1)
   {
-    lhs[0] = mex::makeNumericScalar(sizeOfDataInKilobytes);
+    lhs[0] = mx::makeNumericScalar(sizeOfDataInKilobytes);
   }
 }
-
-
-

@@ -10,24 +10,26 @@
  * All rights reserved.
  *=================================================================*/
 
-#include <mex/mex.hpp>
-#include <mex/Function.hpp>
+#include <matlabw/mex/mex.hpp>
+#include <matlabw/mex/Function.hpp>
 
-void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
+using namespace matlabw;
+
+void mex::Function::operator()(mx::Span<mx::Array> lhs, mx::View<mx::ArrayCref> rhs)
 {
   /* Check for proper number of input and output arguments */
   if (rhs.size() < 1)
   {
-    throw mex::Exception{"MATLAB:mxcreatecellmatrix:minrhs", "At least one input argument required."};
+    throw mx::Exception{"MATLAB:mxcreatecellmatrix:minrhs", "At least one input argument required."};
   }
 
   if (lhs.size() > 1)
   {
-    throw mex::Exception{"MATLAB:mxcreatecellmatrix:maxlhs", "Too many output arguments."};
+    throw mx::Exception{"MATLAB:mxcreatecellmatrix:maxlhs", "Too many output arguments."};
   }
 
   /* Create a nrhs x 1 cell mxArray. */
-  auto cell_array = mex::makeCellArray(rhs.size(), 1);
+  auto cell_array = mx::makeCellArray(rhs.size(), 1);
 
   /* Fill cell matrix with input arguments */
   for (std::size_t i{}; i < rhs.size(); ++i)

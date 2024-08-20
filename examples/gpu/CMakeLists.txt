@@ -1,5 +1,5 @@
 ##
-# This file is part of mex-cpp-wrapper library.
+# This file is part of matlab-cpp-wrapper library.
 #
 # Copyright (c) 2024 David Bayer
 #
@@ -43,7 +43,7 @@ function(add_gpu_examples dir)
       NAME        ${EXAMPLE_NAME}
       SRC         ${EXAMPLE}
       OUTPUT_NAME ${EXAMPLE_NAME}
-      LINK_TO     mexw::mexw-gpu CUDA::cudart
+      LINK_TO     matlabw::mex-gpu CUDA::cudart
       R2018a)
   endforeach()
 endfunction()

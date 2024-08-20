@@ -15,50 +15,52 @@
 
 #include <cstring>
 
-#include <mex/mex.hpp>
-#include <mex/Function.hpp>
+#include <matlabw/mex/mex.hpp>
+#include <matlabw/mex/Function.hpp>
+
+using namespace matlabw;
 
 static constexpr std::size_t RED   = 0;
 static constexpr std::size_t GREEN = 1;
 static constexpr std::size_t BLUE  = 2;
 
-void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
+void mex::Function::operator()(mx::Span<mx::Array> lhs, mx::View<mx::ArrayCref> rhs)
 {
   /* Assume that the first input argument is a graphics
      handle. Check to make sure the input is a double and that only
      one input is specified.*/
   if (rhs.size() != 1)
   {
-    throw mex::Exception{"MATLAB:mxgetproperty:minrhs", "Not enough input arguments."};
+    throw mx::Exception{"MATLAB:mxgetproperty:minrhs", "Not enough input arguments."};
   }
   
   /* Check for the correct number of outputs */
   if (lhs.size() > 1)
   {
-    throw mex::Exception{"MATLAB:mxgetproperty:maxlhs", "Too many output arguments."};
+    throw mx::Exception{"MATLAB:mxgetproperty:maxlhs", "Too many output arguments."};
   }
 
-  mex::Array array{rhs[0]};
+  mx::Array array{rhs[0]};
       
   /* Check to make sure input argument is a object */
-  if (std::strncmp(array.getClassName(), "matlab.graphics", 15))
+  if (std::strncmp(array.getClassName(), "matlabw.graphics", 15))
   {
-    throw mex::Exception{"MATLAB:mxgetproperty:inputMustBeObject", "Must be called with a valid graphics handle.\n"};
+    throw mx::Exception{"MATLAB:mxgetproperty:inputMustBeObject", "Must be called with a valid graphics handle.\n"};
   }
   
   /* Get the "Color" property associated with this handle. */
-  auto color_array = mex::getProperty(array, "Color");
+  auto color_array = mx::getProperty(array, "Color");
   
   if (!color_array.has_value())
   {
-    throw mex::Exception{"MATLAB:mxgetproperty:errGettingHandleProperty", "Could not get this handle property"};
+    throw mx::Exception{"MATLAB:mxgetproperty:errGettingHandleProperty", "Could not get this handle property"};
   }
   
   /* Make copy of "Color" propery */
-  mex::Array value{*color_array};
+  mx::Array value{*color_array};
   
   /* The returned "Color" property is a 1-by-3 matrix of primary colors. */ 
-  double* color = mex::NumericArrayRef<double>{value}.getData();
+  double* color = value.getDataAs<double>();
   
   /* Change the color values */
   color[RED]   = (1.0 + color[RED]) / 2.0;
@@ -66,5 +68,5 @@ void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
   color[BLUE]  = color[BLUE] / 2.0;
   
   /* Reset the "Color" property to use the new color. */
-  mex::setProperty(array, "Color", value);
+  mx::setProperty(array, "Color", value);
 }
