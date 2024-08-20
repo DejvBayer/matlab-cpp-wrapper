@@ -93,7 +93,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] operator CharArrayRef()
       {
-        checkValid();
+        checkValid("matlabw:mx:CharArray:operatorCharArrayRef");
         return CharArrayRef{get()};
       }
 
@@ -103,7 +103,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] operator CharArrayCref() const
       {
-        checkValid();
+        checkValid("matlabw:mx:CharArray:operatorCharArrayCref");
         return CharArrayCref{get()};
       }
   };

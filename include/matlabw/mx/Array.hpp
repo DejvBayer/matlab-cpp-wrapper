@@ -160,7 +160,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] std::size_t getRank() const
       {
-        checkValid();
+        checkValid("matlabw:mx:Array:getRank");
         return mxGetNumberOfDimensions(mArray);
       }
 
@@ -170,7 +170,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] View<std::size_t> getDims() const
       {
-        checkValid();
+        checkValid("matlabw:mx:Array:getDims");
         return View<std::size_t>{mxGetDimensions(mArray), getRank()};
       }
 
@@ -180,7 +180,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] std::size_t getDimM() const
       {
-        checkValid();
+        checkValid("matlabw:mx:Array:getDimM");
         return mxGetM(mArray);
       }
 
@@ -190,7 +190,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] std::size_t getDimN() const
       {
-        checkValid();
+        checkValid("matlabw:mx:Array:getDimN");
         return mxGetN(mArray);
       }
 
@@ -200,7 +200,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] std::size_t getSize() const
       {
-        checkValid();
+        checkValid("matlabw:mx:Array:getSize");
         return mxGetNumberOfElements(mArray);
       }
 
@@ -210,7 +210,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] std::size_t getSizeOfElement() const
       {
-        checkValid();
+        checkValid("matlabw:mx:Array:getSizeOfElement");
         return mxGetElementSize(mArray);
       }
 
@@ -220,7 +220,7 @@ namespace matlabw::mx
        */
       void resize(View<std::size_t> dims)
       {
-        checkValid();
+        checkValid("matlabw:mx:Array:resize");
 
         if (mxSetDimensions(mArray, dims.data(), dims.size()))
         {
@@ -254,7 +254,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] bool isGpuArray() const
       {
-        checkValid();
+        checkValid("matlabw:mx:Array:isGpuArray");
         return mxIsGPUArray(mArray);
       }
 #   endif
@@ -265,7 +265,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] bool isNumeric() const
       {
-        checkValid();
+        checkValid("matlabw:mx:Array:isNumeric");
         return mxIsNumeric(mArray);
       }
 
@@ -275,7 +275,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] bool isComplex() const
       {
-        checkValid();
+        checkValid("matlabw:mx:Array:isComplex");
         return mxIsComplex(mArray);
       }
 
@@ -285,7 +285,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] bool isEmpty() const
       {
-        checkValid();
+        checkValid("matlabw:mx:Array:isEmpty");
         return mxIsEmpty(mArray);
       }
 
@@ -295,7 +295,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] bool isScalar() const
       {
-        checkValid();
+        checkValid("matlabw:mx:Array:isScalar");
         return mxIsScalar(mArray);
       }
 
@@ -305,7 +305,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] bool isDouble() const
       {
-        checkValid();
+        checkValid("matlabw:mx:Array:isDouble");
         return mxIsDouble(mArray);
       }
 
@@ -315,7 +315,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] bool isSingle() const
       {
-        checkValid();
+        checkValid("matlabw:mx:Array:isSingle");
         return mxIsSingle(mArray);
       }
 
@@ -325,7 +325,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] bool isInt8() const
       {
-        checkValid();
+        checkValid("matlabw:mx:Array:isInt8");
         return mxIsInt8(mArray);
       }
 
@@ -335,7 +335,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] bool isUint8() const
       {
-        checkValid();
+        checkValid("matlabw:mx:Array:isUint8");
         return mxIsUint8(mArray);
       }
 
@@ -345,7 +345,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] bool isInt16() const
       {
-        checkValid();
+        checkValid("matlabw:mx:Array:isInt16");
         return mxIsInt16(mArray);
       }
 
@@ -355,7 +355,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] bool isUint16() const
       {
-        checkValid();
+        checkValid("matlabw:mx:Array:isUint16");
         return mxIsUint16(mArray);
       }
 
@@ -365,7 +365,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] bool isInt32() const
       {
-        checkValid();
+        checkValid("matlabw:mx:Array:isInt32");
         return mxIsInt32(mArray);
       }
 
@@ -375,7 +375,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] bool isUint32() const
       {
-        checkValid();
+        checkValid("matlabw:mx:Array:isUint32");
         return mxIsUint32(mArray);
       }
 
@@ -385,7 +385,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] bool isInt64() const
       {
-        checkValid();
+        checkValid("matlabw:mx:Array:isInt64");
         return mxIsInt64(mArray);
       }
 
@@ -395,7 +395,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] bool isUint64() const
       {
-        checkValid();
+        checkValid("matlabw:mx:Array:isUint64");
         return mxIsUint64(mArray);
       }
 
@@ -405,7 +405,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] bool isSparse() const
       {
-        checkValid();
+        checkValid("matlabw:mx:Array:isSparse");
         return mxIsSparse(mArray);
       }
 
@@ -415,7 +415,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] bool isChar() const
       {
-        checkValid();
+        checkValid("matlabw:mx:Array:isChar");
         return mxIsChar(mArray);
       }
 
@@ -425,7 +425,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] bool isLogical() const
       {
-        checkValid();
+        checkValid("matlabw:mx:Array:isLogical");
         return mxIsLogical(mArray);
       }
 
@@ -435,7 +435,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] bool isLogicalScalar() const
       {
-        checkValid();
+        checkValid("matlabw:mx:Array:isLogicalScalar");
         return mxIsLogicalScalar(mArray);
       }
 
@@ -445,7 +445,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] bool isLogicalScalarTrue() const
       {
-        checkValid();
+        checkValid("matlabw:mx:Array:isLogicalScalarTrue");
         return mxIsLogicalScalarTrue(mArray);
       }
 
@@ -456,7 +456,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] bool isClass(const char* name) const
       {
-        checkValid();
+        checkValid("matlabw:mx:Array:isClass");
 
         if (name == nullptr)
         {
@@ -482,7 +482,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] bool isStruct() const
       {
-        checkValid();
+        checkValid("matlabw:mx:Array:isStruct");
         return mxIsStruct(mArray);
       }
 
@@ -492,7 +492,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] bool isCell() const
       {
-        checkValid();
+        checkValid("matlabw:mx:Array:isCell");
         return mxIsCell(mArray);
       }
 
@@ -502,7 +502,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] ClassId getClassId() const
       {
-        checkValid();
+        checkValid("matlabw:mx:Array:getClassId");
         return static_cast<ClassId>(mxGetClassID(mArray));
       }
 
@@ -512,7 +512,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] const char* getClassName() const
       {
-        checkValid();
+        checkValid("matlabw:mx:Array:getClassName");
         return mxGetClassName(mArray);
       }
 
@@ -522,7 +522,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] const void* getData() const
       {
-        checkValid();
+        checkValid("matlabw:mx:Array:getData");
         return mxGetData(mArray);
       }
 
@@ -532,7 +532,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] void* getData()
       {
-        checkValid();
+        checkValid("matlabw:mx:Array:getData");
         return mxGetData(mArray);
       }
 
@@ -546,7 +546,7 @@ namespace matlabw::mx
       {
         if (getClassId() != TypeProperties<T>::classId)
         {
-          throw Exception{"mx:Array:getDataAs", "type must match the array class ID"};
+          throw Exception{"matlabw:mx:Array:getDataAs", "type must match the array class ID"};
         }
 
         return static_cast<const T*>(getData());
@@ -562,7 +562,7 @@ namespace matlabw::mx
       {
         if (getClassId() != TypeProperties<T>::classId)
         {
-          throw Exception{"mx:Array:getDataAs", "type must match the array class ID"};
+          throw Exception{"matlabw:mx:Array:getDataAs", "type must match the array class ID"};
         }
 
         return static_cast<T*>(getData());
@@ -612,7 +612,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] operator ArrayRef()
       {
-        checkValid();
+        checkValid("matlabw:mx:Array:operatorArrayRef");
         return ArrayRef{mArray};
       }
 
@@ -622,16 +622,16 @@ namespace matlabw::mx
        */
       [[nodiscard]] operator ArrayCref() const
       {
-        checkValid();
+        checkValid("matlabw:mx:Array:operatorArrayCref");
         return ArrayCref{mArray};
       }
     protected:
       /// @brief Check if the array is valid
-      void checkValid() const
+      void checkValid(const char* id) const
       {
         if (!isValid())
         {
-          throw Exception{"accessing invalid array"};
+          throw Exception{id, "accessing invalid array"};
         }
       }
     private:

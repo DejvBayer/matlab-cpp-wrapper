@@ -337,7 +337,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] operator TypedArrayRef<T>()
       {
-        checkValid();
+        checkValid("matlabw:mx:TypedArray:operatorTypedArrayRef");
         return TypedArrayRef<T>{get()};
       }
 
@@ -347,7 +347,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] operator TypedArrayCref<T>() const
       {
-        checkValid();
+        checkValid("matlabw:mx:TypedArray:operatorTypedArrayCref");
         return TypedArrayCref<T>{get()};
       }
     private:

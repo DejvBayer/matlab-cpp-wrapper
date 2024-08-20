@@ -99,7 +99,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] std::optional<ArrayRef> getField(std::size_t i, FieldIndex fieldIndex)
       {
-        checkValid();
+        checkValid("matlabw::mx::StructArray::getField");
 
         if (static_cast<std::size_t>(fieldIndex) >= getFieldCount())
         {
@@ -178,7 +178,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] std::optional<ArrayCref> getField(std::size_t i, FieldIndex fieldIndex) const
       {
-        checkValid();
+        checkValid("matlabw::mx::StructArray::getField");
 
         if (static_cast<std::size_t>(fieldIndex) >= getFieldCount())
         {
@@ -257,7 +257,7 @@ namespace matlabw::mx
        */
       void setField(std::size_t i, FieldIndex fieldIndex, ArrayCref value)
       {
-        checkValid();
+        checkValid("matlabw::mx::StructArray::setField");
 
         if (static_cast<std::size_t>(fieldIndex) >= getFieldCount())
         {
@@ -329,7 +329,7 @@ namespace matlabw::mx
        */
       void setField(std::size_t i, FieldIndex fieldIndex, Array&& value)
       {
-        checkValid();
+        checkValid("matlabw::mx::StructArray::setField");
 
         if (static_cast<std::size_t>(fieldIndex) >= getFieldCount())
         {
@@ -355,7 +355,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] std::size_t getFieldCount() const
       {
-        checkValid();
+        checkValid("matlabw::mx::StructArray::getFieldCount");
         return static_cast<std::size_t>(mxGetNumberOfFields(get()));
       }
 
@@ -366,7 +366,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] const char* getFieldName(FieldIndex fieldIdx) const
       {
-        checkValid();
+        checkValid("matlabw::mx::StructArray::getFieldName");
         
         const char* fieldName = mxGetFieldNameByNumber(get(), static_cast<int>(fieldIdx));
 
@@ -385,7 +385,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] FieldIndex getFieldIndex(const char* fieldName) const
       {
-        checkValid();
+        checkValid("matlabw::mx::StructArray::getFieldIndex");
 
         int fieldIdx = mxGetFieldNumber(get(), fieldName);
 
@@ -413,7 +413,7 @@ namespace matlabw::mx
        */
       void addField(const char* fieldName)
       {
-        checkValid();
+        checkValid("matlabw::mx::StructArray::addField");
 
         if (fieldName == nullptr)
         {
@@ -441,7 +441,7 @@ namespace matlabw::mx
        */
       void removeField(const char* fieldName)
       {
-        checkValid();
+        checkValid("matlabw::mx::StructArray::removeField");
 
         if (fieldName == nullptr)
         {
@@ -466,7 +466,7 @@ namespace matlabw::mx
        */
       void removeField(FieldIndex fieldIndex)
       {
-        checkValid();
+        checkValid("matlabw::mx::StructArray::removeField");
 
         if (static_cast<std::size_t>(fieldIndex) >= getFieldCount())
         {
