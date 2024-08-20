@@ -289,6 +289,12 @@ namespace matlabw::mx::gpu
        * @return ArrayCref
        */
       [[nodiscard]] operator ArrayCref() const;
+    protected:
+      /**
+       * @brief Check if the array is valid
+       * @param id Identifier of the function
+       */
+      void checkValid(const char* id) const;
     private:
       /**
        * @brief Duplicate the array
@@ -302,9 +308,6 @@ namespace matlabw::mx::gpu
        * @param array mxArray pointer
        */
       explicit Array(const mxArray* array);
-
-      /// @brief Check if the array is valid
-      void checkValid() const;
 
       /// @brief Destroy the array
       void destroy() noexcept;
@@ -967,7 +970,7 @@ namespace matlabw::mx::gpu
    */
   [[nodiscard]] inline std::size_t Array::getRank() const
   {
-    checkValid();
+    checkValid("matlabw:mx:gpu:Array:getRank");
     return mxGPUGetNumberOfDimensions(mArray);
   }
 
@@ -977,7 +980,7 @@ namespace matlabw::mx::gpu
    */
   [[nodiscard]] inline View<std::size_t> Array::getDims() const
   {
-    checkValid();
+    checkValid("matlabw:mx:gpu:Array:getDims");
     
     if (mDims == nullptr)
     {
@@ -993,7 +996,7 @@ namespace matlabw::mx::gpu
    */
   [[nodiscard]] inline std::size_t Array::getSize() const
   {
-    checkValid();
+    checkValid("matlabw:mx:gpu:Array:getSize");
     return mxGPUGetNumberOfElements(mArray);
   }
 
@@ -1004,7 +1007,7 @@ namespace matlabw::mx::gpu
    */
   inline void Array::resize(View<std::size_t> dims)
   {
-    checkValid();
+    checkValid("matlabw:mx:gpu:Array:resize");
 
     if (getSize() < std::accumulate(dims.begin(), dims.end(), std::size_t{1}, std::multiplies<>{}))
     {
@@ -1041,7 +1044,7 @@ namespace matlabw::mx::gpu
    */
   [[nodiscard]] inline bool Array::isNumeric() const
   {
-    checkValid();
+    checkValid("matlabw:mx:gpu:Array:isNumeric");
     
     switch (getClassId())
     {
@@ -1067,7 +1070,7 @@ namespace matlabw::mx::gpu
    */
   [[nodiscard]] inline bool Array::isComplex() const
   {
-    checkValid();
+    checkValid("matlabw:mx:gpu:Array:isComplex");
     return mxGPUGetComplexity(mArray) == mxCOMPLEX;
   }
 
@@ -1185,7 +1188,7 @@ namespace matlabw::mx::gpu
    */
   [[nodiscard]] inline bool Array::isSparse() const
   {
-    checkValid();
+    checkValid("matlabw:mx:gpu:Array:isSparse");
     return mxGPUIsSparse(mArray);
   }
 
@@ -1195,7 +1198,7 @@ namespace matlabw::mx::gpu
    */
   [[nodiscard]] inline ClassId Array::getClassId() const
   {
-    checkValid();
+    checkValid("matlabw:mx:gpu:Array:getClassId");
     return static_cast<ClassId>(mxGPUGetClassID(mArray));
   }
 
@@ -1205,7 +1208,7 @@ namespace matlabw::mx::gpu
    */
   [[nodiscard]] inline const void* Array::getData() const
   {
-    checkValid();
+    checkValid("matlabw:mx:gpu:Array:getData");
     return mxGPUGetDataReadOnly(mArray);
   }
 
@@ -1215,7 +1218,7 @@ namespace matlabw::mx::gpu
    */
   [[nodiscard]] inline void* Array::getData()
   {
-    checkValid();
+    checkValid("matlabw:mx:gpu:Array:getData");
     return mxGPUGetData(mArray);
   }
 
@@ -1256,7 +1259,7 @@ namespace matlabw::mx::gpu
    */
   [[nodiscard]] inline Array::operator ArrayRef()
   {
-    checkValid();
+    checkValid("matlabw:mx:gpu:Array:operatorArrayRef");
     return ArrayRef{*this};
   }
 
@@ -1266,7 +1269,7 @@ namespace matlabw::mx::gpu
    */
   [[nodiscard]] inline Array::operator ArrayCref() const
   {
-    checkValid();
+    checkValid("matlabw:mx:gpu:Array:operatorArrayCref");
     return ArrayCref{*this};
   }
 
@@ -1292,12 +1295,15 @@ namespace matlabw::mx::gpu
     return arrayDup;
   }
 
-  /// @brief Check if the array is valid
-  inline void Array::checkValid() const
+  /**
+   * @brief Check if the array is valid
+   * @param id Identifier of the function
+   */
+  inline void Array::checkValid(const char* id) const
   {
     if (!isValid())
     {
-      throw Exception{"accessing invalid array"};
+      throw Exception{id, "accessing invalid array"};
     }
   }
 

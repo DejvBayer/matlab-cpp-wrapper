@@ -626,7 +626,10 @@ namespace matlabw::mx
         return ArrayCref{mArray};
       }
     protected:
-      /// @brief Check if the array is valid
+      /**
+       * @brief Check if the array is valid
+       * @param id Function ID
+       */
       void checkValid(const char* id) const
       {
         if (!isValid())

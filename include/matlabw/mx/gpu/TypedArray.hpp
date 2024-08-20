@@ -151,7 +151,7 @@ namespace matlabw::mx::gpu
        */
       [[nodiscard]] operator TypedArrayRef<T>()
       {
-        checkValid();
+        checkValid("matlabw:mx:gpu:TypedArray:operatorTypedArrayRef");
         return TypedArrayRef<T>{get()};
       }
 
@@ -161,7 +161,7 @@ namespace matlabw::mx::gpu
        */
       [[nodiscard]] operator TypedArrayCref<T>() const
       {
-        checkValid();
+        checkValid("matlabw:mx:gpu:TypedArray:operatorTypedArrayCref");
         return TypedArrayCref<T>{get()};
       }
     private:
