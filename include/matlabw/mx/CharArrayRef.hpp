@@ -36,19 +36,7 @@ namespace matlabw::mx
    * @param array TypedArrayCref<char16_t>
    * @return std::string
    */
-  [[nodiscard]] inline std::string toAscii(TypedArrayCref<char16_t> array)
-  {
-    const std::size_t size = std::char_traits<char16_t>::length(array.getData());
-
-    std::string str(size, '\0');
-
-    if (mxGetString(array.get(), str.data(), size + 1))
-    {
-      throw Exception{"MATLAB:toAscii:invalidInput", "Failed to convert char16_t array to string.\n"};
-    }
-
-    return str;
-  }
+  [[nodiscard]] std::string toAscii(TypedArrayCref<char16_t> array);
 
   /**
    * @brief Convert a char array to a std::string
@@ -79,10 +67,19 @@ namespace matlabw::mx
       using TypedArrayRef<char16_t>::operator=;
 
       /**
+       * @brief Is the array a single string?
+       * @return true if the array is a single string
+       */
+      [[nodiscard]] bool isSingleString() const
+      {
+        return (getRank() <= 2) && (getDimM() == 1);
+      }
+
+      /**
        * @brief Convert to std::string (ASCII)
        * @return std::string
        */
-      std::string toAscii() const
+      [[nodiscard]] std::string toAscii() const
       {
         return mx::toAscii(*this);
       }
@@ -91,9 +88,16 @@ namespace matlabw::mx
        * @brief Convert to std::u16string_view
        * @return std::u16string_view
        */
-      [[nodiscard]] operator std::u16string_view() const
+      [[nodiscard]] explicit operator std::u16string_view() const
       {
-        return std::u16string_view{getData()};
+        static constexpr char id[]{"matlabw:mx:CharArrayRef:operatorU16StringView"};
+
+        if (!isSingleString())
+        {
+          throw Exception{id, "array must be a single string"};
+        }
+        
+        return std::u16string_view{getData(), getDimN()};
       }
   };
 
@@ -111,10 +115,19 @@ namespace matlabw::mx
       using TypedArrayCref<char16_t>::operator=;
 
       /**
+       * @brief Is the array a single string?
+       * @return true if the array is a single string
+       */
+      [[nodiscard]] bool isSingleString() const
+      {
+        return (getRank() <= 2) && (getDimM() == 1);
+      }
+
+      /**
        * @brief Convert to std::string (ASCII)
        * @return std::string
        */
-      std::string toAscii() const
+      [[nodiscard]] std::string toAscii() const
       {
         return mx::toAscii(*this);
       }
@@ -123,11 +136,44 @@ namespace matlabw::mx
        * @brief Convert to std::u16string_view
        * @return std::u16string_view
        */
-      [[nodiscard]] operator std::u16string_view() const
+      [[nodiscard]] explicit operator std::u16string_view() const
       {
-        return std::u16string_view{getData()};
+        static constexpr char id[]{"matlabw:mx:CharArrayCref:operatorU16StringView"};
+
+        if (!isSingleString())
+        {
+          throw Exception{id, "array must be a single string"};
+        }
+
+        return std::u16string_view{getData(), getDimN()};
       }
   };
+
+  /**
+   * @brief Convert a char16_t array to a std::string
+   * @param array CharArrayCref
+   * @return std::string
+   */
+  [[nodiscard]] inline std::string toAscii(CharArrayCref array)
+  {
+    static constexpr char id[]{"matlabw:mx:toAscii"};
+
+    if (array.isSingleString())
+    {
+      throw Exception{id, "Input must be a single string.\n"};
+    }
+
+    const std::size_t size = std::char_traits<char16_t>::length(array.getData());
+
+    std::string str(size, '\0');
+
+    if (mxGetString(array.get(), str.data(), size + 1))
+    {
+      throw Exception{id, "Failed to convert char16_t array to string.\n"};
+    }
+
+    return str;
+  }
 } // namespace matlabw::mx
 
 #endif /* MATLABW_MX_CHAR_ARRAY_REF_HPP */

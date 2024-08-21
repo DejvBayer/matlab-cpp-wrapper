@@ -58,10 +58,19 @@ namespace matlabw::mx
       using TypedArray<char16_t>::operator=;
 
       /**
+       * @brief Is the array a single string?
+       * @return true if the array is a single string
+       */
+      [[nodiscard]] bool isSingleString() const
+      {
+        return (getRank() <= 2) && (getDimM() == 1);
+      }
+
+      /**
        * @brief Convert to std::string (ASCII)
        * @return std::string
        */
-      std::string toAscii() const
+      [[nodiscard]] std::string toAscii() const
       {
         return mx::toAscii(TypedArrayCref<char16_t>{*this});
       }
@@ -70,9 +79,16 @@ namespace matlabw::mx
        * @brief Convert to std::u16string_view
        * @return std::u16string_view
        */
-      [[nodiscard]] operator std::u16string_view() const
+      [[nodiscard]] explicit operator std::u16string_view() const
       {
-        return std::u16string_view{getData()};
+        static constexpr char id[]{"matlabw:mx:CharArray:operatorU16StringView"};
+
+        if (!isSingleString())
+        {
+          throw Exception{id, "array must be a single string"};
+        }
+
+        return std::u16string_view{getData(), getDimN()};
       }
 
       /// @brief Use the TypedArray<char16_t>::operator ArrayRef
