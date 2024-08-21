@@ -197,7 +197,7 @@ namespace matlabw::mx
    * @param complexity Complexity
    * @return Numeric array
    */
-  [[nodiscard]] Array makeNumericScalar(const ClassId classId, const Complexity complexity = Complexity::real)
+  [[nodiscard]] inline Array makeNumericScalar(const ClassId classId, const Complexity complexity = Complexity::real)
   {
     auto array = makeNumericArray({{1, 1}}, classId, complexity);
 
