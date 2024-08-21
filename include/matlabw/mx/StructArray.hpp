@@ -513,7 +513,7 @@ namespace matlabw::mx
    * @param fieldNames The field names.
    * @return The structure array.
    */
-  [[nodiscard]] StructArray makeStructArray(View<std::size_t> dims, View<const char*> fieldNames)
+  [[nodiscard]] inline StructArray makeStructArray(View<std::size_t> dims, View<const char*> fieldNames)
   {
     mxArray* array = mxCreateStructArray(dims.size(),
                                          dims.data(),
@@ -535,7 +535,7 @@ namespace matlabw::mx
    * @param fieldNames The field names.
    * @return The structure array.
    */
-  [[nodiscard]] StructArray makeStructArray(std::size_t m, std::size_t n, View<const char*> fieldNames)
+  [[nodiscard]] inline StructArray makeStructArray(std::size_t m, std::size_t n, View<const char*> fieldNames)
   {
     return makeStructArray({{m, n}}, fieldNames);
   }
