@@ -6,18 +6,20 @@
  * Copyright 1984-2011 The MathWorks, Inc.
  */
 
-#include <mex/mex.hpp>
-#include <mex/Function.hpp>
+#include <matlabw/mex/mex.hpp>
+#include <matlabw/mex/Function.hpp>
 
-void mex::Function::operator()(Span<Array>, View<ArrayCref> rhs)
+using namespace matlabw;
+
+void mex::Function::operator()(mx::Span<mx::Array>, mx::View<mx::ArrayCref> rhs)
 {
   if (rhs.empty())
   {
-    throw mex::Exception{"MATLAB:mexeval:minrhs", "Function requires one input.\n"};
+    throw mx::Exception{"MATLAB:mexeval:minrhs", "Function requires one input.\n"};
   }
   else if (!rhs[0].isChar())
   {
-    throw mex::Exception{"MATLAB:mexeval:UndefinedFunction", "Function 'mexeval' defined only for for variables of class 'char'\n"};
+    throw mx::Exception{"MATLAB:mexeval:UndefinedFunction", "Function 'mexeval' defined only for for variables of class 'char'\n"};
   }
   else
   {
@@ -25,13 +27,13 @@ void mex::Function::operator()(Span<Array>, View<ArrayCref> rhs)
      * or statement the biggest limitation is that it won't 
      * evaluate any left-hand arguments except 'ans'
      */
-    std::string fcn = mex::toAscii(mex::CharArrayCref{rhs[0]});
+    std::string fcn = mx::toAscii(mx::CharArrayCref{rhs[0]});
     
     try
     {
       mex::eval(fcn);
     }
-    catch (const mex::Exception&)
+    catch (const mx::Exception&)
     {
       if (rhs.size() == 2)
       {
@@ -40,7 +42,7 @@ void mex::Function::operator()(Span<Array>, View<ArrayCref> rhs)
          * successful. If the operation generates an error,
          * string s2 is evaluated before returning.
          */        
-        std::string cmd = mex::toAscii(mex::CharArrayCref{rhs[1]});
+        std::string cmd = mx::toAscii(mx::CharArrayCref{rhs[1]});
         
         mex::eval(cmd);
       }

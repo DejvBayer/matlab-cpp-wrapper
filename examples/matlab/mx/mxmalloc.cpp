@@ -9,29 +9,31 @@
  * Copyright 1984-2017 The MathWorks, Inc.
  *=================================================================*/
 
-#include <mex/mex.hpp>
-#include <mex/Function.hpp>
+#include <matlabw/mex/mex.hpp>
+#include <matlabw/mex/Function.hpp>
 
-void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
+using namespace matlabw;
+
+void mex::Function::operator()(mx::Span<mx::Array> lhs, mx::View<mx::ArrayCref> rhs)
 {  
   /* Check for proper number of input and output arguments */
   if (rhs.size() != 1)
   { 
-    throw mex::Exception{"MATLAB:mxmalloc:invalidNumInputs", "One input argument required."};
+    throw mx::Exception{"MATLAB:mxmalloc:invalidNumInputs", "One input argument required."};
   }
 
   if (lhs.size() > 1)
   {
-    throw mex::Exception{"MATLAB:MXMALLOC:maxlhs", "Too many output arguments."};
+    throw mx::Exception{"MATLAB:MXMALLOC:maxlhs", "Too many output arguments."};
   }
   
   /* Check for proper input type */
   if (!rhs[0].isChar() || rhs[0].getDims()[0] != 1)
   {
-    throw mex::Exception{"MATLAB:mxmalloc:invalidInput", "Input argument must be a string."};
+    throw mx::Exception{"MATLAB:mxmalloc:invalidInput", "Input argument must be a string."};
   }
   
-  std::string str = mex::CharArrayCref{rhs[0]}.toAscii();
+  std::string str = mx::CharArrayCref{rhs[0]}.toAscii();
 
   mex::printf("The input string is:  %s\n", str.c_str());
   /* NOTE: You could add your own code here to manipulate 

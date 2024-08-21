@@ -15,24 +15,26 @@
 
 #include <cstring>
 
-#include <mex/mex.hpp>
-#include <mex/Function.hpp>
+#include <matlabw/mex/mex.hpp>
+#include <matlabw/mex/Function.hpp>
+
+using namespace matlabw;
 
 static int mex_count = 0;
 
-void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
+void mex::Function::operator()(mx::Span<mx::Array> lhs, mx::View<mx::ArrayCref> rhs)
 {
   char array_name[40];
   
   /* Check for proper number of input and output arguments */
   if (!rhs.empty())
   {
-    throw mex::Exception{"MATLAB:mexgetarray:minrhs", "No input arguments required."};
+    throw mx::Exception{"MATLAB:mexgetarray:minrhs", "No input arguments required."};
   }
 
   if (!lhs.empty())
   {
-    throw mex::Exception{"MATLAB:mexgetarray:maxrhs", "Too many output arguments."};
+    throw mx::Exception{"MATLAB:mexgetarray:maxrhs", "Too many output arguments."};
   }
 
   /* Make copy of MEX-file name, then create variable for MATLAB
@@ -42,9 +44,8 @@ void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
 
   /* Get variable that keeps count of how many times MEX-file has
      been called from MATLAB global workspace. */
-  NumericArray<double> array{};
+  mx::NumericArray<double> array{};
   
-
   /* Check status of MATLAB and MEX-file MEX-file counter */
   if (auto arrayOpt = mex::getVariable(mex::Workspace::global, array_name); !arrayOpt.has_value())
   {
@@ -52,17 +53,17 @@ void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
     {
       mex_count = 0;
       mex::printf("Variable %s\n", array_name);
-      throw mex::Exception{"MATLAB:mexgetarray:invalidGlobalVarState",
-                           "Global variable was cleared from the MATLAB global workspace.\nResetting count.\n"};
+      throw mx::Exception{"MATLAB:mexgetarray:invalidGlobalVarState",
+                          "Global variable was cleared from the MATLAB global workspace.\nResetting count.\n"};
     }
 
     /* Since variable does not yet exist in MATLAB workspace,
       * create it and place it in the global workspace. */
-    array = mex::makeNumericScalar<double>();
+    array = mx::makeNumericScalar<double>();
   }
   else
   {
-    array = NumericArray<double>{std::move(arrayOpt.value())};
+    array = mx::NumericArray<double>{std::move(arrayOpt.value())};
   }
 
   /* Increment both MATLAB and MEX counters by 1 */

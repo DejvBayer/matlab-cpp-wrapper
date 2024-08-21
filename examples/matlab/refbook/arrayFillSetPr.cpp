@@ -13,18 +13,20 @@
  *	
  *=================================================================*/
 
-#include <mex/mex.hpp>
-#include <mex/Function.hpp>
+#include <matlabw/mex/mex.hpp>
+#include <matlabw/mex/Function.hpp>
+
+using namespace matlabw;
 
 /* The mxArray in this example is 2x2 */
 static constexpr std::size_t ROWS    = 2;
 static constexpr std::size_t COLUMNS = 2;
 
-void mex::Function::operator()(Span<Array>, View<ArrayCref>)
+void mex::Function::operator()(mx::Span<mx::Array>, mx::View<mx::ArrayCref>)
 {
   static constexpr std::array data{2.1, 3.4, 2.3, 2.45};  /* existing data */
 
   static_assert(data.size() == ROWS * COLUMNS);
 
-  throw mex::Exception{"MATLAB:arrayFillSetData:unsupported", "Mex-cpp-wrapper currently does not support setting matrix data."};
+  throw mx::Exception{"MATLAB:arrayFillSetData:unsupported", "matlab-cpp-wrapper currently does not support setting matrix data."};
 }

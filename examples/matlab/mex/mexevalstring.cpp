@@ -7,20 +7,22 @@
  * Copyright 1984-2009 The MathWorks, Inc.
  *================================================================*/
 
-#include <mex/mex.hpp>
-#include <mex/Function.hpp>
+#include <matlabw/mex/mex.hpp>
+#include <matlabw/mex/Function.hpp>
 
-void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
+using namespace matlabw;
+
+void mex::Function::operator()(mx::Span<mx::Array> lhs, mx::View<mx::ArrayCref> rhs)
 {
   /* Check for proper number of input and output arguments */    
   if (!rhs.empty())
   {
-    throw mex::Exception{"MATLAB:mexevalstring:nInput", "No input arguments required."};
+    throw mx::Exception{"MATLAB:mexevalstring:nInput", "No input arguments required."};
   }
 
   if (!lhs.empty())
   {
-    throw mex::Exception{"MATLAB:mexevalstring:nOutput", "Too many output arguments."};
+    throw mx::Exception{"MATLAB:mexevalstring:nOutput", "Too many output arguments."};
   } 
 
   /* Assign a value to the variable a. */

@@ -18,32 +18,34 @@
 
 #include <vector>
 
-#include <mex/mex.hpp>
-#include <mex/Function.hpp>
+#include <matlabw/mex/mex.hpp>
+#include <matlabw/mex/Function.hpp>
 
-void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
+using namespace matlabw;
+
+void mex::Function::operator()(mx::Span<mx::Array> lhs, mx::View<mx::ArrayCref> rhs)
 {  
   /* Check for proper number of input and output arguments */
   if (rhs.size() != 2)
   {
-    throw mex::Exception{"MATLAB:mxcalcsinglesubscript:invalidNumInputs", "Two input arguments required."};
+    throw mx::Exception{"MATLAB:mxcalcsinglesubscript:invalidNumInputs", "Two input arguments required."};
   }
 
   if (lhs.size() > 1)
   {
-    throw mex::Exception{"MATLAB:mxcalcsinglesubscript:maxlhs", "Too many output arguments."};
+    throw mx::Exception{"MATLAB:mxcalcsinglesubscript:maxlhs", "Too many output arguments."};
   }
   
   /* Check data type of first input argument */
   if (!rhs[0].isDouble())
   {
-    throw mex::Exception{"MATLAB:mxcalcsinglesubscript:invalidFirstInputType", "First input argument must be a double."};
+    throw mx::Exception{"MATLAB:mxcalcsinglesubscript:invalidFirstInputType", "First input argument must be a double."};
   }
 
   /* Check data type of second argument */
   if (!rhs[1].isDouble() || rhs[1].isComplex())
   {
-    throw mex::Exception{"MATLAB:mxcalcsinglesubscript:invalidSecondInputType", "Second input argument must be a real double."};
+    throw mx::Exception{"MATLAB:mxcalcsinglesubscript:invalidSecondInputType", "Second input argument must be a real double."};
   }
 
   /* Get the number of dimensions in array */
@@ -52,7 +54,7 @@ void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
   /* Check for the correct number of indices  */
   if (rhs[1].getRank() != nsubs)
   {
-    throw mex::Exception{"MATLAB:mxcalcsinglesubscript:inputMismatch", "You must specify an index for each dimension."};
+    throw mx::Exception{"MATLAB:mxcalcsinglesubscript:inputMismatch", "You must specify an index for each dimension."};
   }
   
   /* Allocate memory for the subs array on the fly */
@@ -62,7 +64,7 @@ void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
    * based and C is zero based.  While doing this, check to make
    * sure that an index was not specified that is larger than size
    * of input array */
-  mex::NumericArrayCref<double> temp{rhs[1]};
+  mx::NumericArrayCref<double> temp{rhs[1]};
 
   std::transform(temp.begin(),
                  temp.end(),
@@ -73,24 +75,24 @@ void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
                   subs.end(),
                   [&](const std::size_t& x) { return x >= rhs[0].getDims()[x]; }))
   {
-    throw mex::Exception{"MATLAB:mxcalcsinglesubscript:badsubscript", "You indexed above the size of the array."};
+    throw mx::Exception{"MATLAB:mxcalcsinglesubscript:badsubscript", "You indexed above the size of the array."};
   }
   
   /* Find the index of location selected.  Note, for example, that
     * (3,4) in MATLAB corresponds to (2,3) in C. */
-  const std::size_t index = mex::calcSingleSubscript(rhs[0], subs);
+  const std::size_t index = mx::calcSingleSubscript(rhs[0], subs);
   
   /* Create the output array */
   if (rhs[0].isComplex())
   {
-    const auto value = mex::NumericArrayCref<std::complex<double>>{rhs[0]}[index];
+    const auto value = mx::NumericArrayCref<std::complex<double>>{rhs[0]}[index];
     
-    lhs[0] = mex::makeNumericScalar(value);
+    lhs[0] = mx::makeNumericScalar(value);
   }
   else
   {
-    const auto value = mex::NumericArrayCref<double>{rhs[0]}[index];
+    const auto value = mx::NumericArrayCref<double>{rhs[0]}[index];
     
-    lhs[0] = mex::makeNumericScalar(value);
+    lhs[0] = mx::makeNumericScalar(value);
   }
 }

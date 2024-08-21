@@ -15,34 +15,36 @@
  * All rights reserved.
  *=================================================================*/
 
-#include <mex/mex.hpp>
-#include <mex/Function.hpp>
+#include <matlabw/mex/mex.hpp>
+#include <matlabw/mex/Function.hpp>
 
-void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
+using namespace matlabw;
+
+void mex::Function::operator()(mx::Span<mx::Array> lhs, mx::View<mx::ArrayCref> rhs)
 {  
   /* Check for proper number of input and output arguments */   
   if (rhs.size() != 1 || !rhs[0].isDouble() || !rhs[0].isScalar())
   {
-    throw mex::Exception{"MATLAB:mexlock:inputNotRealScalarDouble", "Input argument must be a real scalar double"};
+    throw mx::Exception{"MATLAB:mexlock:inputNotRealScalarDouble", "Input argument must be a real scalar double"};
   }
   
   if (!lhs.empty())
   {
-    throw mex::Exception{"MATLAB:mexlock:maxlhs", "No output arguments expected."};
+    throw mx::Exception{"MATLAB:mexlock:maxlhs", "No output arguments expected."};
   }
 
-  const double lock = mex::NumericArrayCref<double>{rhs[0]}[0];
+  const double lock = rhs[0].getScalarAs<double>();
   
   if ((lock != 0.0) && lock != 1.0 && lock != -1.0)
   {
-    throw mex::Exception{"MATLAB:mexlock:invalidInputValue", "Input argument must be either 1 to lock or -1 to unlock or 0 for lock status.\n"};
+    throw mx::Exception{"MATLAB:mexlock:invalidInputValue", "Input argument must be either 1 to lock or -1 to unlock or 0 for lock status.\n"};
   }
   
   if (isLocked())
   {
     if (lock > 0.0)
     {
-      throw mex::Exception{"MATLAB:mexlock:invalidLockState", "MEX-file is already locked\n"};
+      throw mx::Exception{"MATLAB:mexlock:invalidLockState", "MEX-file is already locked\n"};
     }
     else if (lock < 0.0)
     {
@@ -58,7 +60,7 @@ void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
   {
     if (lock < 0.0)
     {
-      throw mex::Exception{"MATLAB:mexlock:invalidUnlockState", "MEX-file is already unlocked\n"};
+      throw mx::Exception{"MATLAB:mexlock:invalidUnlockState", "MEX-file is already unlocked\n"};
     }
     else if (lock > 0.0)
     {

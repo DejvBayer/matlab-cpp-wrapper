@@ -1,5 +1,5 @@
 ##
-# This file is part of mex-cpp-wrapper library.
+# This file is part of matlab-cpp-wrapper library.
 #
 # Copyright (c) 2024 David Bayer
 #
@@ -39,7 +39,7 @@ function(add_examples dir)
       NAME        ${EXAMPLE_NAME}
       SRC         ${EXAMPLE}
       OUTPUT_NAME ${EXAMPLE_NAME}
-      LINK_TO     mexw::mexw
+      LINK_TO     matlabw::matlabw
       R2018a)
   endforeach()
 endfunction()
@@ -48,6 +48,6 @@ add_examples("matlab/mex")
 add_examples("matlab/mx")
 add_examples("matlab/refbook")
 
-if(MEXW_ENABLE_GPU)
+if(MATLABW_ENABLE_GPU)
   add_subdirectory(gpu)
 endif()

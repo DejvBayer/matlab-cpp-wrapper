@@ -14,8 +14,10 @@
  *
  *=================================================================*/
 
-#include <mex/mex.hpp>
-#include <mex/Function.hpp>
+#include <matlabw/mex/mex.hpp>
+#include <matlabw/mex/Function.hpp>
+
+using namespace matlabw;
 
 /* Input Arguments */
 
@@ -37,7 +39,7 @@ static void yprime(double yp[], const double[], const double y[])
   /* Print warning if dividing by zero. */
   if (r1 == 0.0 || r2 == 0.0)
   {
-    throw mex::Exception{"MATLAB:yprime:divideByZero", "Division by zero!\n"};
+    throw mx::Exception{"MATLAB:yprime:divideByZero", "Division by zero!\n"};
   }
 
   yp[0] = y[1];
@@ -46,46 +48,44 @@ static void yprime(double yp[], const double[], const double y[])
   yp[3] = -2 * y[1] + y[2] - mus * y[2] / (r1 * r1 * r1) - mu * y[2] / (r2 * r2 * r2);
 }
 
-void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
+void mex::Function::operator()(mx::Span<mx::Array> lhs, mx::View<mx::ArrayCref> rhs)
 {
   /* Check for proper number of arguments */
 
   if (rhs.size() != 2)
   {
-    throw mex::Exception{"MATLAB:yprime:invalidNumInputs", "Two input arguments required."};
+    throw mx::Exception{"MATLAB:yprime:invalidNumInputs", "Two input arguments required."};
   }
   else if (lhs.size() > 1)
   {
-    throw mex::Exception{"MATLAB:yprime:maxlhs", "Too many output arguments."};
+    throw mx::Exception{"MATLAB:yprime:maxlhs", "Too many output arguments."};
   }
 
   /* check to make sure the first input argument is a real matrix */
   if (!T_IN.isDouble() || T_IN.isComplex())
   {
-    throw mex::Exception{"MATLAB:yprime:invalidT", "First input argument must be a real matrix."};
+    throw mx::Exception{"MATLAB:yprime:invalidT", "First input argument must be a real matrix."};
   }
 
   /* check to make sure the second input argument is a real matrix */
   if (!Y_IN.isDouble() || Y_IN.isComplex())
   {
-    throw mex::Exception{"MATLAB:yprime:invalidY", "Second input argument must be a real matrix."};
+    throw mx::Exception{"MATLAB:yprime:invalidY", "Second input argument must be a real matrix."};
   }
 
   /* Check the dimensions of Y.  Y can be 4 X 1 or 1 X 4. */
 
-  const std::size_t m = Y_IN.getDims()[0];
-  const std::size_t n = Y_IN.getDims()[1];
+  const std::size_t m = Y_IN.getDimM();
+  const std::size_t n = Y_IN.getDimN();
 
   if (std::max(m, n) != 4 || std::min(m, n) != 1)
   {
-    throw mex::Exception{"MATLAB:yprime:invalidY", "YPRIME requires that Y be a 4 x 1 vector."};
+    throw mx::Exception{"MATLAB:yprime:invalidY", "YPRIME requires that Y be a 4 x 1 vector."};
   }
 
   /* Create a matrix for the return argument */
-  YP_OUT = mex::makeNumericArray<double>({{m, n}});
+  YP_OUT = mx::makeNumericArray<double>(m, n);
 
   /* Do the actual computations in a subroutine */
-  yprime(mex::NumericArrayRef<double>{YP_OUT}.getData(),
-         mex::NumericArrayCref<double>{T_IN}.getData(),
-         mex::NumericArrayCref<double>{Y_IN}.getData());
+  yprime(YP_OUT.getDataAs<double>(), T_IN.getDataAs<double>(), Y_IN.getDataAs<double>());
 }

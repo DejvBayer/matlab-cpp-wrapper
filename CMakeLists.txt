@@ -1,5 +1,5 @@
 ##
-# This file is part of mex-cpp-wrapper library.
+# This file is part of matlab-cpp-wrapper library.
 #
 # Copyright (c) 2024 David Bayer
 #
@@ -24,10 +24,10 @@
 
 cmake_minimum_required(VERSION 3.22)
 
-project(mex-wrapper VERSION 0.0.1 LANGUAGES CXX)
+project(matlab-cpp-wrapper VERSION 0.0.1 LANGUAGES CXX)
 
-option(MEXW_BUILD_EXAMPLES "Build examples"     OFF)
-option(MEXW_ENABLE_GPU     "Enable GPU support" OFF)
+option(MATLABW_BUILD_EXAMPLES "Build examples"     OFF)
+option(MATLABW_ENABLE_GPU     "Enable GPU support" OFF)
 
 if(WIN32)
   set(MATLAB_BIN_PLATFORM_DIR_NAME "win64")
@@ -43,15 +43,15 @@ else()
   message(FATAL_ERROR "Unsupported platform: ${CMAKE_SYSTEM_NAME}")
 endif()
 
-find_package(Matlab REQUIRED COMPONENTS MEX_COMPILER)
+find_package(Matlab REQUIRED COMPONENTS MEX_COMPILER MAT_LIBRARY)
 
-add_library(mexw INTERFACE)
-add_library(mexw::mexw ALIAS mexw)
-target_compile_features(mexw INTERFACE cxx_std_20)
-target_include_directories(mexw INTERFACE include)
-target_link_libraries(mexw INTERFACE Matlab::mex)
+add_library(matlabw INTERFACE)
+add_library(matlabw::matlabw ALIAS matlabw)
+target_compile_features(matlabw INTERFACE cxx_std_20)
+target_include_directories(matlabw INTERFACE include)
+target_link_libraries(matlabw INTERFACE Matlab::mex Matlab::mat)
 
-if(MEXW_ENABLE_GPU)
+if(MATLABW_ENABLE_GPU)
   set(MATLAB_GPU_INCLUDE_DIR "${Matlab_ROOT_DIR}/toolbox/parallel/gpu/extern/include")
 
   if(NOT EXISTS ${MATLAB_GPU_INCLUDE_DIR}/gpu/mxGPUArray.h)
@@ -63,13 +63,13 @@ if(MEXW_ENABLE_GPU)
     PATHS "${Matlab_ROOT_DIR}/bin/${MATLAB_BIN_PLATFORM_DIR_NAME}"
     REQUIRED)
 
-  add_library(mexw-gpu INTERFACE)
-  add_library(mexw::mexw-gpu ALIAS mexw-gpu)
-  target_compile_definitions(mexw-gpu INTERFACE MEX_ENABLE_GPU)
-  target_include_directories(mexw-gpu INTERFACE ${MATLAB_GPU_INCLUDE_DIR})
-  target_link_libraries(mexw-gpu INTERFACE mexw::mexw ${MW_GPU_MEX_BINDER_LIB})
+  add_library(matlabw-gpu INTERFACE)
+  add_library(matlabw::matlabw-gpu ALIAS matlabw-gpu)
+  target_compile_definitions(matlabw-gpu INTERFACE MATLABW_ENABLE_GPU)
+  target_include_directories(matlabw-gpu INTERFACE ${MATLAB_GPU_INCLUDE_DIR})
+  target_link_libraries(matlabw-gpu INTERFACE matlabw::matlabw ${MW_GPU_MEX_BINDER_LIB})
 endif()
 
-if(MEXW_BUILD_EXAMPLES)
+if(MATLABW_BUILD_EXAMPLES)
   add_subdirectory(examples)
 endif()

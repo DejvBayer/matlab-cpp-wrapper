@@ -16,14 +16,16 @@
 
 #include <vector>
 
-#include <mex/mex.hpp>
-#include <mex/Function.hpp>
+#include <matlabw/mex/mex.hpp>
+#include <matlabw/mex/Function.hpp>
+
+using namespace matlabw;
 
 /* The mxArray in this example is 2x2 */
 static constexpr std::size_t ROWS    = 2;
 static constexpr std::size_t COLUMNS = 2;
 
-void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
+void mex::Function::operator()(mx::Span<mx::Array> lhs, mx::View<mx::ArrayCref> rhs)
 {
   static constexpr std::array data{2.1, 3.4, 2.3, 2.45}; /* existing data */
 
@@ -32,14 +34,14 @@ void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
   /* Check for proper number of arguments. */
   if (rhs.size() != 0)
   {
-    throw mex::Exception{"MATLAB:arrayFillGetPrDynamicData:rhs", "This function takes no input arguments."};
+    throw mx::Exception{"MATLAB:arrayFillGetPrDynamicData:rhs", "This function takes no input arguments."};
   }
 
   /* Create a local array and load data */
   std::vector<double> dynamicData{data.begin(), data.end()};
 
   /* Create a 2-by-2 mxArray; you will copy existing data into it */
-  auto output = mex::makeNumericArray<double>(ROWS, COLUMNS);
+  auto output = mx::makeNumericArray<double>(ROWS, COLUMNS);
 
   /* Copy data into the mxArray */
   std::copy(dynamicData.begin(), dynamicData.end(), output.begin());

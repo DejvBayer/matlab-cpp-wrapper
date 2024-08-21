@@ -6,25 +6,27 @@
  * Copyright 1984-2017 The MathWorks, Inc.
  */
 
-#include <mex/mex.hpp>
-#include <mex/Function.hpp>
+#include <matlabw/mex/mex.hpp>
+#include <matlabw/mex/Function.hpp>
 
-void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
+using namespace matlabw;
+
+void mex::Function::operator()(mx::Span<mx::Array> lhs, mx::View<mx::ArrayCref> rhs)
 {
   if (rhs.empty())
   {
-    throw mex::Exception{"MATLAB:mexfeval:minrhs", "Not enough input arguments."};
+    throw mx::Exception{"MATLAB:mexfeval:minrhs", "Not enough input arguments."};
   }
 
   if (!rhs[0].isChar())
   {
-    throw mex::Exception{"MATLAB:mexfeval:invalidInput", "Variable must contain a string."};
+    throw mx::Exception{"MATLAB:mexfeval:invalidInput", "Variable must contain a string."};
   }
 
   /*
    * overloaded functions could be a problem
    */
-  std::string fcn = mex::toAscii(rhs[0]);
+  std::string fcn = mx::toAscii(rhs[0]);
 
-  mex::call(lhs, rhs.subspan(1, rhs.size() - 1), fcn);
+  mex::call(lhs, rhs.subspan(1), fcn);
 }

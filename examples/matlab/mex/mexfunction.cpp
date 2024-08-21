@@ -12,10 +12,12 @@
  * All rights reserved.
  *=================================================================*/
 
-#include <mex/mex.hpp>
-#include <mex/Function.hpp>
+#include <matlabw/mex/mex.hpp>
+#include <matlabw/mex/Function.hpp>
 
-void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
+using namespace matlabw;
+
+void mex::Function::operator()(mx::Span<mx::Array> lhs, mx::View<mx::ArrayCref> rhs)
 {
   /* Examine input (right-hand-side) arguments. */
   mex::printf("\n%zu input argument(s).", rhs.size());
@@ -30,13 +32,13 @@ void mex::Function::operator()(Span<Array> lhs, View<ArrayCref> rhs)
 
   if (lhs.size() != rhs.size())
   {
-    throw mex::Exception{"MATLAB:mexfunction:inputOutputMismatch", "Number of inputs and outputs must match.\n"};
+    throw mx::Exception{"MATLAB:mexfunction:inputOutputMismatch", "Number of inputs and outputs must match.\n"};
   }
 
   for (std::size_t i{}; i < lhs.size(); ++i)
   {
     const double nel = static_cast<double>(rhs[i].getSize());
 
-    lhs[i] = mex::makeNumericScalar(nel);
+    lhs[i] = mx::makeNumericScalar(nel);
   }
 }
