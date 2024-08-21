@@ -43,13 +43,13 @@ else()
   message(FATAL_ERROR "Unsupported platform: ${CMAKE_SYSTEM_NAME}")
 endif()
 
-find_package(Matlab REQUIRED COMPONENTS MEX_COMPILER)
+find_package(Matlab REQUIRED COMPONENTS MEX_COMPILER MAT_LIBRARY)
 
 add_library(matlabw INTERFACE)
 add_library(matlabw::matlabw ALIAS matlabw)
 target_compile_features(matlabw INTERFACE cxx_std_20)
 target_include_directories(matlabw INTERFACE include)
-target_link_libraries(matlabw INTERFACE Matlab::mex)
+target_link_libraries(matlabw INTERFACE Matlab::mex Matlab::mat)
 
 if(MATLABW_ENABLE_GPU)
   set(MATLAB_GPU_INCLUDE_DIR "${Matlab_ROOT_DIR}/toolbox/parallel/gpu/extern/include")

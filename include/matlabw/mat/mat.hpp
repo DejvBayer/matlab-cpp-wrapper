@@ -45,6 +45,7 @@ namespace matlabw::mat
     w7_3, ///< Write only. Deletes existing contents. Uses HDF5 format for large data.
   };
 
+  /// @brief File class. Wraps MATFile.
   class File
   {
     public:
