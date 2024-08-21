@@ -79,7 +79,7 @@ namespace matlabw::mx
        * @brief Convert to std::string (ASCII)
        * @return std::string
        */
-      std::string toAscii() const
+      [[nodiscard]] std::string toAscii() const
       {
         return mx::toAscii(*this);
       }
@@ -88,7 +88,7 @@ namespace matlabw::mx
        * @brief Convert to std::u16string_view
        * @return std::u16string_view
        */
-      [[nodiscard]] operator std::u16string_view() const
+      [[nodiscard]] explicit operator std::u16string_view() const
       {
         static constexpr char id[]{"matlabw:mx:CharArrayRef:operatorU16StringView"};
 
@@ -127,7 +127,7 @@ namespace matlabw::mx
        * @brief Convert to std::string (ASCII)
        * @return std::string
        */
-      std::string toAscii() const
+      [[nodiscard]] std::string toAscii() const
       {
         return mx::toAscii(*this);
       }
