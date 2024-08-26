@@ -50,6 +50,7 @@
 #include "TypedArray.hpp"
 #include "TypedArrayRef.hpp"
 #include "typeTraits.hpp"
+#include "visit.hpp"
 
 #ifdef MATLABW_ENABLE_GPU
 # include "gpu/Array.hpp"
