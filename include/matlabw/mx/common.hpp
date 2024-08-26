@@ -73,7 +73,7 @@ namespace matlabw::mx
     uint64   = mxUINT64_CLASS,   ///< 64-bit unsigned integer.
     function = mxFUNCTION_CLASS, ///< Function.
     opaque   = mxOPAQUE_CLASS,   ///< Opaque.
-    index    = mxINDEX_CLASS,    ///< Index.
+    index    = mxINDEX_CLASS,    ///< Index. Alias for uint32 or uint64 depending on the platform.
   };
 
   /// @brief Complexity enumeration.
