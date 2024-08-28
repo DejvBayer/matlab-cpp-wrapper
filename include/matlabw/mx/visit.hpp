@@ -38,45 +38,37 @@ namespace detail
 {
   /**
    * @brief Helper function for the visitor.
-   * @tparam Constaints The constraints.
    * @tparam ArrayRefT The array ref type (const or nonconst).
    * @tparam Fn The callable type.
    * @param arrayRef The array ref (const or nonconst).
    * @param fn The callable.
    * @return The result of the callable.
    */
-  template<template<typename> typename... Constaints, typename ArrayRefT, typename Fn>
-  auto visitorHelper(ArrayRefT arrayRef, Fn&& fn)
+  template<typename ArrayRefT, typename Fn>
+  auto visitorHelper(ArrayRefT&& arrayRef, Fn&& fn)
+    -> decltype(std::invoke(std::forward<Fn>(fn), std::forward<ArrayRefT>(arrayRef)))
   {
-    if constexpr (std::conjunction_v<Constaints<ArrayRefT>...>)
-    {
-      return std::forward<Fn>(fn)(arrayRef);
-    }
-    else
-    {
-      throw Exception{"matlabw:mx:visit", "visitor constraints not satisfied"};
-    }
+    return std::invoke(std::forward<Fn>(fn), std::forward<ArrayRefT>(arrayRef));
   }
 
   /**
    * @brief Helper function for the numeric visitor.
    * @tparam T The numeric type.
-   * @tparam Constraints The constraints.
    * @tparam Fn The callable type.
    * @param arrayRef The array ref.
    * @param fn The callable.
    * @return The result of the callable.
    */
-  template<typename T, template<typename> typename... Constraints, typename Fn>
-  auto numericVisitorHelper(ArrayRef arrayRef, Fn&& fn)
+  template<typename T, typename Fn>
+  decltype(auto) numericVisitorHelper(ArrayRef arrayRef, Fn&& fn)
   {
     if (arrayRef.isComplex())
     {
-      return visitorHelper<Constraints...>(NumericArrayRef<std::complex<T>>{arrayRef}, std::forward<Fn>(fn));
+      return visitorHelper(NumericArrayRef<std::complex<T>>{arrayRef}, std::forward<Fn>(fn));
     }
     else
     {
-      return visitorHelper<Constraints...>(NumericArrayRef<T>{arrayRef}, std::forward<Fn>(fn));
+      return visitorHelper(NumericArrayRef<T>{arrayRef}, std::forward<Fn>(fn));
     }
   }
 
@@ -89,16 +81,16 @@ namespace detail
    * @param fn The callable.
    * @return The result of the callable.
    */
-  template<typename T, template<typename> typename... Constraints, typename Fn>
-  auto numericVisitorHelper(ArrayCref arrayCref, Fn&& fn)
+  template<typename T, typename Fn>
+  decltype(auto) numericVisitorHelper(ArrayCref arrayCref, Fn&& fn)
   {
     if (arrayCref.isComplex())
     {
-      return visitorHelper<Constraints...>(NumericArrayCref<std::complex<T>>{arrayCref}, std::forward<Fn>(fn));
+      return visitorHelper(NumericArrayCref<std::complex<T>>{arrayCref}, std::forward<Fn>(fn));
     }
     else
     {
-      return visitorHelper<Constraints...>(NumericArrayCref<T>{arrayCref}, std::forward<Fn>(fn));
+      return visitorHelper(NumericArrayCref<T>{arrayCref}, std::forward<Fn>(fn));
     }
   }
 } // namespace detail
@@ -122,45 +114,44 @@ namespace detail
 
   /**
    * @brief Visit the array cref with the specified callable.
-   * @tparam Constraints The constraints.
    * @tparam Fn The callable type.
    * @param arrayRef The array ref.
    * @param fn The callable.
    * @return The result of the callable.
    */
-  template<template<typename> typename... Constraints, typename Fn>
-  auto visit(ArrayRef arrayRef, Fn&& fn)
+  template<typename Fn>
+  decltype(auto) visit(ArrayRef arrayRef, Fn&& fn)
   {
     switch (arrayRef.getClassId())
     {
     case ClassId::cell:
-      return detail::visitorHelper<Constraints...>(CellArrayCref{arrayRef}, std::forward<Fn>(fn));
+      return detail::visitorHelper(CellArrayRef{arrayRef}, std::forward<Fn>(fn));
     case ClassId::_struct:
-      return detail::visitorHelper<Constraints...>(StructArrayCref{arrayRef}, std::forward<Fn>(fn));
+      return detail::visitorHelper(StructArrayRef{arrayRef}, std::forward<Fn>(fn));
     case ClassId::logical:
-      return detail::visitorHelper<bool, Constraints...>(TypedArrayRef<bool>{arrayRef}, std::forward<Fn>(fn));
+      return detail::visitorHelper(TypedArrayRef<bool>{arrayRef}, std::forward<Fn>(fn));
     case ClassId::_char:
-      return detail::visitorHelper<char16_t, Constraints...>(CharArrayCref{arrayRef}, std::forward<Fn>(fn));
+      return detail::visitorHelper(CharArrayRef{arrayRef}, std::forward<Fn>(fn));
     case ClassId::_double:
-      return detail::numericVisitorHelper<double, Constraints...>(arrayRef, std::forward<Fn>(fn));
+      return detail::numericVisitorHelper<double>(arrayRef, std::forward<Fn>(fn));
     case ClassId::single:
-      return detail::numericVisitorHelper<float, Constraints...>(arrayRef, std::forward<Fn>(fn));
+      return detail::numericVisitorHelper<float>(arrayRef, std::forward<Fn>(fn));
     case ClassId::int8:
-      return detail::numericVisitorHelper<std::int8_t, Constraints...>(arrayRef, std::forward<Fn>(fn));
+      return detail::numericVisitorHelper<std::int8_t>(arrayRef, std::forward<Fn>(fn));
     case ClassId::uint8:
-      return detail::numericVisitorHelper<std::uint8_t, Constraints...>(arrayRef, std::forward<Fn>(fn));
+      return detail::numericVisitorHelper<std::uint8_t>(arrayRef, std::forward<Fn>(fn));
     case ClassId::int16:
-      return detail::numericVisitorHelper<std::int16_t, Constraints...>(arrayRef, std::forward<Fn>(fn));
+      return detail::numericVisitorHelper<std::int16_t>(arrayRef, std::forward<Fn>(fn));
     case ClassId::uint16:
-      return detail::numericVisitorHelper<std::uint16_t, Constraints...>(arrayRef, std::forward<Fn>(fn));
+      return detail::numericVisitorHelper<std::uint16_t>(arrayRef, std::forward<Fn>(fn));
     case ClassId::int32:
-      return detail::numericVisitorHelper<std::int32_t, Constraints...>(arrayRef, std::forward<Fn>(fn));
+      return detail::numericVisitorHelper<std::int32_t>(arrayRef, std::forward<Fn>(fn));
     case ClassId::uint32:
-      return detail::numericVisitorHelper<std::uint32_t, Constraints...>(arrayRef, std::forward<Fn>(fn));
+      return detail::numericVisitorHelper<std::uint32_t>(arrayRef, std::forward<Fn>(fn));
     case ClassId::int64:
-      return detail::numericVisitorHelper<std::int64_t, Constraints...>(arrayRef, std::forward<Fn>(fn));
+      return detail::numericVisitorHelper<std::int64_t>(arrayRef, std::forward<Fn>(fn));
     case ClassId::uint64:
-      return detail::numericVisitorHelper<std::uint64_t, Constraints...>(arrayRef, std::forward<Fn>(fn));
+      return detail::numericVisitorHelper<std::uint64_t>(arrayRef, std::forward<Fn>(fn));
     default:
       throw Exception{"matlabw:mx:visit", "unknown class ID"};
     }
@@ -168,45 +159,44 @@ namespace detail
 
   /**
    * @brief Visit the array cref with the specified callable.
-   * @tparam Constraints The constraints.
    * @tparam Fn The callable type.
    * @param arrayCref The array cref.
    * @param fn The callable.
    * @return The result of the callable.
    */
-  template<template<typename> typename... Constraints, typename Fn>
-  auto visit(ArrayCref arrayCref, Fn&& fn)
+  template<typename Fn>
+  decltype(auto) visit(ArrayCref arrayCref, Fn&& fn)
   {
     switch (arrayCref.getClassId())
     {
     case ClassId::cell:
-      return detail::visitorHelper<Constraints...>(CellArrayCref{arrayCref}, std::forward<Fn>(fn));
+      return detail::visitorHelper(CellArrayCref{arrayCref}, std::forward<Fn>(fn));
     case ClassId::_struct:
-      return detail::visitorHelper<Constraints...>(StructArrayCref{arrayCref}, std::forward<Fn>(fn));
+      return detail::visitorHelper(StructArrayCref{arrayCref}, std::forward<Fn>(fn));
     case ClassId::logical:
-      return detail::visitorHelper<bool, Constraints...>(TypedArray<bool>{arrayCref}, std::forward<Fn>(fn));
+      return detail::visitorHelper(TypedArrayCref<bool>{arrayCref}, std::forward<Fn>(fn));
     case ClassId::_char:
-      return detail::visitorHelper<char16_t, Constraints...>(CharArrayCref{arrayCref}, std::forward<Fn>(fn));
+      return detail::visitorHelper(CharArrayCref{arrayCref}, std::forward<Fn>(fn));
     case ClassId::_double:
-      return detail::numericVisitorHelper<double, Constraints...>(arrayCref, std::forward<Fn>(fn));
+      return detail::numericVisitorHelper<double>(arrayCref, std::forward<Fn>(fn));
     case ClassId::single:
-      return detail::numericVisitorHelper<float, Constraints...>(arrayCref, std::forward<Fn>(fn));
+      return detail::numericVisitorHelper<float>(arrayCref, std::forward<Fn>(fn));
     case ClassId::int8:
-      return detail::numericVisitorHelper<std::int8_t, Constraints...>(arrayCref, std::forward<Fn>(fn));
+      return detail::numericVisitorHelper<std::int8_t>(arrayCref, std::forward<Fn>(fn));
     case ClassId::uint8:
-      return detail::numericVisitorHelper<std::uint8_t, Constraints...>(arrayCref, std::forward<Fn>(fn));
+      return detail::numericVisitorHelper<std::uint8_t>(arrayCref, std::forward<Fn>(fn));
     case ClassId::int16:
-      return detail::numericVisitorHelper<std::int16_t, Constraints...>(arrayCref, std::forward<Fn>(fn));
+      return detail::numericVisitorHelper<std::int16_t>(arrayCref, std::forward<Fn>(fn));
     case ClassId::uint16:
-      return detail::numericVisitorHelper<std::uint16_t, Constraints...>(arrayCref, std::forward<Fn>(fn));
+      return detail::numericVisitorHelper<std::uint16_t>(arrayCref, std::forward<Fn>(fn));
     case ClassId::int32:
-      return detail::numericVisitorHelper<std::int32_t, Constraints...>(arrayCref, std::forward<Fn>(fn));
+      return detail::numericVisitorHelper<std::int32_t>(arrayCref, std::forward<Fn>(fn));
     case ClassId::uint32:
-      return detail::numericVisitorHelper<std::uint32_t, Constraints...>(arrayCref, std::forward<Fn>(fn));
+      return detail::numericVisitorHelper<std::uint32_t>(arrayCref, std::forward<Fn>(fn));
     case ClassId::int64:
-      return detail::numericVisitorHelper<std::int64_t, Constraints...>(arrayCref, std::forward<Fn>(fn));
+      return detail::numericVisitorHelper<std::int64_t>(arrayCref, std::forward<Fn>(fn));
     case ClassId::uint64:
-      return detail::numericVisitorHelper<std::uint64_t, Constraints...>(arrayCref, std::forward<Fn>(fn));
+      return detail::numericVisitorHelper<std::uint64_t>(arrayCref, std::forward<Fn>(fn));
     default:
       throw Exception{"matlabw:mx:visit", "unknown class ID"};
     }
