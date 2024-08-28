@@ -34,44 +34,6 @@ namespace matlabw::mx
   namespace detail
   {
     /**
-     * @brief Helper for IsComplex.
-     * @tparam T Type.
-     */
-    template<typename T>
-    struct IsComplexHelper;
-  } // namespace detail
-
-  /**
-   * @brief Generic IsComplexHelper.
-   * @tparam T Type.
-   */
-  template<typename T>
-  struct detail::IsComplexHelper : std::false_type {};
-
-  /**
-   * @brief Specialization of IsComplexHelper for std::complex<T>.
-   * @tparam T Type.
-   */
-  template<typename T>
-  struct detail::IsComplexHelper<std::complex<T>> : std::true_type {};
-
-  /**
-   * @brief IsComplex trait.
-   * @tparam T Type.
-   */
-  template<typename T>
-  struct IsComplex : detail::IsComplexHelper<std::remove_cv_t<T>> {};
-
-  /**
-   * @brief isComplex value.
-   * @tparam T Type.
-   */
-  template<typename T>
-  inline constexpr bool isComplex = IsComplex<T>::value;
-
-  namespace detail
-  {
-    /**
      * @brief Helper for IsNumeric.
      * @tparam T Type.
      */
@@ -108,6 +70,58 @@ namespace matlabw::mx
    */
   template<typename T>
   inline constexpr bool isNumeric = IsNumeric<T>::value;
+
+  namespace detail
+  {
+    /**
+     * @brief Helper for IsComplexNumeric.
+     * @tparam T Type.
+     */
+    template<typename T>
+    struct IsComplexNumericHelper;
+  } // namespace detail
+
+  /**
+   * @brief Generic IsComplexHelper.
+   * @tparam T Type.
+   */
+  template<typename T>
+  struct detail::IsComplexNumericHelper : std::false_type {};
+
+  /**
+   * @brief Specialization of IsComplexNumeric for std::complex<T>.
+   * @tparam T Type.
+   */
+  template<typename T>
+  struct detail::IsComplexNumericHelper<std::complex<T>> : std::true_type {};
+
+  /**
+   * @brief IsComplexNumeric trait.
+   * @tparam T Type.
+   */
+  template<typename T>
+  struct IsComplexNumeric : detail::IsComplexNumericHelper<std::remove_cv_t<T>> {};
+
+  /**
+   * @brief isComplexNumeric value.
+   * @tparam T Type.
+   */
+  template<typename T>
+  inline constexpr bool isComplexNumeric = IsComplexNumeric<T>::value;
+
+  /**
+   * @brief IsRealNumeric trait.
+   * @tparam T Type.
+   */
+  template<typename T>
+  struct IsRealNumeric : std::bool_constant<isNumeric<T> && !isComplexNumeric<T>> {};
+
+  /**
+   * @brief isRealNumeric value.
+   * @tparam T Type.
+   */
+  template<typename T>
+  inline constexpr bool isRealNumeric = IsRealNumeric<T>::value;
 
   /**
    * @brief Class ID constant.
