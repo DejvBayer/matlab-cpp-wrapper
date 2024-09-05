@@ -30,18 +30,20 @@ option(MATLABW_BUILD_EXAMPLES "Build examples"     OFF)
 option(MATLABW_ENABLE_GPU     "Enable GPU support" OFF)
 
 if(WIN32)
-  set(MATLAB_BIN_PLATFORM_DIR_NAME "win64")
+  set(MATLABW_ARCH "win64")
 elseif(APPLE)
   if(CMAKE_APPLE_SILICON_PROCESSOR OR CMAKE_SYSTEM_PROCESSOR STREQUAL "arm64")
-    set(MATLAB_BIN_PLATFORM_DIR_NAME "maca64")
+    set(MATLABW_ARCH "maca64")
   else()
-    set(MATLAB_BIN_PLATFORM_DIR_NAME "maci64")
+    set(MATLABW_ARCH "maci64")
   endif()
 elseif(LINUX)
-  set(MATLAB_BIN_PLATFORM_DIR_NAME "glnxa64")
+  set(MATLABW_ARCH "glnxa64")
 else()
   message(FATAL_ERROR "Unsupported platform: ${CMAKE_SYSTEM_NAME}")
 endif()
+
+set(MATLABW_ARCH ${MATLABW_ARCH} PARENT_SCOPE)
 
 find_package(Matlab REQUIRED COMPONENTS MEX_COMPILER MAT_LIBRARY)
 
@@ -58,10 +60,13 @@ if(MATLABW_ENABLE_GPU)
     message(FATAL_ERROR "Matlab Parallel Computing Toolbox is required for GPU support")
   endif()
 
+  message(STATUS "${Matlab_ROOT_DIR}/bin/${MATLABW_ARCH}")
+
   find_library(MW_GPU_MEX_BINDER_LIB
     NAMES mwgpumexbinder
-    PATHS "${Matlab_ROOT_DIR}/bin/${MATLAB_BIN_PLATFORM_DIR_NAME}"
-    REQUIRED)
+    PATHS "${Matlab_ROOT_DIR}/bin/${MATLABW_ARCH}"
+    REQUIRED
+    NO_DEFAULT_PATH)
 
   add_library(matlabw-gpu INTERFACE)
   add_library(matlabw::matlabw-gpu ALIAS matlabw-gpu)
