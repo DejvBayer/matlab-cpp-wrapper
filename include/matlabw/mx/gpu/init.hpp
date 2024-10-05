@@ -22,42 +22,23 @@
   SOFTWARE.
 */
 
-#ifndef MATLABW_MX_MX_HPP
-#define MATLABW_MX_MX_HPP
+#ifndef MATLABW_MX_GPU_INIT_HPP
+#define MATLABW_MX_GPU_INIT_HPP
 
-#include "detail/include.hpp"
+#include "../detail/include.hpp"
 
-#if MATLAB_TARGET_API_VERSION < R2018a
-# error "This library requires MATLAB R2018a or later."
-#endif
+#include "../Exception.hpp"
 
-#include "Array.hpp"
-#include "ArrayRef.hpp"
-#include "CellArray.hpp"
-#include "CellArrayRef.hpp"
-#include "CharArray.hpp"
-#include "CharArrayRef.hpp"
-#include "common.hpp"
-#include "Exception.hpp"
-#include "limits.hpp"
-#include "LogicalArray.hpp"
-#include "memory.hpp"
-#include "NumericArray.hpp"
-#include "NumericArrayRef.hpp"
-#include "ObjectArray.hpp"
-#include "propery.hpp"
-#include "StructArray.hpp"
-#include "StructArrayRef.hpp"
-#include "TypedArray.hpp"
-#include "TypedArrayRef.hpp"
-#include "typeTraits.hpp"
-#include "visit.hpp"
+namespace matlabw::mx::gpu
+{
+  /// @brief Initialize the GPU
+  inline void init()
+  {
+    if (mxInitGPU() != MX_GPU_SUCCESS)
+    {
+      throw mx::Exception{"mex:gpu", "An error occurred while initializing the GPU."};
+    }
+  }
+} // namespace matlabw::mx::gpu
 
-#ifdef MATLABW_ENABLE_GPU
-# include "gpu/Array.hpp"
-# include "gpu/init.hpp"
-# include "gpu/NumericArray.hpp"
-# include "gpu/TypedArray.hpp"
-#endif
-
-#endif /* MATLABW_MX_MX_HPP */
+#endif /* MATLABW_MX_GPU_INIT_HPP */

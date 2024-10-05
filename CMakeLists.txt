@@ -26,8 +26,20 @@ cmake_minimum_required(VERSION 3.22)
 
 project(matlab-cpp-wrapper VERSION 0.0.1 LANGUAGES CXX)
 
-option(MATLABW_BUILD_EXAMPLES "Build examples"     OFF)
+if("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_CURRENT_SOURCE_DIR}")
+  set(MATLABW_TOP_LEVEL_PROJECT ON)
+endif()
+
+option(MATLABW_BUILD_EXAMPLES "Build examples"     ${MATLABW_TOP_LEVEL_PROJECT})
 option(MATLABW_ENABLE_GPU     "Enable GPU support" OFF)
+
+if(MATLABW_TOP_LEVEL_PROJECT)
+  find_package(Matlab REQUIRED COMPONENTS MEX_COMPILER MAT_LIBRARY)
+else()
+  if(NOT Matlab_FOUND)
+    message(FATAL_ERROR "MATLAB package is required be found before including matlabw library")
+  endif()
+endif()
 
 if(WIN32)
   set(MATLABW_ARCH "win64")
@@ -45,13 +57,10 @@ endif()
 
 set(MATLABW_ARCH ${MATLABW_ARCH} PARENT_SCOPE)
 
-find_package(Matlab REQUIRED COMPONENTS MEX_COMPILER MAT_LIBRARY)
-
 add_library(matlabw INTERFACE)
 add_library(matlabw::matlabw ALIAS matlabw)
 target_compile_features(matlabw INTERFACE cxx_std_20)
 target_include_directories(matlabw INTERFACE include)
-target_link_libraries(matlabw INTERFACE Matlab::mex Matlab::mat)
 
 if(MATLABW_ENABLE_GPU)
   set(MATLAB_GPU_INCLUDE_DIR "${Matlab_ROOT_DIR}/toolbox/parallel/gpu/extern/include")
@@ -60,10 +69,8 @@ if(MATLABW_ENABLE_GPU)
     message(FATAL_ERROR "Matlab Parallel Computing Toolbox is required for GPU support")
   endif()
 
-  message(STATUS "${Matlab_ROOT_DIR}/bin/${MATLABW_ARCH}")
-
   find_library(MW_GPU_MEX_BINDER_LIB
-    NAMES mwgpumexbinder
+    NAMES mwgpumexbinder gpumexbinder
     PATHS "${Matlab_ROOT_DIR}/bin/${MATLABW_ARCH}"
     REQUIRED
     NO_DEFAULT_PATH)

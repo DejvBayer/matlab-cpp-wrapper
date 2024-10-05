@@ -649,7 +649,7 @@ namespace matlabw::mx
 
         if (array != nullptr)
         {
-          mxArray* arrayDup = mxDuplicateArray(array);
+          arrayDup = mxDuplicateArray(array);
 
           if (arrayDup == nullptr)
           {

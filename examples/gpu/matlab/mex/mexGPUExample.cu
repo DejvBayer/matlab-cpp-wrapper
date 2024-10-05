@@ -39,6 +39,8 @@ void mex::Function::operator()(mx::Span<mx::Array> lhs, mx::View<mx::ArrayCref> 
   /* Choose a reasonably sized number of threads for the block. */
   static constexpr unsigned threadsPerBlock = 256;
 
+  mx::gpu::init();
+
   /* Throw an error if the input is not a GPU array. */
   if (rhs.size() != 1 || !rhs[0].isGpuArray())
   {

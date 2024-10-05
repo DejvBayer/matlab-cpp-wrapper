@@ -26,9 +26,6 @@ function(add_examples dir)
   # Get all C++ examples
   file(GLOB EXAMPLES "${dir}/*.cpp")
 
-  # Set output directory for mex libraries
-  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${dir}")
-
   # Compile all examples
   foreach(EXAMPLE ${EXAMPLES})
     # Get name of example
@@ -41,6 +38,9 @@ function(add_examples dir)
       OUTPUT_NAME ${EXAMPLE_NAME}
       LINK_TO     matlabw::matlabw
       R2018a)
+
+    # Set output directory
+    set_target_properties(${EXAMPLE_NAME} LIBRARY_OUTPUT_DIRECTORY "${dir}")
   endforeach()
 endfunction()
 

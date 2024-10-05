@@ -92,7 +92,10 @@ namespace matlabw::mx
   enum Index : std::size_t {};
 
   /// @brief FieldIndex type.
-  enum class FieldIndex : std::size_t {};
+  enum class FieldIndex : std::size_t
+  {
+    invalid = std::numeric_limits<std::size_t>::max(), ///< Invalid field index.
+  };
 
   /**
    * @brief Gets the `eps` variable value.

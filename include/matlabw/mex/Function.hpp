@@ -118,14 +118,6 @@ mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 
   try
   {
-    // Initialize the GPU if enabled.
-# ifdef MATLABW_ENABLE_GPU
-    if (mxInitGPU() != MX_GPU_SUCCESS)
-    {
-      throw mx::Exception{"mex:gpu", "An error occurred while initializing the GPU."};
-    }
-# endif
-
     // Reinterpret trick requires that the array wrappers have the same size as mxArray*.
     static_assert(sizeof(mxArray*) == sizeof(mx::Array));
     static_assert(sizeof(const mxArray*) == sizeof(mx::ArrayCref));

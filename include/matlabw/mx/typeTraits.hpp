@@ -93,7 +93,7 @@ namespace matlabw::mx
    * @tparam T Type.
    */
   template<typename T>
-  struct detail::IsComplexNumericHelper<std::complex<T>> : std::true_type {};
+  struct detail::IsComplexNumericHelper<std::complex<T>> : std::bool_constant<isNumeric<T>> {};
 
   /**
    * @brief IsComplexNumeric trait.

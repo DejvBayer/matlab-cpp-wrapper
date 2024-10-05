@@ -55,9 +55,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] std::optional<ArrayRef> getField(std::size_t i, const char* fieldName)
       {
-        const FieldIndex fieldIdx = getFieldIndex(fieldName);
-
-        return getField(i, fieldIdx);
+        return getField(i, getFieldIndex(fieldName));
       }
 
       /**
@@ -101,6 +99,11 @@ namespace matlabw::mx
       {
         checkValid("matlabw::mx::StructArray::getField");
 
+        if (fieldIndex == FieldIndex::invalid)
+        {
+          return std::nullopt;
+        }
+
         if (static_cast<std::size_t>(fieldIndex) >= getFieldCount())
         {
           throw Exception("field index out of range");
@@ -134,9 +137,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] std::optional<ArrayCref> getField(std::size_t i, const char* fieldName) const
       {
-        const FieldIndex fieldIdx = getFieldIndex(fieldName);
-
-        return getField(i, fieldIdx);
+        return getField(i, getFieldIndex(fieldName));
       }
 
       /**
@@ -180,6 +181,11 @@ namespace matlabw::mx
       {
         checkValid("matlabw::mx::StructArray::getField");
 
+        if (fieldIndex == FieldIndex::invalid)
+        {
+          return std::nullopt;
+        }
+        
         if (static_cast<std::size_t>(fieldIndex) >= getFieldCount())
         {
           throw Exception("field index out of range");
@@ -213,9 +219,7 @@ namespace matlabw::mx
        */
       void setField(std::size_t i, const char* fieldName, ArrayCref value)
       {
-        const FieldIndex fieldIdx = getFieldIndex(fieldName);
-
-        setField(i, fieldIdx, value);
+        setField(i, getFieldIndex(fieldName), value);
       }
 
       /**
@@ -259,9 +263,9 @@ namespace matlabw::mx
       {
         checkValid("matlabw::mx::StructArray::setField");
 
-        if (static_cast<std::size_t>(fieldIndex) >= getFieldCount())
+        if (fieldIndex == FieldIndex::invalid || static_cast<std::size_t>(fieldIndex) >= getFieldCount())
         {
-          throw Exception("field index out of range");
+          throw Exception("invalid field index");
         }
 
         mxSetFieldByNumber(get(), i, static_cast<int>(fieldIndex), Array{value}.release());
@@ -285,9 +289,7 @@ namespace matlabw::mx
        */
       void setField(std::size_t i, const char* fieldName, Array&& value)
       {
-        const FieldIndex fieldIdx = getFieldIndex(fieldName);
-
-        setField(i, fieldIdx, std::move(value));
+        setField(i, getFieldIndex(fieldName), std::move(value));
       }
 
       /**
@@ -331,9 +333,9 @@ namespace matlabw::mx
       {
         checkValid("matlabw::mx::StructArray::setField");
 
-        if (static_cast<std::size_t>(fieldIndex) >= getFieldCount())
+        if (fieldIndex == FieldIndex::invalid || static_cast<std::size_t>(fieldIndex) >= getFieldCount())
         {
-          throw Exception("field index out of range");
+          throw Exception("invalid field index");
         }
 
         mxSetFieldByNumber(get(), i, static_cast<int>(fieldIndex), value.release());
@@ -391,7 +393,7 @@ namespace matlabw::mx
 
         if (fieldIdx == -1)
         {
-          throw Exception("failed to get field index");
+          return FieldIndex::invalid;
         }
 
         return static_cast<FieldIndex>(fieldIdx);
@@ -443,11 +445,6 @@ namespace matlabw::mx
       {
         checkValid("matlabw::mx::StructArray::removeField");
 
-        if (fieldName == nullptr)
-        {
-          throw Exception("invalid field name");
-        }
-
         removeField(getFieldIndex(fieldName));
       }
 
@@ -468,12 +465,15 @@ namespace matlabw::mx
       {
         checkValid("matlabw::mx::StructArray::removeField");
 
-        if (static_cast<std::size_t>(fieldIndex) >= getFieldCount())
+        if (fieldIndex != FieldIndex::invalid)
         {
-          throw Exception("field index out of range");
-        }
+          if (static_cast<std::size_t>(fieldIndex) >= getFieldCount())
+          {
+            throw Exception("field index out of range");
+          }
 
-        mxRemoveField(get(), static_cast<int>(fieldIndex));
+          mxRemoveField(get(), static_cast<int>(fieldIndex));
+        }
       }
 
       /// @brief Use the TypedArray<Struct>::operator ArrayRef

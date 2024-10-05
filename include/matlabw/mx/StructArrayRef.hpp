@@ -53,9 +53,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] std::optional<ArrayRef> getField(std::size_t i, const char* fieldName)
       {
-        const FieldIndex fieldIdx = getFieldIndex(fieldName);
-
-        return getField(i, fieldIdx);
+        return getField(i, getFieldIndex(fieldName));
       }
 
       /**
@@ -71,12 +69,37 @@ namespace matlabw::mx
 
       /**
        * @brief Get the field of the structure array.
+       * @param fieldName The name of the field.
+       * @return The field.
+       */
+      [[nodiscard]] std::optional<ArrayRef> getField(const char* fieldName)
+      {
+        return getField(0, getFieldIndex(fieldName));
+      }
+
+      /**
+       * @brief Get the field of the structure array.
+       * @param fieldName The name of the field. Must be null-terminated.
+       * @return The field.
+       */
+      [[nodiscard]] std::optional<ArrayRef> getField(std::string_view fieldName)
+      {
+        return getField(fieldName.data());
+      }
+
+      /**
+       * @brief Get the field of the structure array.
        * @param i The index of the structure.
        * @param fieldIndex The index of the field.
        * @return The field.
        */
       [[nodiscard]] std::optional<ArrayRef> getField(std::size_t i, FieldIndex fieldIndex)
       {
+        if (fieldIndex == FieldIndex::invalid)
+        {
+          return std::nullopt;
+        }
+
         if (static_cast<std::size_t>(fieldIndex) >= getFieldCount())
         {
           throw Exception("field index out of range");
@@ -100,9 +123,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] std::optional<ArrayCref> getField(std::size_t i, const char* fieldName) const
       {
-        const FieldIndex fieldIdx = getFieldIndex(fieldName);
-
-        return getField(i, fieldIdx);
+        return getField(i, getFieldIndex(fieldName));
       }
 
       /**
@@ -118,12 +139,37 @@ namespace matlabw::mx
 
       /**
        * @brief Get the field of the structure array.
+       * @param fieldName The name of the field.
+       * @return The field.
+       */
+      [[nodiscard]] std::optional<ArrayCref> getField(const char* fieldName) const
+      {
+        return getField(0, getFieldIndex(fieldName));
+      }
+
+      /**
+       * @brief Get the field of the structure array.
+       * @param fieldName The name of the field. Must be null-terminated.
+       * @return The field.
+       */
+      [[nodiscard]] std::optional<ArrayCref> getField(std::string_view fieldName) const
+      {
+        return getField(fieldName.data());
+      }
+
+      /**
+       * @brief Get the field of the structure array.
        * @param i The index of the structure.
        * @param fieldIndex The index of the field.
        * @return The field.
        */
       [[nodiscard]] std::optional<ArrayCref> getField(std::size_t i, FieldIndex fieldIndex) const
       {
+        if (fieldIndex == FieldIndex::invalid)
+        {
+          return std::nullopt;
+        }
+
         if (static_cast<std::size_t>(fieldIndex) >= getFieldCount())
         {
           throw Exception("field index out of range");
@@ -147,9 +193,7 @@ namespace matlabw::mx
        */
       void setField(std::size_t i, const char* fieldName, ArrayCref value)
       {
-        const FieldIndex fieldIdx = getFieldIndex(fieldName);
-
-        setField(i, fieldIdx, value);
+        setField(i, getFieldIndex(fieldName), value);
       }
 
       /**
@@ -165,16 +209,36 @@ namespace matlabw::mx
 
       /**
        * @brief Set the field of the structure array.
+       * @param fieldName The name of the field.
+       * @param value The value.
+       */
+      void setField(const char* fieldName, ArrayCref value)
+      {
+        setField(0, getFieldIndex(fieldName), value);
+      }
+
+      /**
+       * @brief Set the field of the structure array.
+       * @param fieldName The name of the field. Must be null-terminated.
+       * @param value The value.
+       */
+      void setField(std::string_view fieldName, ArrayCref value)
+      {
+        setField(fieldName.data(), value);
+      }
+
+      /**
+       * @brief Set the field of the structure array.
        * @param i The index of the structure.
        * @param fieldIndex The index of the field.
        * @param value The value.
        */
       void setField(std::size_t i, FieldIndex fieldIndex, ArrayCref value)
       {
-        if (static_cast<std::size_t>(fieldIndex) >= getFieldCount())
+        if (fieldIndex == FieldIndex::invalid || static_cast<std::size_t>(fieldIndex) >= getFieldCount())
         {
-          throw Exception("field index out of range");
-        }
+          throw Exception("invalid field index");
+        } 
 
         mxSetFieldByNumber(get(), i, static_cast<int>(fieldIndex), Array{value}.release());
       }
@@ -187,9 +251,7 @@ namespace matlabw::mx
        */
       void setField(std::size_t i, const char* fieldName, Array&& value)
       {
-        const FieldIndex fieldIdx = getFieldIndex(fieldName);
-
-        setField(i, fieldIdx, std::move(value));
+        setField(i, getFieldIndex(fieldName), std::move(value));
       }
 
       /**
@@ -205,15 +267,35 @@ namespace matlabw::mx
 
       /**
        * @brief Set the field of the structure array.
+       * @param fieldName The name of the field.
+       * @param value The value.
+       */
+      void setField(const char* fieldName, Array&& value)
+      {
+        setField(0, getFieldIndex(fieldName), std::move(value));
+      }
+
+      /**
+       * @brief Set the field of the structure array.
+       * @param fieldName The name of the field. Must be null-terminated.
+       * @param value The value.
+       */
+      void setField(std::string_view fieldName, Array&& value)
+      {
+        setField(fieldName.data(), std::move(value));
+      }
+
+      /**
+       * @brief Set the field of the structure array.
        * @param i The index of the structure.
        * @param fieldIndex The index of the field.
        * @param value The value.
        */
       void setField(std::size_t i, FieldIndex fieldIndex, Array&& value)
       {
-        if (static_cast<std::size_t>(fieldIndex) >= getFieldCount())
+        if (fieldIndex == FieldIndex::invalid || static_cast<std::size_t>(fieldIndex) >= getFieldCount())
         {
-          throw Exception("field index out of range");
+          throw Exception("invalid field index");
         }
 
         mxSetFieldByNumber(get(), i, static_cast<int>(fieldIndex), value.release());
@@ -256,7 +338,7 @@ namespace matlabw::mx
 
         if (fieldIdx == -1)
         {
-          throw Exception("failed to get field index");
+          return FieldIndex::invalid;
         }
 
         return static_cast<FieldIndex>(fieldIdx);
@@ -327,12 +409,15 @@ namespace matlabw::mx
        */
       void removeField(FieldIndex fieldIndex)
       {
-        if (static_cast<std::size_t>(fieldIndex) >= getFieldCount())
+        if (fieldIndex != FieldIndex::invalid)
         {
-          throw Exception("field index out of range");
-        }
+          if (static_cast<std::size_t>(fieldIndex) >= getFieldCount())
+          {
+            throw Exception("field index out of range");
+          }
 
-        mxRemoveField(get(), static_cast<int>(fieldIndex));
+          mxRemoveField(get(), static_cast<int>(fieldIndex));
+        }
       }
   };
 
@@ -357,9 +442,7 @@ namespace matlabw::mx
        */
       [[nodiscard]] std::optional<ArrayCref> getField(std::size_t i, const char* fieldName) const
       {
-        const FieldIndex fieldIdx = getFieldIndex(fieldName);
-
-        return getField(i, fieldIdx);
+        return getField(i, getFieldIndex(fieldName));
       }
 
       /**
@@ -375,12 +458,37 @@ namespace matlabw::mx
 
       /**
        * @brief Get the field of the structure array.
+       * @param fieldName The name of the field.
+       * @return The field.
+       */
+      [[nodiscard]] std::optional<ArrayCref> getField(const char* fieldName) const
+      {
+        return getField(0, getFieldIndex(fieldName));
+      }
+
+      /**
+       * @brief Get the field of the structure array.
+       * @param fieldName The name of the field. Must be null-terminated.
+       * @return The field.
+       */
+      [[nodiscard]] std::optional<ArrayCref> getField(std::string_view fieldName) const
+      {
+        return getField(fieldName.data());
+      }
+
+      /**
+       * @brief Get the field of the structure array.
        * @param i The index of the structure.
        * @param fieldIndex The index of the field.
        * @return The field.
        */
       [[nodiscard]] std::optional<ArrayCref> getField(std::size_t i, FieldIndex fieldIndex) const
       {
+        if (fieldIndex == FieldIndex::invalid)
+        {
+          return std::nullopt;
+        }
+
         if (static_cast<std::size_t>(fieldIndex) >= getFieldCount())
         {
           throw Exception("field index out of range");
@@ -433,7 +541,7 @@ namespace matlabw::mx
 
         if (fieldIdx == -1)
         {
-          throw Exception("failed to get field index");
+          return FieldIndex::invalid;
         }
 
         return static_cast<FieldIndex>(fieldIdx);
